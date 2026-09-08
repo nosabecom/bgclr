@@ -17,6 +17,7 @@ See [README.md](README.md) for the upstream book build instructions and
 - Fork: https://github.com/nosabecom/bgclr
 - Initial upstream commit: `6f45f77a19feddf9425634fa6cad5a641569f8a9`
 - Unmodified HTML: https://beej.us/guide/bgclr/html/bgclr.zip
+- Original tab icon: https://beej.us/favicon.ico (served at `/favicon.ico`).
 - Downloaded: 2026-09-08 UTC. Published HTML and source may represent different revisions.
 
 The Vercel Content Security Policy permits the guide’s MathJax dependency and
