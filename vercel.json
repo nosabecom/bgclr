@@ -1,8 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "",
+  "installCommand": "",
+  "outputDirectory": "public/bgclr",
+  "redirects": [{ "source": "/bgclr/:path*", "destination": "/:path*", "permanent": true }],
   "headers": [{
     "source": "/(.*)",
     "headers": [
