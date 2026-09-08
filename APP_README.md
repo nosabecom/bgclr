@@ -21,7 +21,8 @@ See [README.md](README.md) for the upstream book build instructions and
 - Downloaded: 2026-09-08 UTC. Published HTML and source may represent different revisions.
 
 The Vercel Content Security Policy permits the guide’s MathJax dependency and
-blocks its obsolete third-party polyfill script. The HTML itself is unchanged.
+blocks its obsolete third-party polyfill script. The only HTML addition is an
+explicit link to Beej’s original favicon, with a versioned URL to refresh browser caches.
 
 This fork is the parent learning repository’s `reference` Git submodule.
 Run `git submodule update --init --recursive` after cloning the parent repository.
