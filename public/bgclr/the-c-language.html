@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to C Programming</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body>
+<div style="text-align:center"><span><a href="foreword.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="assert.html" rel="next">Next</a></span></div><hr>
+<h1 data-number="2" id="the-c-language"><span class="header-section-number">2</span> The C Language</h1>
+<p>This is just a quick overview of the fashionable and fun highlights of the syntax, keywords, and other animals in the C menagerie.</p>
+<h2 data-number="2.1" id="background"><span class="header-section-number">2.1</span> Background</h2>
+<p>Some things you’ll need to make sense of the examples, below.</p>
+<h3 data-number="2.1.1" id="comments"><span class="header-section-number">2.1.1</span> Comments</h3>
+<p>Comments in C start with <code>//</code> and go to the end of a line.</p>
+<p>Multiline comments begin with <code>/*</code> and continue until a closing <code>*/</code>.</p>
+<h3 data-number="2.1.2" id="separators"><span class="header-section-number">2.1.2</span> Separators</h3>
+<p>Expressions in C are separated by semicolons (<code>;</code>). These tend to appear at the ends of lines.</p>
+<h3 data-number="2.1.3" id="expressions"><span class="header-section-number">2.1.3</span> Expressions</h3>
+<p>If it’s not a keyword or other reserved punctuation, it tends to be an expression. Think “math including function calls”.</p>
+<h3 data-number="2.1.4" id="statements"><span class="header-section-number">2.1.4</span> Statements</h3>
+<p>Think <code>if</code>, <code>while</code>, etc. Executable keywords.</p>
+<h3 data-number="2.1.5" id="booleans"><span class="header-section-number">2.1.5</span> Booleans</h3>
+<p>Ignoring the <code>bool</code> type, zero is false and non-zero is true.</p>
+<h3 data-number="2.1.6" id="blocks"><span class="header-section-number">2.1.6</span> Blocks</h3>
+<p>Multiple expressions and flow control keywords can be wrapped up in a block, made up of <code>{</code> followed by one or more expressions or statements, followed by <code>}</code>.</p>
+<h3 data-number="2.1.7" id="code-examples"><span class="header-section-number">2.1.7</span> Code Examples</h3>
+<p>They are meant to give an idea of how to use various statements, but not be comprehensive in terms of examples.</p>
+<p>In the examples, below, if either an expression or statement can be used, the word <code>code</code> is inserted.</p>
+<h2 data-number="2.2" id="operators"><span class="header-section-number">2.2</span> Operators</h2>
+<h3 data-number="2.2.1" id="arithmetic-operators"><span class="header-section-number">2.2.1</span> Arithmetic Operators</h3>
+<p>The arithmetic operators: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code> (remainder).</p>
+<p>Division is integer if all arguments are integers. Otherwise it’s a floating result.</p>
+<p>You can also negate an expression by putting <code>-</code> in front of it. (You can also put a <code>+</code> in front of it—this doesn’t do anything mathematically, but it causes the Usual Arithmetic Conversions to be performed on the expression.)</p>
+<h3 data-number="2.2.2" id="pre--and-post-increment-and--decrement"><span class="header-section-number">2.2.2</span> Pre- and Post-Increment and -Decrement</h3>
+<p>The post-increment (<code>++</code>) and post-decrement (<code>--</code>) operators (after the variable) do their work <em>after</em> the rest of the expression has been evaluated.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="the-c-language.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> x <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="the-c-language.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> y <span class="op">=</span> <span class="dv">20</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="the-c-language.html#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> z <span class="op">=</span> <span class="dv">30</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="the-c-language.html#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="the-c-language.html#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> w <span class="op">=</span> <span class="op">(</span>x<span class="op">++)</span> <span class="op">+</span> <span class="op">(</span>y<span class="op">--)</span> <span class="op">+</span> <span class="op">(</span>z<span class="op">++);</span></span>
+<span id="cb1-6"><a href="the-c-language.html#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="the-c-language.html#cb1-7" aria-hidden="true" tabindex="-1"></a>print<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d</span><span class="st"> </span><span class="sc">%d</span><span class="st"> </span><span class="sc">%d</span><span class="st"> </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">,</span> w<span class="op">);</span>  <span class="co">// 11 19 31 60</span></span></code></pre></div>
+<p>The pre-increment (<code>++</code>) and pre-decrement (<code>--</code>) operators (before the variable) do their work <em>before</em> the rest of the expression has been evaluated.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="the-c-language.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> x <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="the-c-language.html#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> y <span class="op">=</span> <span class="dv">20</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="the-c-language.html#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> z <span class="op">=</span> <span class="dv">30</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="the-c-language.html#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="the-c-language.html#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> w <span class="op">=</span> <span class="op">(++</span>x<span class="op">)</span> <span class="op">+</span> <span class="op">(--</span>y<span class="op">)</span> <span class="op">+</span> <span class="op">(++</span>z<span class="op">);</span></span>
+<span id="cb2-6"><a href="the-c-language.html#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="the-c-language.html#cb2-7" aria-hidden="true" tabindex="-1"></a>print<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d</span><span class="st"> </span><span class="sc">%d</span><span class="st"> </span><span class="sc">%d</span><span class="st"> </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">,</span> y<span class="op">,</span> z<span class="op">,</span> w<span class="op">);</span>  <span class="co">// 11 19 31 61</span></span></code></pre></div>
+<h3 data-number="2.2.3" id="comparison-operators"><span class="header-section-number">2.2.3</span> Comparison Operators</h3>
+<p>All of these return a Boolean true-y or false-y value.</p>
+<p>Less than, greater than, and equal to are: <code>&lt;</code>, <code>&gt;</code>, <code>==</code>, respectively.</p>
+<p>Less than or equal to and greater than or equal to are <code>&lt;=</code> and <code>&gt;=</code>.</p>
+<p>Not equal to is <code>!=</code>.</p>
+<h3 data-number="2.2.4" id="pointer-operators"><span class="header-section-number">2.2.4</span> Pointer Operators</h3>
+<p><code>*</code> in front of a pointer variable dereferences that variable.</p>
+<p><code>&amp;</code> in front of a variable gives the address of that variable.</p>
+<p><code>+</code> and <code>-</code> arithmetic operators work on pointers for pointer arithmetic.</p>
+<h3 data-number="2.2.5" id="structure-and-union-operators"><span class="header-section-number">2.2.5</span> Structure and Union Operators</h3>
+<p>The dot operator (<code>.</code>) can get a field value out of a <code>struct</code> or <code>union</code>.</p>
+<p>The arrow operator (<code>-&gt;</code>) can get a field value out of a pointer to a <code>struct</code> or <code>union</code>. These two are equivalent, assuming <code>p</code> is just such a pointer:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="the-c-language.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">(*</span>p<span class="op">).</span>bar<span class="op">;</span></span>
+<span id="cb3-2"><a href="the-c-language.html#cb3-2" aria-hidden="true" tabindex="-1"></a>p<span class="op">-&gt;</span>bar<span class="op">;</span></span></code></pre></div>
+<h3 data-number="2.2.6" id="array-operators"><span class="header-section-number">2.2.6</span> Array Operators</h3>
+<p>The square bracket operators can reference a value in an array:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="the-c-language.html#cb4-1" aria-hidden="true" tabindex="-1"></a>a<span class="op">[</span><span class="dv">10</span><span class="op">]</span> <span class="op">=</span> <span class="dv">99</span><span class="op">;</span></span></code></pre></div>
+<p>This is syntactic sugar over pointer arithmetic and referencing. The above line is equivalent to:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="the-c-language.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">*(</span>a <span class="op">+</span> <span class="dv">10</span><span class="op">)</span> <span class="op">=</span> <span class="dv">99</span><span class="op">;</span></span></code></pre></div>
+<h3 data-number="2.2.7" id="bitwise-operators"><span class="header-section-number">2.2.7</span> Bitwise Operators</h3>
+<p>Bit shift right: <code>&gt;&gt;</code>, bit shift left: <code>&lt;&lt;</code>.</p>
+<pre><code>int i = x &lt;&lt; 3;  // left shift 3 bits</code></pre>
+<p>Whether or not a right shift on a signed value is sign-extended is implementation-defined.</p>
+<p>Bitwise AND, OR, NOT, and XOR are <code>&amp;</code>, <code>|</code>, <code>~</code>, and <code>^</code>, respectively.</p>
+<h3 data-number="2.2.8" id="assignment-operators"><span class="header-section-number">2.2.8</span> Assignment Operators</h3>
+<p>A standalone <code>=</code> is your basic assignment.</p>
+<p>But there are also compound assignments that are like a shorthand version. For example, these two are basically equivalent:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="the-c-language.html#cb7-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> x <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb7-2"><a href="the-c-language.html#cb7-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">+=</span> <span class="dv">1</span><span class="op">;</span></span></code></pre></div>
+<p>There are compound assignment operators for many of the other operators.</p>
+<p>Arithmetic: <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, and <code>%=</code>.</p>
+<p>Bitwise: <code>|=</code>, <code>&amp;=</code>, <code>~=</code>, and <code>^=</code>.</p>
+<h3 data-number="2.2.9" id="the-sizeof-operator"><span class="header-section-number">2.2.9</span> The <code>sizeof</code> Operator</h3>
+<p>This is a compile-time operator that gives you the size in bytes of the type of the argument. The type of the expression is used; the expression is not evaluated. <code>sizeof</code> works with any type, even user-defined composite types.</p>
+<p>The return type is the integer type <code>size_t</code>.</p>
+<pre><code>float f;
+size_t x = sizeof f;
+
+printf(&quot;f is %zu bytes\n&quot;, x);</code></pre>
+<p>You can also specify a raw type name in there by wrapping it in parentheses:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="the-c-language.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">size_t</span> x <span class="op">=</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">);</span></span>
+<span id="cb9-2"><a href="the-c-language.html#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="the-c-language.html#cb9-3" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;int is </span><span class="sc">%zu</span><span class="st"> bytes</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">);</span></span></code></pre></div>
+<h3 data-number="2.2.10" id="type-casts"><span class="header-section-number">2.2.10</span> Type Casts</h3>
+<p>You can force an expression to be another type (within reason) by <em>casting</em> to that type.</p>
+<p>You give the new type name in parentheses.</p>
+<p>Here we are forcing the subexpression <code>x</code> to be type <code>float</code> just before the division<a href="wctype.html#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>. This causes the division, which would otherwise be an integer division, to be a floating point division.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="the-c-language.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> x <span class="op">=</span> <span class="dv">17</span><span class="op">;</span></span>
+<span id="cb10-2"><a href="the-c-language.html#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> y <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb10-3"><a href="the-c-language.html#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="the-c-language.html#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="dt">float</span> f <span class="op">=</span> <span class="op">(</span><span class="dt">float</span><span class="op">)</span>x <span class="op">/</span> y<span class="op">;</span></span></code></pre></div>
+<h3 data-number="2.2.11" id="alignof-operator"><span class="header-section-number">2.2.11</span> <code>_Alignof</code> Operator</h3>
+<p>You can get the byte alignment of any type with the <code>_Alignof</code> compile-time operator. If you include <code>&lt;stdalign.h&gt;</code>, you can use <code>alignof</code> instead.</p>
+<p>Any type can be the argument to the operator, which must be in parenthesis. Unlike <code>sizeof</code>, the argument cannot be an expression.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="the-c-language.html#cb11-1" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;Alignment of int is </span><span class="sc">%zu\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="kw">alignof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span></code></pre></div>
+<h3 data-number="2.2.12" id="comma-operator"><span class="header-section-number">2.2.12</span> Comma Operator</h3>
+<p>You can separate subexpressions with commas, and each will be evaluated from left to right, and the value of the entire expression will be the value of the subexpression after the last comma.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="the-c-language.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> x <span class="op">=</span> <span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">);</span>  <span class="co">// Silly way to assign `x = 3`</span></span></code></pre></div>
+<p>Usually this is used in the various clauses in loops. For example, we can do multiple assignments in a <code>for</code> loop, and have multiple post expressions like this:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="the-c-language.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">2</span><span class="op">,</span> j <span class="op">=</span> <span class="dv">10</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">100</span><span class="op">;</span> i<span class="op">++,</span> j <span class="op">+=</span> <span class="dv">4</span><span class="op">)</span> <span class="op">{</span> <span class="op">...</span> <span class="op">}</span></span></code></pre></div>
+<h2 data-number="2.3" id="type-specifiers"><span class="header-section-number">2.3</span> Type Specifiers</h2>
+<p>Integer types from smallest to largest capacity: <code>char</code>, <code>short</code>, <code>int</code>, <code>long</code>, <code>long long</code>.</p>
+<p>Any integer type may be prefaced with <code>signed</code> (the default except for <code>char</code>) or <code>unsigned</code>.</p>
+<p>Whether or not <code>char</code> is signed is implementation defined.</p>
+<p>Floating types from least accuracy to most: <code>float</code>, <code>double</code>, <code>long double</code>.</p>
+<p><code>void</code> is a type representing lack of type.</p>
+<p><code>_Bool</code> is a Boolean type. This becomes <code>bool</code> in C23. Earlier versions of C must include <code>&lt;stdbool.h&gt;</code> to get <code>bool</code>.</p>
+<p><code>_Complex</code> indicates a complex floating type type, when paired with such a type. Include <code>&lt;complex.h&gt;</code> to use <code>complex</code> instead.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="the-c-language.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="dt">complex</span> <span class="dt">float</span> x <span class="op">=</span> <span class="fl">1.2</span> <span class="op">+</span> <span class="fl">2.3</span><span class="op">*</span>I<span class="op">;</span></span>
+<span id="cb14-2"><a href="the-c-language.html#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="dt">complex</span> <span class="dt">double</span> y <span class="op">=</span> <span class="fl">1.2</span> <span class="op">+</span> <span class="fl">2.3</span><span class="op">*</span>I<span class="op">;</span></span></code></pre></div>
+<p><code>_Imaginary</code> is an optional keyword used to specify an imaginary type (the imaginary part of a complex number) when paired with a floating type. Include <code>&lt;complex.h&gt;</code> to use <code>imaginary</code> instead. Neither GCC nor clang support this.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="the-c-language.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">imaginary</span> <span class="dt">float</span> f <span class="op">=</span> <span class="fl">2.3</span><span class="op">*</span>I<span class="op">;</span></span></code></pre></div>
+<p><code>_Generic</code> is a type “switcher” that allows you to emit different code at compile time depending on the type of the data.</p>
+<h2 data-number="2.4" id="constant-types"><span class="header-section-number">2.4</span> Constant Types</h2>
+<p>You can declare constants to be of specific types (though it might be a larger type). In the following example unqualified types, case doesn’t matter, and the <code>U</code> can come before or after the <code>L</code> or <code>LL</code>.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="the-c-language.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="dv">123</span>              <span class="dt">int</span> or larger</span>
+<span id="cb16-2"><a href="the-c-language.html#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="dv">123</span><span class="bu">L</span>             <span class="dt">long</span> <span class="dt">int</span> or larger</span>
+<span id="cb16-3"><a href="the-c-language.html#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="dv">123</span><span class="bu">LL</span>            <span class="dt">long</span> <span class="dt">long</span> <span class="dt">int</span></span>
+<span id="cb16-4"><a href="the-c-language.html#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="the-c-language.html#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="dv">123</span><span class="bu">U</span>             <span class="dt">unsigned</span> <span class="dt">int</span> or larger</span>
+<span id="cb16-6"><a href="the-c-language.html#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="dv">123</span><span class="bu">UL</span>            <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">int</span> or larger</span>
+<span id="cb16-7"><a href="the-c-language.html#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="dv">123</span><span class="bu">ULL</span>           <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> <span class="dt">int</span></span>
+<span id="cb16-8"><a href="the-c-language.html#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="the-c-language.html#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fl">123.4</span><span class="bu">F</span>           <span class="dt">float</span></span>
+<span id="cb16-10"><a href="the-c-language.html#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="fl">123.4</span>            <span class="dt">double</span></span>
+<span id="cb16-11"><a href="the-c-language.html#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="fl">123.4</span><span class="bu">L</span>           <span class="dt">long</span> <span class="dt">double</span></span>
+<span id="cb16-12"><a href="the-c-language.html#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="the-c-language.html#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="ch">&#39;a&#39;</span>              <span class="dt">char</span></span>
+<span id="cb16-14"><a href="the-c-language.html#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;hello, world&quot;</span>   <span class="dt">char</span><span class="op">*</span> <span class="op">(</span>string<span class="op">)</span></span></code></pre></div>
+<p>You can specify the constant in other bases as well:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="the-c-language.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="dv">123</span>              decimal</span>
+<span id="cb17-2"><a href="the-c-language.html#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="bn">0x123</span>            hexadecimal</span>
+<span id="cb17-3"><a href="the-c-language.html#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="bn">0123</span>             octal</span></code></pre></div>
+<p>You can also specify floating constants in base-10 exponential notation:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="the-c-language.html#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fl">1.2e3</span>            <span class="fl">1.2</span> x <span class="dv">10</span><span class="op">^</span><span class="dv">3</span></span></code></pre></div>
+<p>And you can specify floats in hex! Except in this case the exponent is still in decimal, and the base is 2 instead of 10:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="the-c-language.html#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fl">0x1.2p3</span>          <span class="fl">0x1.2</span> x <span class="dv">2</span><span class="op">^</span><span class="dv">3</span></span></code></pre></div>
+<h2 data-number="2.5" id="composite-types"><span class="header-section-number">2.5</span> Composite Types</h2>
+<h3 data-number="2.5.1" id="struct-types"><span class="header-section-number">2.5.1</span> <code>struct</code> Types</h3>
+<p>You can build a composite type made out of other types with <code>struct</code> and then declare variables to be of that type.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="the-c-language.html#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> animal <span class="op">{</span></span>
+<span id="cb20-2"><a href="the-c-language.html#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">char</span> <span class="op">*</span>name<span class="op">;</span></span>
+<span id="cb20-3"><a href="the-c-language.html#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> leg_count<span class="op">;</span></span>
+<span id="cb20-4"><a href="the-c-language.html#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb20-5"><a href="the-c-language.html#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="the-c-language.html#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> animal a<span class="op">;</span></span>
+<span id="cb20-7"><a href="the-c-language.html#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> animal b <span class="op">=</span> <span class="op">{</span><span class="st">&quot;goat&quot;</span><span class="op">,</span> <span class="dv">4</span><span class="op">};</span></span>
+<span id="cb20-8"><a href="the-c-language.html#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> animal c <span class="op">=</span> <span class="op">{.</span>name<span class="op">=</span><span class="st">&quot;goat&quot;</span><span class="op">,</span> <span class="op">.</span>leg_count<span class="op">=</span><span class="dv">4</span><span class="op">};</span></span></code></pre></div>
+<p>Accessing is done with the dot operator (<code>.</code>) or, if the variable is a pointer to a <code>struct</code>, the arrow operator (<code>-&gt;</code>).</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="the-c-language.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> animal <span class="op">*</span>p <span class="op">=</span> <span class="op">&amp;</span>b<span class="op">;</span>  <span class="co">// b from above</span></span>
+<span id="cb21-2"><a href="the-c-language.html#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="the-c-language.html#cb21-3" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> b<span class="op">.</span>leg_count<span class="op">);</span></span>
+<span id="cb21-4"><a href="the-c-language.html#cb21-4" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> p<span class="op">-&gt;</span>leg_count<span class="op">);</span></span></code></pre></div>
+<h3 data-number="2.5.2" id="union-types"><span class="header-section-number">2.5.2</span> <code>union</code> Types</h3>
+<p>These are like <code>struct</code> types in usage, except that you can only use one field at a time. (The fields all use the same region of memory.)</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="the-c-language.html#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> dt <span class="op">{</span></span>
+<span id="cb22-2"><a href="the-c-language.html#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> distance<span class="op">;</span></span>
+<span id="cb22-3"><a href="the-c-language.html#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> time<span class="op">;</span></span>
+<span id="cb22-4"><a href="the-c-language.html#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb22-5"><a href="the-c-language.html#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="the-c-language.html#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> dt a<span class="op">;</span></span>
+<span id="cb22-7"><a href="the-c-language.html#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> dt b <span class="op">=</span> <span class="op">{</span><span class="dv">6</span><span class="op">};</span>            <span class="co">// Initializes &quot;distance&quot;, the first field</span></span>
+<span id="cb22-8"><a href="the-c-language.html#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> dt c <span class="op">=</span> <span class="op">{.</span>distance<span class="op">=</span><span class="dv">6</span><span class="op">};</span>  <span class="co">// Initializes &quot;distance&quot;</span></span>
+<span id="cb22-9"><a href="the-c-language.html#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> dt d <span class="op">=</span> <span class="op">{.</span>time<span class="op">=</span><span class="dv">6</span><span class="op">};</span>      <span class="co">// Initializes &quot;time&quot;</span></span></code></pre></div>
+<p>Accessing is done with the dot operator (<code>.</code>) or, if the variable is a pointer to a <code>union</code>, the arrow operator (<code>-&gt;</code>).</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="the-c-language.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> dt <span class="op">*</span>p <span class="op">=</span> <span class="op">&amp;</span>b<span class="op">;</span></span>
+<span id="cb23-2"><a href="the-c-language.html#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="the-c-language.html#cb23-3" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> b<span class="op">.</span>time<span class="op">);</span></span>
+<span id="cb23-4"><a href="the-c-language.html#cb23-4" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> p<span class="op">-&gt;</span>time<span class="op">);</span></span></code></pre></div>
+<h3 data-number="2.5.3" id="enum-types"><span class="header-section-number">2.5.3</span> <code>enum</code> Types</h3>
+<p>Gives you a typed way to have named constant integer values. These can be used with <code>switch()</code>, or as an array size, or any other place constant values are needed.</p>
+<p>Names are conventionally capitalized.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="the-c-language.html#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> animal <span class="op">{</span></span>
+<span id="cb24-2"><a href="the-c-language.html#cb24-2" aria-hidden="true" tabindex="-1"></a>    ANTELOPE<span class="op">,</span></span>
+<span id="cb24-3"><a href="the-c-language.html#cb24-3" aria-hidden="true" tabindex="-1"></a>    BADGER<span class="op">,</span></span>
+<span id="cb24-4"><a href="the-c-language.html#cb24-4" aria-hidden="true" tabindex="-1"></a>    CAT<span class="op">,</span></span>
+<span id="cb24-5"><a href="the-c-language.html#cb24-5" aria-hidden="true" tabindex="-1"></a>    DOG<span class="op">,</span></span>
+<span id="cb24-6"><a href="the-c-language.html#cb24-6" aria-hidden="true" tabindex="-1"></a>    ELEPHANT<span class="op">,</span></span>
+<span id="cb24-7"><a href="the-c-language.html#cb24-7" aria-hidden="true" tabindex="-1"></a>    FISH</span>
+<span id="cb24-8"><a href="the-c-language.html#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb24-9"><a href="the-c-language.html#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="the-c-language.html#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> animal a <span class="op">=</span> CAT<span class="op">;</span></span>
+<span id="cb24-11"><a href="the-c-language.html#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="the-c-language.html#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> CAT<span class="op">)</span></span>
+<span id="cb24-13"><a href="the-c-language.html#cb24-13" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;The animal is a cat.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span></code></pre></div>
+<p>The names have numeric values starting with zero and counting up. (In the example above, <code>DOG</code> would be <code>3</code>.)</p>
+<p>The numeric value can be overridden by specifying an integer exactly. Subsequent values increment from the specified one.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="the-c-language.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> animal <span class="op">{</span></span>
+<span id="cb25-2"><a href="the-c-language.html#cb25-2" aria-hidden="true" tabindex="-1"></a>    ANTELOPE <span class="op">=</span> <span class="dv">4</span><span class="op">,</span></span>
+<span id="cb25-3"><a href="the-c-language.html#cb25-3" aria-hidden="true" tabindex="-1"></a>    BADGER<span class="op">,</span>         <span class="co">// Will be 5</span></span>
+<span id="cb25-4"><a href="the-c-language.html#cb25-4" aria-hidden="true" tabindex="-1"></a>    CAT<span class="op">,</span>            <span class="co">// Will be 6</span></span>
+<span id="cb25-5"><a href="the-c-language.html#cb25-5" aria-hidden="true" tabindex="-1"></a>    DOG <span class="op">=</span> <span class="dv">3</span><span class="op">,</span></span>
+<span id="cb25-6"><a href="the-c-language.html#cb25-6" aria-hidden="true" tabindex="-1"></a>    ELEPHANT<span class="op">,</span>       <span class="co">// Will be 4</span></span>
+<span id="cb25-7"><a href="the-c-language.html#cb25-7" aria-hidden="true" tabindex="-1"></a>    FISH            <span class="co">// Will be 5</span></span>
+<span id="cb25-8"><a href="the-c-language.html#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>As above, duplicate values are not illegal, but might be of marginal usefulness.</p>
+<h2 data-number="2.6" id="initializers"><span class="header-section-number">2.6</span> Initializers</h2>
+<p>You can do this when the variable is defined, but not elsewhere.</p>
+<p>Initializing basic types:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="the-c-language.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> x <span class="op">=</span> <span class="dv">12</span><span class="op">;</span></span>
+<span id="cb26-2"><a href="the-c-language.html#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="dt">float</span> y <span class="op">=</span> <span class="fl">1.2</span><span class="op">;</span></span>
+<span id="cb26-3"><a href="the-c-language.html#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> c <span class="op">=</span> <span class="ch">&#39;a&#39;</span><span class="op">;</span></span>
+<span id="cb26-4"><a href="the-c-language.html#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>s <span class="op">=</span> <span class="st">&quot;Hello, world!&quot;</span><span class="op">;</span></span></code></pre></div>
+<p>Initializing array types:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="the-c-language.html#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a<span class="op">[</span><span class="dv">3</span><span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span><span class="dv">2</span><span class="op">,</span><span class="dv">3</span><span class="op">};</span></span>
+<span id="cb27-2"><a href="the-c-language.html#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span><span class="dv">2</span><span class="op">,</span><span class="dv">3</span><span class="op">};</span>   <span class="co">// Same as a[3]</span></span>
+<span id="cb27-3"><a href="the-c-language.html#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="the-c-language.html#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a<span class="op">[</span><span class="dv">3</span><span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">};</span>   <span class="co">// Same as {1, 2, 0}</span></span>
+<span id="cb27-5"><a href="the-c-language.html#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a<span class="op">[</span><span class="dv">3</span><span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">};</span>      <span class="co">// Same as {1, 0, 0}</span></span>
+<span id="cb27-6"><a href="the-c-language.html#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a<span class="op">[</span><span class="dv">3</span><span class="op">]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">};</span>      <span class="co">// Same as {0, 0, 0}</span></span></code></pre></div>
+<p>Initializing pointer types:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="the-c-language.html#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> q<span class="op">;</span></span>
+<span id="cb28-2"><a href="the-c-language.html#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">*</span>p <span class="op">=</span> <span class="op">&amp;</span>q<span class="op">;</span></span></code></pre></div>
+<p>Initializing <code>struct</code>s:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="the-c-language.html#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> s <span class="op">{</span></span>
+<span id="cb29-2"><a href="the-c-language.html#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> a<span class="op">;</span></span>
+<span id="cb29-3"><a href="the-c-language.html#cb29-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> b<span class="op">;</span></span>
+<span id="cb29-4"><a href="the-c-language.html#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb29-5"><a href="the-c-language.html#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="the-c-language.html#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> s x0 <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="fl">2.2</span><span class="op">};</span> <span class="co">// Initialize fields in order</span></span>
+<span id="cb29-7"><a href="the-c-language.html#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="the-c-language.html#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> s x0 <span class="op">=</span> <span class="op">{.</span>a<span class="op">=</span><span class="dv">1</span><span class="op">,</span> <span class="op">.</span>b<span class="op">=</span><span class="fl">2.2</span><span class="op">};</span> <span class="co">// Initialize fields by name</span></span>
+<span id="cb29-9"><a href="the-c-language.html#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> s x0 <span class="op">=</span> <span class="op">{.</span>b<span class="op">=</span><span class="fl">2.2</span><span class="op">,</span> <span class="op">.</span>a<span class="op">=</span><span class="dv">1</span><span class="op">};</span> <span class="co">// Same thing</span></span>
+<span id="cb29-10"><a href="the-c-language.html#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-11"><a href="the-c-language.html#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> s x0 <span class="op">=</span> <span class="op">{.</span>b<span class="op">=</span><span class="fl">2.2</span><span class="op">};</span> <span class="co">// All other fields initialized to 0</span></span>
+<span id="cb29-12"><a href="the-c-language.html#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> s x0 <span class="op">=</span> <span class="op">{.</span>b<span class="op">=</span><span class="fl">2.2</span><span class="op">,</span> <span class="op">.</span>a<span class="op">-=</span><span class="dv">0</span><span class="op">};</span>  <span class="co">// Same thing</span></span></code></pre></div>
+<p>Initializing <code>union</code>s:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="the-c-language.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> u <span class="op">{</span></span>
+<span id="cb30-2"><a href="the-c-language.html#cb30-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> a<span class="op">;</span></span>
+<span id="cb30-3"><a href="the-c-language.html#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> b<span class="op">;</span></span>
+<span id="cb30-4"><a href="the-c-language.html#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb30-5"><a href="the-c-language.html#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="the-c-language.html#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> u x0 <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">};</span>  <span class="co">// Initialize the first field (a)</span></span>
+<span id="cb30-7"><a href="the-c-language.html#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="the-c-language.html#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> u x0 <span class="op">=</span> <span class="op">{.</span>a<span class="op">=</span><span class="dv">1</span><span class="op">};</span>  <span class="co">// Initialize fields by name</span></span>
+<span id="cb30-9"><a href="the-c-language.html#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="kw">union</span> u x0 <span class="op">=</span> <span class="op">{.</span>b<span class="op">=</span><span class="fl">2.2</span><span class="op">};</span></span>
+<span id="cb30-10"><a href="the-c-language.html#cb30-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-11"><a href="the-c-language.html#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="co">//union u x0 = {1, 2};       // ILLEGAL</span></span>
+<span id="cb30-12"><a href="the-c-language.html#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co">//union u x0 = {.a=1, .b=2};  // ILLEGAL</span></span></code></pre></div>
+<h2 data-number="2.7" id="compound-literals"><span class="header-section-number">2.7</span> Compound Literals</h2>
+<p>You can declare “unnamed” objects in C. This is often useful for passing a <code>struct</code> to a function that otherwise doesn’t need a name.</p>
+<p>You use the type name in parens followed by an initializer to make the object.</p>
+<p>Here’s an example of passing a compound literal to a function. Note that there’s no <code>struct s</code> variable in <code>main()</code>:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb31-1"><a href="the-c-language.html#cb31-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb31-2"><a href="the-c-language.html#cb31-2"></a></span>
+<span id="cb31-3"><a href="the-c-language.html#cb31-3"></a><span class="kw">struct</span> s <span class="op">{</span></span>
+<span id="cb31-4"><a href="the-c-language.html#cb31-4"></a>    <span class="dt">int</span> a<span class="op">,</span> b<span class="op">;</span></span>
+<span id="cb31-5"><a href="the-c-language.html#cb31-5"></a><span class="op">};</span></span>
+<span id="cb31-6"><a href="the-c-language.html#cb31-6"></a></span>
+<span id="cb31-7"><a href="the-c-language.html#cb31-7"></a><span class="dt">int</span> add<span class="op">(</span><span class="kw">struct</span> s x<span class="op">)</span></span>
+<span id="cb31-8"><a href="the-c-language.html#cb31-8"></a><span class="op">{</span></span>
+<span id="cb31-9"><a href="the-c-language.html#cb31-9"></a>    <span class="cf">return</span> x<span class="op">.</span>a <span class="op">+</span> x<span class="op">.</span>b<span class="op">;</span></span>
+<span id="cb31-10"><a href="the-c-language.html#cb31-10"></a><span class="op">}</span></span>
+<span id="cb31-11"><a href="the-c-language.html#cb31-11"></a></span>
+<span id="cb31-12"><a href="the-c-language.html#cb31-12"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb31-13"><a href="the-c-language.html#cb31-13"></a><span class="op">{</span></span>
+<span id="cb31-14"><a href="the-c-language.html#cb31-14"></a>    <span class="dt">int</span> t <span class="op">=</span> add<span class="op">((</span><span class="kw">struct</span> s<span class="op">){.</span>a<span class="op">=</span><span class="dv">2</span><span class="op">,</span> <span class="op">.</span>b<span class="op">=</span><span class="dv">4</span><span class="op">});</span>  <span class="co">// &lt;-- Here</span></span>
+<span id="cb31-15"><a href="the-c-language.html#cb31-15"></a></span>
+<span id="cb31-16"><a href="the-c-language.html#cb31-16"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> t<span class="op">);</span></span>
+<span id="cb31-17"><a href="the-c-language.html#cb31-17"></a><span class="op">}</span></span></code></pre></div>
+<p>Compound literals have the lifetime of their scope.</p>
+<p>You can also pass a pointer to a compound literal by taking its address:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="the-c-language.html#cb32-1" aria-hidden="true" tabindex="-1"></a>foo<span class="op">(&amp;(</span><span class="kw">struct</span> s<span class="op">){</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">});</span></span></code></pre></div>
+<h2 data-number="2.8" id="type-aliases"><span class="header-section-number">2.8</span> Type Aliases</h2>
+<p>You can set up a type alias for convenience or abstraction.</p>
+<p>Here we’ll make a new type called <code>time_counter</code> that is just an <code>int</code>. It can only be used exactly like an <code>int</code>. It’s just an alias for an <code>int</code>.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb33-1"><a href="the-c-language.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">int</span> time_counter<span class="op">;</span></span>
+<span id="cb33-2"><a href="the-c-language.html#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="the-c-language.html#cb33-3" aria-hidden="true" tabindex="-1"></a>time_counter t <span class="op">=</span> <span class="dv">3490</span><span class="op">;</span></span></code></pre></div>
+<p>Also works with <code>struct</code>s or <code>union</code>s:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb34-1"><a href="the-c-language.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> foo <span class="op">{</span></span>
+<span id="cb34-2"><a href="the-c-language.html#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> bar<span class="op">;</span></span>
+<span id="cb34-3"><a href="the-c-language.html#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> baz<span class="op">;</span></span>
+<span id="cb34-4"><a href="the-c-language.html#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb34-5"><a href="the-c-language.html#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="the-c-language.html#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> foo funtype<span class="op">;</span></span>
+<span id="cb34-7"><a href="the-c-language.html#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="the-c-language.html#cb34-8" aria-hidden="true" tabindex="-1"></a>funtype f <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">};</span> <span class="co">// &quot;funtype&quot; is an alias for &quot;struct foo&quot;;</span></span></code></pre></div>
+<p>It also works inline, and with named or unnamed <code>struct</code>s or <code>union</code>s:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb35-1"><a href="the-c-language.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb35-2"><a href="the-c-language.html#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> bar<span class="op">;</span></span>
+<span id="cb35-3"><a href="the-c-language.html#cb35-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">float</span> baz<span class="op">;</span></span>
+<span id="cb35-4"><a href="the-c-language.html#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> funtype<span class="op">;</span></span>
+<span id="cb35-5"><a href="the-c-language.html#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="the-c-language.html#cb35-6" aria-hidden="true" tabindex="-1"></a>funtype f <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">};</span> <span class="co">// &quot;funtype&quot; is an alias for the unnamed struct</span></span></code></pre></div>
+<h2 data-number="2.9" id="additional-type-related-specifiers"><span class="header-section-number">2.9</span> Additional Type-Related Specifiers</h2>
+<p>You can give the compiler more hints about what qualities a type should have using these specifiers and qualifiers.</p>
+<h3 data-number="2.9.1" id="storage-class-specifiers"><span class="header-section-number">2.9.1</span> Storage Class Specifiers</h3>
+<p>These can be placed before a type to provide more guidance about how the type is used.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb36-1"><a href="the-c-language.html#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">auto</span> <span class="dt">int</span> a</span>
+<span id="cb36-2"><a href="the-c-language.html#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="dt">register</span> <span class="dt">int</span> a</span>
+<span id="cb36-3"><a href="the-c-language.html#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> a</span>
+<span id="cb36-4"><a href="the-c-language.html#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="dt">int</span> a</span>
+<span id="cb36-5"><a href="the-c-language.html#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="dt">thread_local</span> <span class="dt">int</span> a</span></code></pre></div>
+<p><code>auto</code> is the default, so it’s basically never used. Indicates automatic storage duration (things like local variables get freed automatically when they fall out of scope). In C23 this keyword changes to indicate type inference like C++.</p>
+<p><code>register</code> indicates that accessing this variable should be as quick as possible. Restricts some usage of the variable giving the compiler a chance to optimize. Rare in daily use.</p>
+<p><code>static</code> at function scope indicates that this variable’s value should persist from call to call. At file scope indicates that this variable should not be visible outside of this source file.</p>
+<p><code>extern</code> indicates that this variable refers to one declared in another source file.</p>
+<p><code>_Thread_local</code> means that every thread gets its own copy of this variable. You can use <code>thread_local</code> if you include <code>&lt;threads.h&gt;</code>.</p>
+<h3 data-number="2.9.2" id="type-qualifiers"><span class="header-section-number">2.9.2</span> Type Qualifiers</h3>
+<p>These can be placed before a type to provide more guidance about how the type is used.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb37-1"><a href="the-c-language.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">int</span> a</span>
+<span id="cb37-2"><a href="the-c-language.html#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span>p</span>
+<span id="cb37-3"><a href="the-c-language.html#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">*</span> <span class="dt">const</span> p</span>
+<span id="cb37-4"><a href="the-c-language.html#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span> <span class="dt">const</span> p</span>
+<span id="cb37-5"><a href="the-c-language.html#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">*</span> <span class="dt">restrict</span> p</span>
+<span id="cb37-6"><a href="the-c-language.html#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="dt">volatile</span> <span class="dt">int</span> a</span>
+<span id="cb37-7"><a href="the-c-language.html#cb37-7" aria-hidden="true" tabindex="-1"></a>atomic <span class="dt">int</span> a</span></code></pre></div>
+<p><code>const</code> means the value can’t be modified. You can use it with pointers, as well:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb38-1"><a href="the-c-language.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">int</span> a <span class="op">=</span> <span class="dv">10</span><span class="op">;</span>        <span class="co">// Can&#39;t modify &quot;a&quot;</span></span>
+<span id="cb38-2"><a href="the-c-language.html#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="the-c-language.html#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span>p <span class="op">=</span> <span class="op">&amp;</span>b        <span class="co">// Can&#39;t modify the thing &quot;p&quot; points to (&quot;b&quot;)</span></span>
+<span id="cb38-4"><a href="the-c-language.html#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">*</span><span class="dt">const</span> p <span class="op">=</span> <span class="op">&amp;</span>b        <span class="co">// Can&#39;t modify &quot;p&quot;</span></span>
+<span id="cb38-5"><a href="the-c-language.html#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">int</span> <span class="op">*</span><span class="dt">const</span> p <span class="op">=</span> <span class="op">&amp;</span>b  <span class="co">// Can&#39;t modify &quot;p&quot; or the thing it points to</span></span></code></pre></div>
+<p><code>restrict</code> on a pointer means that there will only be one pointer to the item in question, freeing the compiler to make some optimizations.</p>
+<p><code>volatile</code> indicates that the value in a variable might change at any time and should be loaded from memory instead of being kept in a register. Usually used with memory-mapped hardware.</p>
+<p><code>_Atomic</code> (or <code>atomic</code> if you include <code>&lt;stdatomic.h&gt;</code>) tells the compiler that reads or writes to this type should happen atomically. (This might be accomplished with a lock depending on the platform and type.)</p>
+<h4 data-number="2.9.2.1" id="c23-qualified-pseudo-types-qvoid-qchar-etc."><span class="header-section-number">2.9.2.1</span> C23 Qualified Pseudo-Types: <code>QVoid*</code>, <code>QChar*</code>, etc.</h4>
+<p>There are some generic functions in C23 that will return a <code>const</code>-qualified type if one of the parameters is <code>const</code>, but not otherwise.</p>
+<p>The spec makes up a fake type for this, with a <code>Q</code> at the front (for “qualified”). This is not a real type and will not compile—it’s just for documentation purposes.</p>
+<p>These pseudotypes are:</p>
+<ul>
+<li><code>QVoid *</code></li>
+<li><code>QChar *</code></li>
+<li><code>QWchar_t *</code></li>
+</ul>
+<p>For example, the <code>strchr()</code> function, which searches a string for a character, has this prototype in the spec:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb39-1"><a href="the-c-language.html#cb39-1" aria-hidden="true" tabindex="-1"></a>QChar <span class="op">*</span>strchr<span class="op">(</span>QChar <span class="op">*</span>s<span class="op">,</span> <span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<p>What is it? It basically means that if <code>s</code> is type <code>const char *</code>, then the return type of the function will also be <code>const char *</code>.</p>
+<p>If <code>s</code> is merely <code>char *</code>, the return type of the function will merely be <code>char *</code>.</p>
+<p>In other words, the <code>const</code>-ness of <code>s</code> is preserved in the return value.</p>
+<p>Another way to look at it is that this:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb40-1"><a href="the-c-language.html#cb40-1" aria-hidden="true" tabindex="-1"></a>QChar <span class="op">*</span>strchr<span class="op">(</span>QChar <span class="op">*</span>s<span class="op">,</span> <span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<p>is the same as:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb41-1"><a href="the-c-language.html#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>strchr<span class="op">(</span><span class="dt">char</span> <span class="op">*</span>s<span class="op">,</span> <span class="dt">int</span> c<span class="op">);</span></span>
+<span id="cb41-2"><a href="the-c-language.html#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>strchr<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>s<span class="op">,</span> <span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<p>The TLDR is when you see this, drop the leading <code>Q</code> and change the next letter to lowercase and you’re there.</p>
+<h3 data-number="2.9.3" id="function-specifiers"><span class="header-section-number">2.9.3</span> Function Specifiers</h3>
+<p>These are used on functions to provide additional guidance for the compiler.</p>
+<p><code>_Noreturn</code> indicates that a function will never return. It can only run forever or exit the program entirely. If you include <code>&lt;stdnoreturn.h&gt;</code>, you can use <code>noreturn</code> instead.</p>
+<p><code>inline</code> indicates that calls to this function should be as fast as possible. The intention here is that the code of the function be moved <em>inline</em> to remove the overhead of the call and return. The compiler regards <code>inline</code> as a suggestion, not a requirement.</p>
+<h3 data-number="2.9.4" id="alignment-specifier"><span class="header-section-number">2.9.4</span> Alignment Specifier</h3>
+<p>You can force the alignment of a variable with memory with <code>_Alignas</code>. If you include <code>&lt;stdalign.h&gt;</code> you can use <code>alignas</code> instead.</p>
+<p><code>alignas(0)</code> has no effect.</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb42-1"><a href="the-c-language.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="kw">alignas</span><span class="op">(</span><span class="dv">16</span><span class="op">)</span> <span class="dt">int</span> a <span class="op">=</span> <span class="dv">12</span><span class="op">;</span>    <span class="co">// 16-byte alignment</span></span>
+<span id="cb42-2"><a href="the-c-language.html#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="kw">alignas</span><span class="op">(</span><span class="dt">long</span><span class="op">)</span> <span class="dt">int</span> b <span class="op">=</span> <span class="dv">34</span><span class="op">;</span>  <span class="co">// Same alignment as &quot;long&quot;</span></span></code></pre></div>
+<h2 data-number="2.10" id="if-statement"><span class="header-section-number">2.10</span> <code>if</code> Statement</h2>
+<div class="sourceCode" id="cb43"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb43-1"><a href="the-c-language.html#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>boolean_expression<span class="op">)</span> code<span class="op">;</span></span>
+<span id="cb43-2"><a href="the-c-language.html#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="the-c-language.html#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>boolean_expression<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb43-4"><a href="the-c-language.html#cb43-4" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb43-5"><a href="the-c-language.html#cb43-5" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb43-6"><a href="the-c-language.html#cb43-6" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb43-7"><a href="the-c-language.html#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb43-8"><a href="the-c-language.html#cb43-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-9"><a href="the-c-language.html#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>boolean_expression<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb43-10"><a href="the-c-language.html#cb43-10" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb43-11"><a href="the-c-language.html#cb43-11" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb43-12"><a href="the-c-language.html#cb43-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span></span>
+<span id="cb43-13"><a href="the-c-language.html#cb43-13" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb43-14"><a href="the-c-language.html#cb43-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-15"><a href="the-c-language.html#cb43-15" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>boolean_expression<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb43-16"><a href="the-c-language.html#cb43-16" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb43-17"><a href="the-c-language.html#cb43-17" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb43-18"><a href="the-c-language.html#cb43-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">{</span></span>
+<span id="cb43-19"><a href="the-c-language.html#cb43-19" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb43-20"><a href="the-c-language.html#cb43-20" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb43-21"><a href="the-c-language.html#cb43-21" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb43-22"><a href="the-c-language.html#cb43-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb43-23"><a href="the-c-language.html#cb43-23" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb43-24"><a href="the-c-language.html#cb43-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 data-number="2.11" id="for-statement"><span class="header-section-number">2.11</span> <code>for</code> Statement</h2>
+<p>Classic <code>for</code>-loop.</p>
+<p>The bit in parens comes in three parts separated by semicolons:</p>
+<ul>
+<li>Initialization, executed once.</li>
+<li>Block entry condition, evaluated every time before entering the loop body.</li>
+<li>Post expression, evaluated every time after the loop body.</li>
+</ul>
+<p>For example, initialize <code>i</code> to <code>0</code>, enter the loop body while <code>i &lt; 10</code>, and then increment <code>i</code> after each loop iteration:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb44-1"><a href="the-c-language.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">10</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb44-2"><a href="the-c-language.html#cb44-2" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb44-3"><a href="the-c-language.html#cb44-3" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb44-4"><a href="the-c-language.html#cb44-4" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb44-5"><a href="the-c-language.html#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>You can declare loop-local variables by specifying their type:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb45-1"><a href="the-c-language.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">10</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb45-2"><a href="the-c-language.html#cb45-2" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb45-3"><a href="the-c-language.html#cb45-3" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb45-4"><a href="the-c-language.html#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>You can separate parts of the expressions with the comma operator:</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb46-1"><a href="the-c-language.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> j <span class="op">=</span> <span class="dv">5</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">10</span><span class="op">;</span> i<span class="op">++,</span> j <span class="op">*=</span> <span class="dv">3</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb46-2"><a href="the-c-language.html#cb46-2" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb46-3"><a href="the-c-language.html#cb46-3" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb46-4"><a href="the-c-language.html#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 data-number="2.12" id="while-statement"><span class="header-section-number">2.12</span> <code>while</code> Statement</h2>
+<p>This loop won’t enter if the Boolean expression is false. The continuation test happens before the loop.</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb47-1"><a href="the-c-language.html#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span>boolean_expression<span class="op">)</span> code<span class="op">;</span></span>
+<span id="cb47-2"><a href="the-c-language.html#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="the-c-language.html#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span>boolean_expression<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb47-4"><a href="the-c-language.html#cb47-4" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb47-5"><a href="the-c-language.html#cb47-5" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb47-6"><a href="the-c-language.html#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 data-number="2.13" id="do-while-statement"><span class="header-section-number">2.13</span> <code>do</code>-<code>while</code> Statement</h2>
+<p>This loop will run at least once even if the Boolean expression is false. The continuation test doesn’t happen until after the loop.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb48-1"><a href="the-c-language.html#cb48-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-2"><a href="the-c-language.html#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span> code <span class="cf">while</span> <span class="op">(</span>boolean_expression<span class="op">);</span></span>
+<span id="cb48-3"><a href="the-c-language.html#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="the-c-language.html#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span> <span class="op">{</span></span>
+<span id="cb48-5"><a href="the-c-language.html#cb48-5" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb48-6"><a href="the-c-language.html#cb48-6" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb48-7"><a href="the-c-language.html#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">while</span> <span class="op">(</span>boolean_expression<span class="op">);</span></span></code></pre></div>
+<h2 data-number="2.14" id="switch-statement"><span class="header-section-number">2.14</span> <code>switch</code> Statement</h2>
+<p>Performs actions based on the value of an expression. The cases that it is compared against must be constant values.</p>
+<p>If the optional <code>default</code> is present, that code is executed if none of the cases match. Braces are not required around the cases.</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb49-1"><a href="the-c-language.html#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="cf">switch</span> <span class="op">(</span>expression<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb49-2"><a href="the-c-language.html#cb49-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> constant<span class="op">:</span></span>
+<span id="cb49-3"><a href="the-c-language.html#cb49-3" aria-hidden="true" tabindex="-1"></a>        code<span class="op">;</span></span>
+<span id="cb49-4"><a href="the-c-language.html#cb49-4" aria-hidden="true" tabindex="-1"></a>        code<span class="op">;</span></span>
+<span id="cb49-5"><a href="the-c-language.html#cb49-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb49-6"><a href="the-c-language.html#cb49-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-7"><a href="the-c-language.html#cb49-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> constant<span class="op">:</span></span>
+<span id="cb49-8"><a href="the-c-language.html#cb49-8" aria-hidden="true" tabindex="-1"></a>        code<span class="op">;</span></span>
+<span id="cb49-9"><a href="the-c-language.html#cb49-9" aria-hidden="true" tabindex="-1"></a>        code<span class="op">;</span></span>
+<span id="cb49-10"><a href="the-c-language.html#cb49-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb49-11"><a href="the-c-language.html#cb49-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-12"><a href="the-c-language.html#cb49-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb49-13"><a href="the-c-language.html#cb49-13" aria-hidden="true" tabindex="-1"></a>        code<span class="op">;</span></span>
+<span id="cb49-14"><a href="the-c-language.html#cb49-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb49-15"><a href="the-c-language.html#cb49-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>The final <code>break</code> in the <code>switch</code> is unnecessary if there are no cases after it.</p>
+<p>If the <code>break</code> isn’t present, the <code>case</code> falls through to the next one. It’s nice to put a comment to that effect so other devs don’t hate you.</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb50-1"><a href="the-c-language.html#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="cf">switch</span> <span class="op">(</span>expression<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb50-2"><a href="the-c-language.html#cb50-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> constant<span class="op">:</span></span>
+<span id="cb50-3"><a href="the-c-language.html#cb50-3" aria-hidden="true" tabindex="-1"></a>        code<span class="op">;</span></span>
+<span id="cb50-4"><a href="the-c-language.html#cb50-4" aria-hidden="true" tabindex="-1"></a>        code<span class="op">;</span></span>
+<span id="cb50-5"><a href="the-c-language.html#cb50-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// fall through!</span></span>
+<span id="cb50-6"><a href="the-c-language.html#cb50-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-7"><a href="the-c-language.html#cb50-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> constant<span class="op">:</span></span>
+<span id="cb50-8"><a href="the-c-language.html#cb50-8" aria-hidden="true" tabindex="-1"></a>        code<span class="op">;</span></span>
+<span id="cb50-9"><a href="the-c-language.html#cb50-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb50-10"><a href="the-c-language.html#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 data-number="2.15" id="break-statement"><span class="header-section-number">2.15</span> <code>break</code> Statement</h2>
+<p>This breaks out of a <code>switch</code> case, but it also can break out of any loop.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb51-1"><a href="the-c-language.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span>boolean_expression<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb51-2"><a href="the-c-language.html#cb51-2" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb51-3"><a href="the-c-language.html#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-4"><a href="the-c-language.html#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>boolean_expression<span class="op">)</span></span>
+<span id="cb51-5"><a href="the-c-language.html#cb51-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb51-6"><a href="the-c-language.html#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-7"><a href="the-c-language.html#cb51-7" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb51-8"><a href="the-c-language.html#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 data-number="2.16" id="continue-statement"><span class="header-section-number">2.16</span> <code>continue</code> Statement</h2>
+<p>This can be used to short-circuit a loop and go to the next continuation condition test without completing the body of the loop.</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb52-1"><a href="the-c-language.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span>boolean_expression<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb52-2"><a href="the-c-language.html#cb52-2" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb52-3"><a href="the-c-language.html#cb52-3" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb52-4"><a href="the-c-language.html#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="the-c-language.html#cb52-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>boolean_expression_2<span class="op">)</span></span>
+<span id="cb52-6"><a href="the-c-language.html#cb52-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb52-7"><a href="the-c-language.html#cb52-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-8"><a href="the-c-language.html#cb52-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// If boolean_expression_2, code down here will be skipped:</span></span>
+<span id="cb52-9"><a href="the-c-language.html#cb52-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-10"><a href="the-c-language.html#cb52-10" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb52-11"><a href="the-c-language.html#cb52-11" aria-hidden="true" tabindex="-1"></a>    code<span class="op">;</span></span>
+<span id="cb52-12"><a href="the-c-language.html#cb52-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 data-number="2.17" id="goto-statement"><span class="header-section-number">2.17</span> <code>goto</code> Statement</h2>
+<p>You can just jump anywhere within a function with <code>goto</code>. (You can’t <code>goto</code> between functions, only within the same function as the <code>goto</code>.)</p>
+<p>The destination of the <code>goto</code> is a <em>label</em>, which is an identifier followed by a colon (<code>:</code>). Labels are typically left-justified all the way to the margin to make them visually stand out.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb53-1"><a href="the-c-language.html#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb53-2"><a href="the-c-language.html#cb53-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Abusive demo code that should be a while loop</span></span>
+<span id="cb53-3"><a href="the-c-language.html#cb53-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-4"><a href="the-c-language.html#cb53-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb53-5"><a href="the-c-language.html#cb53-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-6"><a href="the-c-language.html#cb53-6" aria-hidden="true" tabindex="-1"></a>loop<span class="op">:</span></span>
+<span id="cb53-7"><a href="the-c-language.html#cb53-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-8"><a href="the-c-language.html#cb53-8" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> i<span class="op">++);</span></span>
+<span id="cb53-9"><a href="the-c-language.html#cb53-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-10"><a href="the-c-language.html#cb53-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>i <span class="op">&lt;</span> <span class="dv">10</span><span class="op">)</span></span>
+<span id="cb53-11"><a href="the-c-language.html#cb53-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">goto</span> loop<span class="op">;</span></span>
+<span id="cb53-12"><a href="the-c-language.html#cb53-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 data-number="2.18" id="return-statement"><span class="header-section-number">2.18</span> <code>return</code> Statement</h2>
+<p>This is how you get back from a function. You can <code>return</code> multiple times or just once.</p>
+<p>If a function with <code>void</code> return type falls off the end, the <code>return</code> is implicit.</p>
+<p>If the return type is not <code>void</code>, the <code>return</code> statement must specify a return value of the same type.</p>
+<p>Parentheses around the return value are not necessary (as it’s a statement, not a function).</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb54-1"><a href="the-c-language.html#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> increment<span class="op">(</span><span class="dt">int</span> a<span class="op">)</span></span>
+<span id="cb54-2"><a href="the-c-language.html#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb54-3"><a href="the-c-language.html#cb54-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb54-4"><a href="the-c-language.html#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 data-number="2.19" id="static_assert-statement"><span class="header-section-number">2.19</span> <code>_Static_assert</code> Statement</h2>
+<p>This is a way to prevent <em>compilation</em> of a program if a certain constant condition is not met.</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb55-1"><a href="the-c-language.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="kw">_Static_assert</span><span class="op">(</span>__STDC_VERSION__ <span class="op">&gt;=</span> <span class="dv">201112</span><span class="bu">L</span><span class="op">,</span> <span class="st">&quot;You need at least C11!&quot;</span><span class="op">)</span></span></code></pre></div>
+<h2 data-number="2.20" id="functions"><span class="header-section-number">2.20</span> Functions</h2>
+<p>You need to specify the return type and parameter types for the function, and the body goes in a block afterward.</p>
+<p>Variables in the function are local to that function.</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb56-1"><a href="the-c-language.html#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Function that adds two numbers</span></span>
+<span id="cb56-2"><a href="the-c-language.html#cb56-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-3"><a href="the-c-language.html#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> add<span class="op">(</span><span class="dt">int</span> x<span class="op">,</span> <span class="dt">int</span> y<span class="op">)</span></span>
+<span id="cb56-4"><a href="the-c-language.html#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb56-5"><a href="the-c-language.html#cb56-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> sum <span class="op">=</span> x <span class="op">+</span> y<span class="op">;</span></span>
+<span id="cb56-6"><a href="the-c-language.html#cb56-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-7"><a href="the-c-language.html#cb56-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> sum<span class="op">;</span></span>
+<span id="cb56-8"><a href="the-c-language.html#cb56-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Functions that return nothing should be return type <code>void</code>. Functions that accept no parameters should have <code>void</code> as the parameter list.</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb57-1"><a href="the-c-language.html#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co">// All side effects, all the time!</span></span>
+<span id="cb57-2"><a href="the-c-language.html#cb57-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-3"><a href="the-c-language.html#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb57-4"><a href="the-c-language.html#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb57-5"><a href="the-c-language.html#cb57-5" aria-hidden="true" tabindex="-1"></a>    some_global <span class="op">=</span> <span class="dv">12</span><span class="op">;</span></span>
+<span id="cb57-6"><a href="the-c-language.html#cb57-6" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;Here we go!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb57-7"><a href="the-c-language.html#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 data-number="2.20.1" id="main-function"><span class="header-section-number">2.20.1</span> <code>main()</code> Function</h3>
+<p>This is the function that runs when you first start the program. It will be one of these forms:</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb58-1"><a href="the-c-language.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb58-2"><a href="the-c-language.html#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">int</span> argc<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>argv<span class="op">[])</span></span></code></pre></div>
+<p>The first form ignores all command line parameters.</p>
+<p>The second form stores the count of the command line parameters in <code>argc</code>, and stores the parameters themselves as an array of strings in <code>argv</code>. The first of these, <code>argv[0]</code>, is typically the name of the executable. The last <code>argv</code> pointer has the value <code>NULL</code>.</p>
+<p>The return values usually show up as exit status codes in the OS. If there is no <code>return</code>, falling off the end of <code>main()</code> is an implied <code>return 0</code><a href="wctype.html#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>.</p>
+<h3 data-number="2.20.2" id="variadic-functions"><span class="header-section-number">2.20.2</span> Variadic Functions</h3>
+<p>Some functions can take a variable number of arguments. Every function must have at least one argument. The remaining arguments are specified by <code>...</code> and can be read with the <code>va_start()</code>, <code>va_arg()</code>, and <code>va_end()</code> macros.</p>
+<p>Here’s an example that adds up a variable number of integer values.</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb59-1"><a href="the-c-language.html#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> add<span class="op">(</span><span class="dt">int</span> count<span class="op">,</span> <span class="op">...)</span></span>
+<span id="cb59-2"><a href="the-c-language.html#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb59-3"><a href="the-c-language.html#cb59-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> total <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb59-4"><a href="the-c-language.html#cb59-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">va_list</span> va<span class="op">;</span></span>
+<span id="cb59-5"><a href="the-c-language.html#cb59-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-6"><a href="the-c-language.html#cb59-6" aria-hidden="true" tabindex="-1"></a>    va_start<span class="op">(</span>va<span class="op">,</span> count<span class="op">);</span>   <span class="co">// Start with arguments after &quot;count&quot;</span></span>
+<span id="cb59-7"><a href="the-c-language.html#cb59-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-8"><a href="the-c-language.html#cb59-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> count<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb59-9"><a href="the-c-language.html#cb59-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> n <span class="op">=</span> va_arg<span class="op">(</span>va<span class="op">,</span> <span class="dt">int</span><span class="op">);</span>   <span class="co">// Get the next int</span></span>
+<span id="cb59-10"><a href="the-c-language.html#cb59-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-11"><a href="the-c-language.html#cb59-11" aria-hidden="true" tabindex="-1"></a>        total <span class="op">+=</span> n<span class="op">;</span></span>
+<span id="cb59-12"><a href="the-c-language.html#cb59-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb59-13"><a href="the-c-language.html#cb59-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-14"><a href="the-c-language.html#cb59-14" aria-hidden="true" tabindex="-1"></a>    va_end<span class="op">(</span>va<span class="op">);</span>  <span class="co">// All done</span></span>
+<span id="cb59-15"><a href="the-c-language.html#cb59-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-16"><a href="the-c-language.html#cb59-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> total<span class="op">;</span></span>
+<span id="cb59-17"><a href="the-c-language.html#cb59-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<!-- BG_NEW_CHAPTER -->
+<!-- Beej's guide to C
+
+# vim: ts=4:sw=4:nosi:et:tw=72
+-->
+<hr><div style="text-align:center"><span><a href="foreword.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="assert.html" rel="next">Next</a></span></div></body>
+</html>

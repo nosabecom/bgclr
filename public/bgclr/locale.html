@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to C Programming</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body>
+<div style="text-align:center"><span><a href="limits.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="math.html" rel="next">Next</a></span></div><hr>
+<h1 data-number="12" id="locale"><span class="header-section-number">12</span> <code>&lt;locale.h&gt;</code> locale handling</h1>
+<p></p>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="locale.html#man-setlocale"><code>setlocale()</code></a></td>
+<td>Set the locale</td>
+</tr>
+<tr class="even">
+<td><a href="locale.html#man-localeconv"><code>localeconv()</code></a></td>
+<td>Get information about the current locale</td>
+</tr>
+</tbody>
+</table>
+<p>The “locale” is the details of how the program should run given its physical location on the planet.</p>
+<p>For example, in one locale, a unit of money might be printed as <code>$123</code>, and in another <code>€123</code>.</p>
+<p>Or one locale might use ASCII encoding and another UTF-8 encoding.</p>
+<p>By default, the program runs in the “C” locale. It has a basic set of characters with a single-byte encoding. If you try to print UTF-8 characters in the C locale, nothing will print. You have to switch to a proper locale.</p>
+<hr />
+<h2 data-number="12.1" id="man-setlocale"><span class="header-section-number">12.1</span> <code>setlocale()</code></h2>
+<p></p>
+<p>Set the locale</p>
+<h3 class="unnumbered unlisted" id="synopsis-52">Synopsis</h3>
+<div class="sourceCode" id="cb235"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb235-1"><a href="locale.html#cb235-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;locale.h&gt;</span></span>
+<span id="cb235-2"><a href="locale.html#cb235-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb235-3"><a href="locale.html#cb235-3" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>setlocale<span class="op">(</span><span class="dt">int</span> category<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>locale<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-52">Description</h3>
+<p>Sets the <code>locale</code> for the given <code>category</code>.</p>
+<p>Category is one of the following:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Category</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>LC_ALL</code></td>
+<td>All of the following categories</td>
+</tr>
+<tr class="even">
+<td><code>LC_COLLATE</code></td>
+<td>Affects the <a href="stringref.html#man-strcoll"><code>strcoll()</code></a> and <a href="stringref.html#man-strxfrm"><code>strxfrm()</code></a> functions</td>
+</tr>
+<tr class="odd">
+<td><code>LC_CTYPE</code></td>
+<td>Affects the functions in <a href="ctype.html#ctype"><code>&lt;ctype.h&gt;</code></a></td>
+</tr>
+<tr class="even">
+<td><code>LC_MONETARY</code></td>
+<td>Affects the monetary information returned from <a href="locale.html#man-localeconv"><code>localeconv()</code></a></td>
+</tr>
+<tr class="odd">
+<td><code>LC_NUMERIC</code></td>
+<td>Affects the decimal point for formatted I/O and formatted string functions, and the monetary information returned from <a href="locale.html#man-localeconv"><code>localeconv()</code></a></td>
+</tr>
+<tr class="even">
+<td><code>LC_TIME</code></td>
+<td>Affects the <a href="time.html#man-strftime"><code>strftime()</code></a> and <a href="wchar.html#man-wcsftime"><code>wcsftime()</code></a> functions</td>
+</tr>
+</tbody>
+</table>
+<p>And there are three portable things you can pass in for <code>locale</code>; any other string passed in is implementation-defined and non-portable.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Locale</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>"C"</code></td>
+<td>Set the program to the C locale</td>
+</tr>
+<tr class="even">
+<td><code>""</code></td>
+<td>(Empty string) Set the program to the native locale of this system</td>
+</tr>
+<tr class="odd">
+<td><code>NULL</code></td>
+<td>Change nothing; just return the current locale</td>
+</tr>
+<tr class="even">
+<td>Other</td>
+<td>Set the program to an implementation-defined locale</td>
+</tr>
+</tbody>
+</table>
+<p>The most common call, I’d wager, is this:</p>
+<div class="sourceCode" id="cb236"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb236-1"><a href="locale.html#cb236-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Set all locale settings to the local, native locale</span></span>
+<span id="cb236-2"><a href="locale.html#cb236-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb236-3"><a href="locale.html#cb236-3" aria-hidden="true" tabindex="-1"></a>setlocale<span class="op">(</span>LC_ALL<span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">);</span></span></code></pre></div>
+<p>Handily, <code>setlocale()</code> returns the locale that was just set, so you could see what the actual locale is on your system.</p>
+<h3 class="unnumbered unlisted" id="return-value-51">Return Value</h3>
+<p>On success, returns a pointer to the string representing the current locale. You may not modify this string, and it might be changed by subsequent calls to <code>setlocale()</code>.</p>
+<p>On failure, returns <code>NULL</code>.</p>
+<h3 class="unnumbered unlisted" id="example-52">Example</h3>
+<p>Here we get the current locale. Then we set it to the native locale, and print out what that is.</p>
+<div class="sourceCode" id="cb237"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb237-1"><a href="locale.html#cb237-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb237-2"><a href="locale.html#cb237-2"></a><span class="pp">#include </span><span class="im">&lt;locale.h&gt;</span></span>
+<span id="cb237-3"><a href="locale.html#cb237-3"></a></span>
+<span id="cb237-4"><a href="locale.html#cb237-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb237-5"><a href="locale.html#cb237-5"></a><span class="op">{</span></span>
+<span id="cb237-6"><a href="locale.html#cb237-6"></a>    <span class="dt">char</span> <span class="op">*</span>loc<span class="op">;</span></span>
+<span id="cb237-7"><a href="locale.html#cb237-7"></a></span>
+<span id="cb237-8"><a href="locale.html#cb237-8"></a>    <span class="co">// Get the current locale</span></span>
+<span id="cb237-9"><a href="locale.html#cb237-9"></a>    loc <span class="op">=</span> setlocale<span class="op">(</span>LC_ALL<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb237-10"><a href="locale.html#cb237-10"></a></span>
+<span id="cb237-11"><a href="locale.html#cb237-11"></a>    printf<span class="op">(</span><span class="st">&quot;Starting locale: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> loc<span class="op">);</span></span>
+<span id="cb237-12"><a href="locale.html#cb237-12"></a></span>
+<span id="cb237-13"><a href="locale.html#cb237-13"></a>    <span class="co">// Set (and get) the locale to native locale</span></span>
+<span id="cb237-14"><a href="locale.html#cb237-14"></a>    loc <span class="op">=</span> setlocale<span class="op">(</span>LC_ALL<span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb237-15"><a href="locale.html#cb237-15"></a>    </span>
+<span id="cb237-16"><a href="locale.html#cb237-16"></a>    printf<span class="op">(</span><span class="st">&quot;Native locale: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> loc<span class="op">);</span></span>
+<span id="cb237-17"><a href="locale.html#cb237-17"></a><span class="op">}</span></span></code></pre></div>
+<p>Output on my system:</p>
+<div class="sourceCode" id="cb238"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb238-1"><a href="locale.html#cb238-1" aria-hidden="true" tabindex="-1"></a>Starting locale: C</span>
+<span id="cb238-2"><a href="locale.html#cb238-2" aria-hidden="true" tabindex="-1"></a>Native locale: en_US.UTF-8</span></code></pre></div>
+<p>Note that my native locale (on a Linux box) might be different from what you see.</p>
+<p>Nevertheless, I can explicitly set it on my system without a problem, or to any other locale I have installed:</p>
+<div class="sourceCode" id="cb239" data-startfrom="13"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c" style="counter-reset: source-line 12;"><span id="cb239-13"><a href="locale.html#cb239-13"></a>    loc <span class="op">=</span> setlocale<span class="op">(</span>LC_ALL<span class="op">,</span> <span class="st">&quot;en_US.UTF-8&quot;</span><span class="op">);</span>   <span class="co">// Non-portable</span></span></code></pre></div>
+<p>But again, your system might have different locales defined.</p>
+<h3 class="unnumbered unlisted" id="see-also-48">See Also</h3>
+<p><a href="locale.html#man-localeconv"><code>localeconv()</code></a>, <a href="stringref.html#man-strcoll"><code>strcoll()</code></a>, <a href="stringref.html#man-strxfrm"><code>strxfrm()</code></a>, <a href="time.html#man-strftime"><code>strftime()</code></a>, <a href="wchar.html#man-wcsftime"><code>wcsftime()</code></a>, <a href="stdio.html#man-printf"><code>printf()</code></a>, <a href="stdio.html#man-scanf"><code>scanf()</code></a>, <a href="ctype.html#ctype"><code>&lt;ctype.h&gt;</code></a></p>
+<hr />
+<h2 data-number="12.2" id="man-localeconv"><span class="header-section-number">12.2</span> <code>localeconv()</code></h2>
+<p></p>
+<p>Get information about the current locale</p>
+<h3 class="unnumbered unlisted" id="synopsis-53">Synopsis</h3>
+<div class="sourceCode" id="cb240"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb240-1"><a href="locale.html#cb240-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;locale.h&gt;</span></span>
+<span id="cb240-2"><a href="locale.html#cb240-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb240-3"><a href="locale.html#cb240-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> lconv <span class="op">*</span>localeconv<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-53">Description</h3>
+<p>This function just returns a pointer to a <code>struct lconv</code>, but is still a bit of a powerhouse.</p>
+<p>The returned structure contains <em>tons</em> of information about the locale. Here are the fields of <code>struct lconv</code> and their meanings.</p>
+<p>First, some conventions. In the field names, below, a <code>_p_</code> means “positive”, and <code>_n_</code> means “negative”, and <code>int_</code> means “international”. Though a lot of these are type <code>char</code> or <code>char*</code>, most (or the strings they point to) are actually treated as integers<a href="wctype.html#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a>.</p>
+<p>Before we go further, know that <code>CHAR_MAX</code> (from <code>&lt;limits.h&gt;</code>) is the maximum value that can be held in a <code>char</code>. And that many of the following <code>char</code> values use that to indicate the value isn’t available in the given locale.</p>
+<table>
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 68%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>char *mon_decimal_point</code></td>
+<td>Decimal pointer character for money, e.g. <code>"."</code>.</td>
+</tr>
+<tr class="even">
+<td><code>char *mon_thousands_sep</code></td>
+<td>Thousands separator character for money, e.g. <code>","</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>char *mon_grouping</code></td>
+<td>Grouping description for money (see below).</td>
+</tr>
+<tr class="even">
+<td><code>char *positive_sign</code></td>
+<td>Positive sign for money, e.g. <code>"+"</code> or <code>""</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>char *negative_sign</code></td>
+<td>Negative sign for money, e.g. <code>"-"</code>.</td>
+</tr>
+<tr class="even">
+<td><code>char *currency_symbol</code></td>
+<td>Currency symbol, e.g. <code>"$"</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>char frac_digits</code></td>
+<td>When printing monetary amounts, how many digits to print past the decimal point, e.g. <code>2</code>.</td>
+</tr>
+<tr class="even">
+<td><code>char p_cs_precedes</code></td>
+<td><code>1</code> if the <code>currency_symbol</code> comes before the value for a non-negative monetary amount, <code>0</code> if after.</td>
+</tr>
+<tr class="odd">
+<td><code>char n_cs_precedes</code></td>
+<td><code>1</code> if the <code>currency_symbol</code> comes before the value for a negative monetary amount, <code>0</code> if after.</td>
+</tr>
+<tr class="even">
+<td><code>char p_sep_by_space</code></td>
+<td>Determines the separation of the <code>currency symbol</code> from the value for non-negative amounts (see below).</td>
+</tr>
+<tr class="odd">
+<td><code>char n_sep_by_space</code></td>
+<td>Determines the separation of the <code>currency symbol</code> from the value for negative amounts (see below).</td>
+</tr>
+<tr class="even">
+<td><code>char p_sign_posn</code></td>
+<td>Determines the <code>positive_sign</code> position for non-negative values.</td>
+</tr>
+<tr class="odd">
+<td><code>char p_sign_posn</code></td>
+<td>Determines the <code>positive_sign</code> position for negative values.</td>
+</tr>
+<tr class="even">
+<td><code>char *int_curr_symbol</code></td>
+<td>International currency symbol, e.g. <code>"USD "</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>char int_frac_digits</code></td>
+<td>International value for <code>frac_digits</code>.</td>
+</tr>
+<tr class="even">
+<td><code>char int_p_cs_precedes</code></td>
+<td>International value for <code>p_cs_precedes</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>char int_n_cs_precedes</code></td>
+<td>International value for <code>n_cs_precedes</code>.</td>
+</tr>
+<tr class="even">
+<td><code>char int_p_sep_by_space</code></td>
+<td>International value for <code>p_sep_by_space</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>char int_n_sep_by_space</code></td>
+<td>International value for <code>n_sep_by_space</code>.</td>
+</tr>
+<tr class="even">
+<td><code>char int_p_sign_posn</code></td>
+<td>International value for <code>p_sign_posn</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>char int_n_sign_posn</code></td>
+<td>International value for <code>n_sign_posn</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Even though many of these have <code>char</code> type, the value stored within is meant to be accessed as an integer.</p>
+<p>All the <code>sep_by_space</code> variants deal with spacing around the currency sign. Valid values are:</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 75%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><code>0</code></td>
+<td>No space between currency symbol and value.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><code>1</code></td>
+<td>Separate the currency symbol (and sign, if any) from the value with a space.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><code>2</code></td>
+<td>Separate the sign symbol from the currency symbol (if adjacent) with a space, otherwise separate the sign symbol from the value with a space.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>sign_posn</code> variants are determined by the following values:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><code>0</code></td>
+<td>Put parens around the value and the currency symbol.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><code>1</code></td>
+<td>Put the sign string in front of the currency symbol and value.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><code>2</code></td>
+<td>Put the sign string after the currency symbol and value.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><code>3</code></td>
+<td>Put the sign string directly in front of the currency symbol.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><code>4</code></td>
+<td>Put the sign string directly behind the currency symbol.</td>
+</tr>
+</tbody>
+</table>
+<h3 class="unnumbered unlisted" id="return-value-52">Return Value</h3>
+<p>Returns a pointer to the structure containing the locale information.</p>
+<p>The program may not modify this structure.</p>
+<p>Subsequent calls to <code>localeconv()</code> may overwrite this structure, as might calls to <code>setlocale()</code> with <code>LC_ALL</code>, <code>LC_MONETARY</code>, or <code>LC_NUMERIC</code>.</p>
+<h3 class="unnumbered unlisted" id="example-53">Example</h3>
+<p>Here’s a program to print the locale information for the native locale.</p>
+<div class="sourceCode" id="cb241"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb241-1"><a href="locale.html#cb241-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb241-2"><a href="locale.html#cb241-2"></a><span class="pp">#include </span><span class="im">&lt;locale.h&gt;</span></span>
+<span id="cb241-3"><a href="locale.html#cb241-3"></a><span class="pp">#include </span><span class="im">&lt;limits.h&gt;</span><span class="pp">  </span><span class="co">// for CHAR_MAX</span></span>
+<span id="cb241-4"><a href="locale.html#cb241-4"></a></span>
+<span id="cb241-5"><a href="locale.html#cb241-5"></a><span class="dt">void</span> print_grouping<span class="op">(</span><span class="dt">char</span> <span class="op">*</span>mg<span class="op">)</span></span>
+<span id="cb241-6"><a href="locale.html#cb241-6"></a><span class="op">{</span></span>
+<span id="cb241-7"><a href="locale.html#cb241-7"></a>    <span class="dt">int</span> done <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb241-8"><a href="locale.html#cb241-8"></a></span>
+<span id="cb241-9"><a href="locale.html#cb241-9"></a>    <span class="cf">while</span> <span class="op">(!</span>done<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb241-10"><a href="locale.html#cb241-10"></a>        <span class="cf">if</span> <span class="op">(*</span>mg <span class="op">==</span> CHAR_MAX<span class="op">)</span></span>
+<span id="cb241-11"><a href="locale.html#cb241-11"></a>            printf<span class="op">(</span><span class="st">&quot;CHAR_MAX &quot;</span><span class="op">);</span></span>
+<span id="cb241-12"><a href="locale.html#cb241-12"></a>        <span class="cf">else</span></span>
+<span id="cb241-13"><a href="locale.html#cb241-13"></a>            printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%c</span><span class="st"> &quot;</span><span class="op">,</span> <span class="op">*</span>mg <span class="op">+</span> <span class="ch">&#39;0&#39;</span><span class="op">);</span></span>
+<span id="cb241-14"><a href="locale.html#cb241-14"></a>        done <span class="op">=</span> <span class="op">*</span>mg <span class="op">==</span> CHAR_MAX <span class="op">||</span> <span class="op">*</span>mg <span class="op">==</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb241-15"><a href="locale.html#cb241-15"></a>        mg<span class="op">++;</span></span>
+<span id="cb241-16"><a href="locale.html#cb241-16"></a>    <span class="op">}</span></span>
+<span id="cb241-17"><a href="locale.html#cb241-17"></a><span class="op">}</span></span>
+<span id="cb241-18"><a href="locale.html#cb241-18"></a></span>
+<span id="cb241-19"><a href="locale.html#cb241-19"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb241-20"><a href="locale.html#cb241-20"></a><span class="op">{</span></span>
+<span id="cb241-21"><a href="locale.html#cb241-21"></a>    setlocale<span class="op">(</span>LC_ALL<span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb241-22"><a href="locale.html#cb241-22"></a></span>
+<span id="cb241-23"><a href="locale.html#cb241-23"></a>    <span class="kw">struct</span> lconv <span class="op">*</span>lc <span class="op">=</span> localeconv<span class="op">();</span></span>
+<span id="cb241-24"><a href="locale.html#cb241-24"></a></span>
+<span id="cb241-25"><a href="locale.html#cb241-25"></a>    printf<span class="op">(</span><span class="st">&quot;mon_decimal_point : </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>mon_decimal_point<span class="op">);</span></span>
+<span id="cb241-26"><a href="locale.html#cb241-26"></a>    printf<span class="op">(</span><span class="st">&quot;mon_thousands_sep : </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>mon_thousands_sep<span class="op">);</span></span>
+<span id="cb241-27"><a href="locale.html#cb241-27"></a>    printf<span class="op">(</span><span class="st">&quot;mon_grouping      : &quot;</span><span class="op">);</span></span>
+<span id="cb241-28"><a href="locale.html#cb241-28"></a>    print_grouping<span class="op">(</span>lc<span class="op">-&gt;</span>mon_grouping<span class="op">);</span></span>
+<span id="cb241-29"><a href="locale.html#cb241-29"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb241-30"><a href="locale.html#cb241-30"></a>    printf<span class="op">(</span><span class="st">&quot;positive_sign     : </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>positive_sign<span class="op">);</span></span>
+<span id="cb241-31"><a href="locale.html#cb241-31"></a>    printf<span class="op">(</span><span class="st">&quot;negative_sign     : </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>negative_sign<span class="op">);</span></span>
+<span id="cb241-32"><a href="locale.html#cb241-32"></a>    printf<span class="op">(</span><span class="st">&quot;currency_symbol   : </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>currency_symbol<span class="op">);</span></span>
+<span id="cb241-33"><a href="locale.html#cb241-33"></a>    printf<span class="op">(</span><span class="st">&quot;frac_digits       : </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>frac_digits<span class="op">);</span></span>
+<span id="cb241-34"><a href="locale.html#cb241-34"></a>    printf<span class="op">(</span><span class="st">&quot;p_cs_precedes     : </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>p_cs_precedes<span class="op">);</span></span>
+<span id="cb241-35"><a href="locale.html#cb241-35"></a>    printf<span class="op">(</span><span class="st">&quot;n_cs_precedes     : </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>n_cs_precedes<span class="op">);</span></span>
+<span id="cb241-36"><a href="locale.html#cb241-36"></a>    printf<span class="op">(</span><span class="st">&quot;p_sep_by_space    : </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>p_sep_by_space<span class="op">);</span></span>
+<span id="cb241-37"><a href="locale.html#cb241-37"></a>    printf<span class="op">(</span><span class="st">&quot;n_sep_by_space    : </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>n_sep_by_space<span class="op">);</span></span>
+<span id="cb241-38"><a href="locale.html#cb241-38"></a>    printf<span class="op">(</span><span class="st">&quot;p_sign_posn       : </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>p_sign_posn<span class="op">);</span></span>
+<span id="cb241-39"><a href="locale.html#cb241-39"></a>    printf<span class="op">(</span><span class="st">&quot;p_sign_posn       : </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>p_sign_posn<span class="op">);</span></span>
+<span id="cb241-40"><a href="locale.html#cb241-40"></a>    printf<span class="op">(</span><span class="st">&quot;int_curr_symbol   : </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>int_curr_symbol<span class="op">);</span></span>
+<span id="cb241-41"><a href="locale.html#cb241-41"></a>    printf<span class="op">(</span><span class="st">&quot;int_frac_digits   : </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>int_frac_digits<span class="op">);</span></span>
+<span id="cb241-42"><a href="locale.html#cb241-42"></a>    printf<span class="op">(</span><span class="st">&quot;int_p_cs_precedes : </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>int_p_cs_precedes<span class="op">);</span></span>
+<span id="cb241-43"><a href="locale.html#cb241-43"></a>    printf<span class="op">(</span><span class="st">&quot;int_n_cs_precedes : </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>int_n_cs_precedes<span class="op">);</span></span>
+<span id="cb241-44"><a href="locale.html#cb241-44"></a>    printf<span class="op">(</span><span class="st">&quot;int_p_sep_by_space: </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>int_p_sep_by_space<span class="op">);</span></span>
+<span id="cb241-45"><a href="locale.html#cb241-45"></a>    printf<span class="op">(</span><span class="st">&quot;int_n_sep_by_space: </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>int_n_sep_by_space<span class="op">);</span></span>
+<span id="cb241-46"><a href="locale.html#cb241-46"></a>    printf<span class="op">(</span><span class="st">&quot;int_p_sign_posn   : </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>int_p_sign_posn<span class="op">);</span></span>
+<span id="cb241-47"><a href="locale.html#cb241-47"></a>    printf<span class="op">(</span><span class="st">&quot;int_n_sign_posn   : </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> lc<span class="op">-&gt;</span>int_n_sign_posn<span class="op">);</span></span>
+<span id="cb241-48"><a href="locale.html#cb241-48"></a><span class="op">}</span></span></code></pre></div>
+<p>Output on my system:</p>
+<div class="sourceCode" id="cb242"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb242-1"><a href="locale.html#cb242-1" aria-hidden="true" tabindex="-1"></a>mon_decimal_point : .</span>
+<span id="cb242-2"><a href="locale.html#cb242-2" aria-hidden="true" tabindex="-1"></a>mon_thousands_sep : ,</span>
+<span id="cb242-3"><a href="locale.html#cb242-3" aria-hidden="true" tabindex="-1"></a>mon_grouping      : 3 3 0 </span>
+<span id="cb242-4"><a href="locale.html#cb242-4" aria-hidden="true" tabindex="-1"></a>positive_sign     : </span>
+<span id="cb242-5"><a href="locale.html#cb242-5" aria-hidden="true" tabindex="-1"></a>negative_sign     : -</span>
+<span id="cb242-6"><a href="locale.html#cb242-6" aria-hidden="true" tabindex="-1"></a>currency_symbol   : $</span>
+<span id="cb242-7"><a href="locale.html#cb242-7" aria-hidden="true" tabindex="-1"></a>frac_digits       : 2</span>
+<span id="cb242-8"><a href="locale.html#cb242-8" aria-hidden="true" tabindex="-1"></a>p_cs_precedes     : 1</span>
+<span id="cb242-9"><a href="locale.html#cb242-9" aria-hidden="true" tabindex="-1"></a>n_cs_precedes     : 1</span>
+<span id="cb242-10"><a href="locale.html#cb242-10" aria-hidden="true" tabindex="-1"></a>p_sep_by_space    : 0</span>
+<span id="cb242-11"><a href="locale.html#cb242-11" aria-hidden="true" tabindex="-1"></a>n_sep_by_space    : 0</span>
+<span id="cb242-12"><a href="locale.html#cb242-12" aria-hidden="true" tabindex="-1"></a>p_sign_posn       : 1</span>
+<span id="cb242-13"><a href="locale.html#cb242-13" aria-hidden="true" tabindex="-1"></a>p_sign_posn       : 1</span>
+<span id="cb242-14"><a href="locale.html#cb242-14" aria-hidden="true" tabindex="-1"></a>int_curr_symbol   : USD </span>
+<span id="cb242-15"><a href="locale.html#cb242-15" aria-hidden="true" tabindex="-1"></a>int_frac_digits   : 2</span>
+<span id="cb242-16"><a href="locale.html#cb242-16" aria-hidden="true" tabindex="-1"></a>int_p_cs_precedes : 1</span>
+<span id="cb242-17"><a href="locale.html#cb242-17" aria-hidden="true" tabindex="-1"></a>int_n_cs_precedes : 1</span>
+<span id="cb242-18"><a href="locale.html#cb242-18" aria-hidden="true" tabindex="-1"></a>int_p_sep_by_space: 1</span>
+<span id="cb242-19"><a href="locale.html#cb242-19" aria-hidden="true" tabindex="-1"></a>int_n_sep_by_space: 1</span>
+<span id="cb242-20"><a href="locale.html#cb242-20" aria-hidden="true" tabindex="-1"></a>int_p_sign_posn   : 1</span>
+<span id="cb242-21"><a href="locale.html#cb242-21" aria-hidden="true" tabindex="-1"></a>int_n_sign_posn   : 1</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-49">See Also</h3>
+<p><a href="locale.html#man-setlocale"><code>setlocale()</code></a></p>
+<!--
+***
+## `example()` {#man-example}
+
+### Synopsis {.unnumbered .unlisted}
+
+``` {.c}
+```
+
+### Description {.unnumbered .unlisted}
+
+### Return Value {.unnumbered .unlisted}
+
+### Example {.unnumbered .unlisted}
+
+``` {.c .numberLines}
+```
+
+### See Also {.unnumbered .unlisted}
+
+[`example()`](#man-example),
+-->
+<!-- BG_NEW_CHAPTER -->
+<!-- Beej's guide to C
+
+# vim: ts=4:sw=4:nosi:et:tw=72
+-->
+<hr><div style="text-align:center"><span><a href="limits.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="math.html" rel="next">Next</a></span></div></body>
+</html>

@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to C Programming</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body>
+<div style="text-align:center"><span><a href="errno.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="float.html" rel="next">Next</a></span></div><hr>
+<h1 data-number="7" id="fenv"><span class="header-section-number">7</span> <code>&lt;fenv.h&gt;</code> Floating Point Exceptions and Environment</h1>
+<p></p>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="fenv.html#man-feclearexcept"><code>feclearexcept()</code></a></td>
+<td>Clear floating point exceptions</td>
+</tr>
+<tr class="even">
+<td><a href="fenv.html#man-fegetexceptflag"><code>fegetexceptflag()</code></a></td>
+<td>Save the floating point exception flags</td>
+</tr>
+<tr class="odd">
+<td><a href="fenv.html#man-fegetexceptflag"><code>fesetexceptflag()</code></a></td>
+<td>Restore the floating point exception flags</td>
+</tr>
+<tr class="even">
+<td><a href="fenv.html#man-feraiseexcept"><code>feraiseexcept()</code></a></td>
+<td>Raise a floating point exception through software</td>
+</tr>
+<tr class="odd">
+<td><a href="fenv.html#man-fetestexcept"><code>fetestexcept()</code></a></td>
+<td>Test to see if an exception has occurred</td>
+</tr>
+<tr class="even">
+<td><a href="fenv.html#man-fegetround"><code>fegetround()</code></a></td>
+<td>Get the rounding direction</td>
+</tr>
+<tr class="odd">
+<td><a href="fenv.html#man-fegetround"><code>fesetround()</code></a></td>
+<td>Set the rounding direction</td>
+</tr>
+<tr class="even">
+<td><a href="fenv.html#man-fegetenv"><code>fegetenv()</code></a></td>
+<td>Save the entire floating point environment</td>
+</tr>
+<tr class="odd">
+<td><a href="fenv.html#man-fegetenv"><code>fesetenv()</code></a></td>
+<td>Restore the entire floating point environment</td>
+</tr>
+<tr class="even">
+<td><a href="fenv.html#man-feholdexcept"><code>feholdexcept()</code></a></td>
+<td>Save floating point state and install non-stop mode</td>
+</tr>
+<tr class="odd">
+<td><a href="fenv.html#man-feupdateenv"><code>feupdateenv()</code></a></td>
+<td>Restore floating point environment and apply recent exceptions</td>
+</tr>
+</tbody>
+</table>
+<h2 data-number="7.1" id="types-and-macros"><span class="header-section-number">7.1</span> Types and Macros</h2>
+<p>There are two types defined in this header:</p>
+<p> </p>
+<table>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>fenv_t</code></td>
+<td>The entire floating point environment</td>
+</tr>
+<tr class="even">
+<td><code>fexcept_t</code></td>
+<td>A set of floating point exceptions</td>
+</tr>
+</tbody>
+</table>
+<p>The “environment” can be thought of as the status at this moment of the floating point processing system: this includes the exceptions, rounding, etc. It’s an opaque type, so you won’t be able to access it directly, and it must be done through the proper functions.</p>
+<p>If the functions in question exist on your system (they might not be!), then you’ll also have these macros defined to represent different exceptions:</p>
+<p> </p>
+<table>
+<thead>
+<tr class="header">
+<th>Macro</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>FE_DIVBYZERO</code></td>
+<td>Division by zero</td>
+</tr>
+<tr class="even">
+<td><code>FE_INEXACT</code></td>
+<td>Result was not exact, was rounded</td>
+</tr>
+<tr class="odd">
+<td><code>FE_INVALID</code></td>
+<td>Domain error</td>
+</tr>
+<tr class="even">
+<td><code>FE_OVERFLOW</code></td>
+<td>Numeric overflow</td>
+</tr>
+<tr class="odd">
+<td><code>FE_UNDERFLOW</code></td>
+<td>Numeric underflow</td>
+</tr>
+<tr class="even">
+<td><code>FE_ALL_EXCEPT</code></td>
+<td>All of the above combined</td>
+</tr>
+</tbody>
+</table>
+<p>The idea is that you can bitwise-OR these together to represent multiple exceptions, e.g. <code>FE_INVALID|FE_OVERFLOW</code>.</p>
+<p>The functions, below, that have an <code>excepts</code> parameter will take these values.</p>
+<p>See <a href="math.html#math"><code>&lt;math.h&gt;</code></a> for which functions raise which exceptions and when.</p>
+<h2 data-number="7.2" id="pragmas"><span class="header-section-number">7.2</span> Pragmas</h2>
+<p>Normally C is free to optimize all kinds of stuff that might cause the flags to not look like you might expect. So if you’re going to use this stuff, be sure to set this pragma:</p>
+<p></p>
+<div class="sourceCode" id="cb190"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb190-1"><a href="fenv.html#cb190-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma STDC FENV_ACCESS ON</span></span></code></pre></div>
+<p>If you do this at global scope, it remains in effect until you turn it off:</p>
+<div class="sourceCode" id="cb191"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb191-1"><a href="fenv.html#cb191-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#pragma STDC FENV_ACCESS OFF</span></span></code></pre></div>
+<p>If you do it in block scope, it has to come before any statements or declarations. In this case, it has effect until the block ends (or until it is explicitly turned off.)</p>
+<p><strong>A caveat</strong>: this program isn’t supported on either of the compilers I have (gcc and clang) as of this writing, so though I have built the code, below, it’s not particularly well-tested.</p>
+<hr />
+<h2 data-number="7.3" id="man-feclearexcept"><span class="header-section-number">7.3</span> <code>feclearexcept()</code></h2>
+<p></p>
+<p>Clear floating point exceptions</p>
+<h3 class="unnumbered unlisted" id="synopsis-40">Synopsis</h3>
+<div class="sourceCode" id="cb192"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb192-1"><a href="fenv.html#cb192-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb192-2"><a href="fenv.html#cb192-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb192-3"><a href="fenv.html#cb192-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> feclearexcept<span class="op">(</span><span class="dt">int</span> excepts<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-40">Description</h3>
+<p>If a floating point exception has occurred, this function can clear it.</p>
+<p>Set <code>excepts</code> to a bitwise-OR list of exceptions to clear.</p>
+<p>Passing <code>0</code> has no effect.</p>
+<h3 class="unnumbered unlisted" id="return-value-39">Return Value</h3>
+<p>Returns <code>0</code> on success and non-zero on failure.</p>
+<h3 class="unnumbered unlisted" id="example-40">Example</h3>
+<div class="sourceCode" id="cb193"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb193-1"><a href="fenv.html#cb193-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb193-2"><a href="fenv.html#cb193-2"></a><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></span>
+<span id="cb193-3"><a href="fenv.html#cb193-3"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb193-4"><a href="fenv.html#cb193-4"></a></span>
+<span id="cb193-5"><a href="fenv.html#cb193-5"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb193-6"><a href="fenv.html#cb193-6"></a><span class="op">{</span></span>
+<span id="cb193-7"><a href="fenv.html#cb193-7"></a>    <span class="pp">#pragma STDC FENV_ACCESS ON </span></span>
+<span id="cb193-8"><a href="fenv.html#cb193-8"></a></span>
+<span id="cb193-9"><a href="fenv.html#cb193-9"></a>    <span class="dt">double</span> f <span class="op">=</span> sqrt<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb193-10"><a href="fenv.html#cb193-10"></a></span>
+<span id="cb193-11"><a href="fenv.html#cb193-11"></a>    <span class="dt">int</span> r <span class="op">=</span> feclearexcept<span class="op">(</span>FE_INVALID<span class="op">);</span></span>
+<span id="cb193-12"><a href="fenv.html#cb193-12"></a></span>
+<span id="cb193-13"><a href="fenv.html#cb193-13"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d</span><span class="st"> </span><span class="sc">%f\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">,</span> f<span class="op">);</span></span>
+<span id="cb193-14"><a href="fenv.html#cb193-14"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-37">See Also</h3>
+<p><a href="fenv.html#man-feraiseexcept"><code>feraiseexcept()</code></a>, <a href="fenv.html#man-fetestexcept"><code>fetestexcept()</code></a></p>
+<hr />
+<h2 data-number="7.4" id="man-fegetexceptflag"><span class="header-section-number">7.4</span> <code>fegetexceptflag()</code> <code>fesetexceptflag()</code></h2>
+<p> </p>
+<p>Save or restore the floating point exception flags</p>
+<h3 class="unnumbered unlisted" id="synopsis-41">Synopsis</h3>
+<div class="sourceCode" id="cb194"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb194-1"><a href="fenv.html#cb194-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb194-2"><a href="fenv.html#cb194-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb194-3"><a href="fenv.html#cb194-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> fegetexceptflag<span class="op">(</span>fexcept_t <span class="op">*</span>flagp<span class="op">,</span> <span class="dt">int</span> excepts<span class="op">);</span></span>
+<span id="cb194-4"><a href="fenv.html#cb194-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb194-5"><a href="fenv.html#cb194-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> fesetexceptflag<span class="op">(</span>fexcept_t <span class="op">*</span>flagp<span class="op">,</span> <span class="dt">int</span> excepts<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-41">Description</h3>
+<p>Use these functions to save or restore the current floating point environment in a variable.</p>
+<p>Set <code>excepts</code> to the set of exceptions you want to save or restore the state of. Setting it to <code>FE_ALL_EXCEPT</code> will save or restore the entire state.</p>
+<p>Note that <code>fexcept_t</code> is an opaque type—you don’t know what’s in it.</p>
+<p><code>excepts</code> can be set to zero for no effect.</p>
+<h3 class="unnumbered unlisted" id="return-value-40">Return Value</h3>
+<p>Returns <code>0</code> on success or if <code>excepts</code> is zero.</p>
+<p>Returns non-zero on failure.</p>
+<h3 class="unnumbered unlisted" id="example-41">Example</h3>
+<p>This program saves the state (before any error has happened), then deliberately causes a domain error by trying to take <span class="math inline">\(\sqrt{-1}\)</span>.</p>
+<p>After that, it restores the floating point state to before the error had occurred, thereby clearing it.</p>
+<div class="sourceCode" id="cb195"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb195-1"><a href="fenv.html#cb195-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb195-2"><a href="fenv.html#cb195-2"></a><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></span>
+<span id="cb195-3"><a href="fenv.html#cb195-3"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb195-4"><a href="fenv.html#cb195-4"></a></span>
+<span id="cb195-5"><a href="fenv.html#cb195-5"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb195-6"><a href="fenv.html#cb195-6"></a><span class="op">{</span></span>
+<span id="cb195-7"><a href="fenv.html#cb195-7"></a>    <span class="pp">#pragma STDC FENV_ACCESS ON </span></span>
+<span id="cb195-8"><a href="fenv.html#cb195-8"></a></span>
+<span id="cb195-9"><a href="fenv.html#cb195-9"></a>    fexcept_t flag<span class="op">;</span></span>
+<span id="cb195-10"><a href="fenv.html#cb195-10"></a></span>
+<span id="cb195-11"><a href="fenv.html#cb195-11"></a>    fegetexceptflag<span class="op">(&amp;</span>flag<span class="op">,</span> FE_ALL_EXCEPT<span class="op">);</span>  <span class="co">// Save state</span></span>
+<span id="cb195-12"><a href="fenv.html#cb195-12"></a></span>
+<span id="cb195-13"><a href="fenv.html#cb195-13"></a>    <span class="dt">double</span> f <span class="op">=</span> sqrt<span class="op">(-</span><span class="dv">1</span><span class="op">);</span>                    <span class="co">// I imagine this won&#39;t work</span></span>
+<span id="cb195-14"><a href="fenv.html#cb195-14"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%f\n</span><span class="st">&quot;</span><span class="op">,</span> f<span class="op">);</span>                      <span class="co">// &quot;nan&quot;</span></span>
+<span id="cb195-15"><a href="fenv.html#cb195-15"></a></span>
+<span id="cb195-16"><a href="fenv.html#cb195-16"></a>    <span class="cf">if</span> <span class="op">(</span>fetestexcept<span class="op">(</span>FE_INVALID<span class="op">))</span></span>
+<span id="cb195-17"><a href="fenv.html#cb195-17"></a>        printf<span class="op">(</span><span class="st">&quot;1: Domain error</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span>        <span class="co">// This prints!</span></span>
+<span id="cb195-18"><a href="fenv.html#cb195-18"></a>    <span class="cf">else</span></span>
+<span id="cb195-19"><a href="fenv.html#cb195-19"></a>        printf<span class="op">(</span><span class="st">&quot;1: No domain error</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb195-20"><a href="fenv.html#cb195-20"></a></span>
+<span id="cb195-21"><a href="fenv.html#cb195-21"></a>    fesetexceptflag<span class="op">(&amp;</span>flag<span class="op">,</span> FE_ALL_EXCEPT<span class="op">);</span>  <span class="co">// Restore to before error</span></span>
+<span id="cb195-22"><a href="fenv.html#cb195-22"></a></span>
+<span id="cb195-23"><a href="fenv.html#cb195-23"></a>    <span class="cf">if</span> <span class="op">(</span>fetestexcept<span class="op">(</span>FE_INVALID<span class="op">))</span></span>
+<span id="cb195-24"><a href="fenv.html#cb195-24"></a>        printf<span class="op">(</span><span class="st">&quot;2: Domain error</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb195-25"><a href="fenv.html#cb195-25"></a>    <span class="cf">else</span></span>
+<span id="cb195-26"><a href="fenv.html#cb195-26"></a>        printf<span class="op">(</span><span class="st">&quot;2: No domain error</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span>     <span class="co">// This prints!</span></span>
+<span id="cb195-27"><a href="fenv.html#cb195-27"></a><span class="op">}</span></span></code></pre></div>
+<!--
+### See Also {.unnumbered .unlisted}
+
+[`example()`](#man-example),
+-->
+<hr />
+<h2 data-number="7.5" id="man-feraiseexcept"><span class="header-section-number">7.5</span> <code>feraiseexcept()</code></h2>
+<p></p>
+<p>Raise a floating point exception through software</p>
+<h3 class="unnumbered unlisted" id="synopsis-42">Synopsis</h3>
+<div class="sourceCode" id="cb196"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb196-1"><a href="fenv.html#cb196-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb196-2"><a href="fenv.html#cb196-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb196-3"><a href="fenv.html#cb196-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> feraiseexcept<span class="op">(</span><span class="dt">int</span> excepts<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-42">Description</h3>
+<p>This attempts to raise a floating point exception as if it had happened.</p>
+<p>You can specify multiple exceptions to raise.</p>
+<p>If either <code>FE_UNDERFLOW</code> or <code>FE_OVERFLOW</code> is raised, C <em>might</em> also raise <code>FE_INEXACT</code>.</p>
+<p>If either <code>FE_UNDERFLOW</code> or <code>FE_OVERFLOW</code> is raised at the same time as <code>FE_INEXACT</code>, then <code>FE_UNDERFLOW</code> or <code>FE_OVERFLOW</code> will be raised <em>before</em> <code>FE_INEXACT</code> behind the scenes.</p>
+<p>The order the other exceptions are raised is undefined.</p>
+<h3 class="unnumbered unlisted" id="return-value-41">Return Value</h3>
+<p>Returns <code>0</code> if all the exceptions were raised or if <code>excepts</code> is <code>0</code>.</p>
+<p>Returns non-zero otherwise.</p>
+<h3 class="unnumbered unlisted" id="example-42">Example</h3>
+<p>This code deliberately raises a division-by-zero exception and then detects it.</p>
+<div class="sourceCode" id="cb197"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb197-1"><a href="fenv.html#cb197-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb197-2"><a href="fenv.html#cb197-2"></a><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></span>
+<span id="cb197-3"><a href="fenv.html#cb197-3"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb197-4"><a href="fenv.html#cb197-4"></a></span>
+<span id="cb197-5"><a href="fenv.html#cb197-5"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb197-6"><a href="fenv.html#cb197-6"></a><span class="op">{</span></span>
+<span id="cb197-7"><a href="fenv.html#cb197-7"></a>    <span class="pp">#pragma STDC FENV_ACCESS ON </span></span>
+<span id="cb197-8"><a href="fenv.html#cb197-8"></a></span>
+<span id="cb197-9"><a href="fenv.html#cb197-9"></a>    feraiseexcept<span class="op">(</span>FE_DIVBYZERO<span class="op">);</span></span>
+<span id="cb197-10"><a href="fenv.html#cb197-10"></a></span>
+<span id="cb197-11"><a href="fenv.html#cb197-11"></a>    <span class="cf">if</span> <span class="op">(</span>fetestexcept<span class="op">(</span>FE_DIVBYZERO<span class="op">)</span> <span class="op">==</span> FE_DIVBYZERO<span class="op">)</span></span>
+<span id="cb197-12"><a href="fenv.html#cb197-12"></a>        printf<span class="op">(</span><span class="st">&quot;Detected division by zero</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span>  <span class="co">// This prints!!</span></span>
+<span id="cb197-13"><a href="fenv.html#cb197-13"></a>    <span class="cf">else</span></span>
+<span id="cb197-14"><a href="fenv.html#cb197-14"></a>        printf<span class="op">(</span><span class="st">&quot;This is fine.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb197-15"><a href="fenv.html#cb197-15"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-38">See Also</h3>
+<p><a href="fenv.html#man-feclearexcept"><code>feclearexcept()</code></a>, <a href="fenv.html#man-fetestexcept"><code>fetestexcept()</code></a></p>
+<hr />
+<h2 data-number="7.6" id="man-fetestexcept"><span class="header-section-number">7.6</span> <code>fetestexcept()</code></h2>
+<p></p>
+<p>Test to see if an exception has occurred</p>
+<h3 class="unnumbered unlisted" id="synopsis-43">Synopsis</h3>
+<div class="sourceCode" id="cb198"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb198-1"><a href="fenv.html#cb198-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb198-2"><a href="fenv.html#cb198-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb198-3"><a href="fenv.html#cb198-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> fetestexcept<span class="op">(</span><span class="dt">int</span> excepts<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-43">Description</h3>
+<p>Put the exceptions you want to test in <code>excepts</code>, bitwise-ORing them together.</p>
+<h3 class="unnumbered unlisted" id="return-value-42">Return Value</h3>
+<p>Returns the bitwise-OR of the exceptions that have been raised.</p>
+<h3 class="unnumbered unlisted" id="example-43">Example</h3>
+<p>This code deliberately raises a division-by-zero exception and then detects it.</p>
+<div class="sourceCode" id="cb199"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb199-1"><a href="fenv.html#cb199-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb199-2"><a href="fenv.html#cb199-2"></a><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></span>
+<span id="cb199-3"><a href="fenv.html#cb199-3"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb199-4"><a href="fenv.html#cb199-4"></a></span>
+<span id="cb199-5"><a href="fenv.html#cb199-5"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb199-6"><a href="fenv.html#cb199-6"></a><span class="op">{</span></span>
+<span id="cb199-7"><a href="fenv.html#cb199-7"></a>    <span class="pp">#pragma STDC FENV_ACCESS ON </span></span>
+<span id="cb199-8"><a href="fenv.html#cb199-8"></a></span>
+<span id="cb199-9"><a href="fenv.html#cb199-9"></a>    feraiseexcept<span class="op">(</span>FE_DIVBYZERO<span class="op">);</span></span>
+<span id="cb199-10"><a href="fenv.html#cb199-10"></a></span>
+<span id="cb199-11"><a href="fenv.html#cb199-11"></a>    <span class="cf">if</span> <span class="op">(</span>fetestexcept<span class="op">(</span>FE_DIVBYZERO<span class="op">)</span> <span class="op">==</span> FE_DIVBYZERO<span class="op">)</span></span>
+<span id="cb199-12"><a href="fenv.html#cb199-12"></a>        printf<span class="op">(</span><span class="st">&quot;Detected division by zero</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span>  <span class="co">// This prints!!</span></span>
+<span id="cb199-13"><a href="fenv.html#cb199-13"></a>    <span class="cf">else</span></span>
+<span id="cb199-14"><a href="fenv.html#cb199-14"></a>        printf<span class="op">(</span><span class="st">&quot;This is fine.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb199-15"><a href="fenv.html#cb199-15"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-39">See Also</h3>
+<p><a href="fenv.html#man-feclearexcept"><code>feclearexcept()</code></a>, <a href="fenv.html#man-feraiseexcept"><code>feraiseexcept()</code></a></p>
+<hr />
+<h2 data-number="7.7" id="man-fegetround"><span class="header-section-number">7.7</span> <code>fegetround()</code> <code>fesetround()</code></h2>
+<p> </p>
+<p>Get or set the rounding direction</p>
+<h3 class="unnumbered unlisted" id="synopsis-44">Synopsis</h3>
+<div class="sourceCode" id="cb200"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb200-1"><a href="fenv.html#cb200-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb200-2"><a href="fenv.html#cb200-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb200-3"><a href="fenv.html#cb200-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> fegetround<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span>
+<span id="cb200-4"><a href="fenv.html#cb200-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb200-5"><a href="fenv.html#cb200-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> fesetround<span class="op">(</span><span class="dt">int</span> round<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-44">Description</h3>
+<p>Use these to get or set the rounding direction used by a variety of math functions.</p>
+<p>Basically when a function “rounds” a number, it wants to know how to do it. By default, it does it how we tend to expect: if the fractional part is less than 0.5, it rounds down closer to zero, otherwise up farther from zero.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Macro</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>FE_TONEAREST</code></td>
+<td>Round to the nearest whole number, the default</td>
+</tr>
+<tr class="even">
+<td><code>FE_TOWARDZERO</code></td>
+<td>Round toward zero always</td>
+</tr>
+<tr class="odd">
+<td><code>FE_DOWNWARD</code></td>
+<td>Round toward the next lesser whole number</td>
+</tr>
+<tr class="even">
+<td><code>FE_UPWARD</code></td>
+<td>Round toward the next greater whole number</td>
+</tr>
+</tbody>
+</table>
+<p>Some implementations don’t support rounding. If it does, the above macros will be defined.</p>
+<p>Note that the <code>round()</code> function is always “to-nearest” and doesn’t pay attention to the rounding mode.</p>
+<h3 class="unnumbered unlisted" id="return-value-43">Return Value</h3>
+<p><code>fegetround()</code> returns the current rounding direction, or a negative value on error.</p>
+<p><code>fesetround()</code> returns zero on success, or non-zero on failure.</p>
+<h3 class="unnumbered unlisted" id="example-44">Example</h3>
+<p>This rounds some numbers</p>
+<div class="sourceCode" id="cb201"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb201-1"><a href="fenv.html#cb201-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb201-2"><a href="fenv.html#cb201-2"></a><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></span>
+<span id="cb201-3"><a href="fenv.html#cb201-3"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb201-4"><a href="fenv.html#cb201-4"></a></span>
+<span id="cb201-5"><a href="fenv.html#cb201-5"></a><span class="co">// Helper function to print the rounding mode</span></span>
+<span id="cb201-6"><a href="fenv.html#cb201-6"></a><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>rounding_mode_str<span class="op">(</span><span class="dt">int</span> mode<span class="op">)</span></span>
+<span id="cb201-7"><a href="fenv.html#cb201-7"></a><span class="op">{</span></span>
+<span id="cb201-8"><a href="fenv.html#cb201-8"></a>    <span class="cf">switch</span> <span class="op">(</span>mode<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb201-9"><a href="fenv.html#cb201-9"></a>        <span class="cf">case</span> FE_TONEAREST<span class="op">:</span>  <span class="cf">return</span> <span class="st">&quot;FE_TONEAREST&quot;</span><span class="op">;</span></span>
+<span id="cb201-10"><a href="fenv.html#cb201-10"></a>        <span class="cf">case</span> FE_TOWARDZERO<span class="op">:</span> <span class="cf">return</span> <span class="st">&quot;FE_TOWARDZERO&quot;</span><span class="op">;</span></span>
+<span id="cb201-11"><a href="fenv.html#cb201-11"></a>        <span class="cf">case</span> FE_DOWNWARD<span class="op">:</span>   <span class="cf">return</span> <span class="st">&quot;FE_DOWNWARD&quot;</span><span class="op">;</span></span>
+<span id="cb201-12"><a href="fenv.html#cb201-12"></a>        <span class="cf">case</span> FE_UPWARD<span class="op">:</span>     <span class="cf">return</span> <span class="st">&quot;FE_UPWARD&quot;</span><span class="op">;</span></span>
+<span id="cb201-13"><a href="fenv.html#cb201-13"></a>    <span class="op">}</span></span>
+<span id="cb201-14"><a href="fenv.html#cb201-14"></a></span>
+<span id="cb201-15"><a href="fenv.html#cb201-15"></a>    <span class="cf">return</span> <span class="st">&quot;Unknown&quot;</span><span class="op">;</span></span>
+<span id="cb201-16"><a href="fenv.html#cb201-16"></a><span class="op">}</span></span>
+<span id="cb201-17"><a href="fenv.html#cb201-17"></a></span>
+<span id="cb201-18"><a href="fenv.html#cb201-18"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb201-19"><a href="fenv.html#cb201-19"></a><span class="op">{</span></span>
+<span id="cb201-20"><a href="fenv.html#cb201-20"></a>    <span class="pp">#pragma STDC FENV_ACCESS ON </span></span>
+<span id="cb201-21"><a href="fenv.html#cb201-21"></a></span>
+<span id="cb201-22"><a href="fenv.html#cb201-22"></a>    <span class="dt">int</span> rm<span class="op">;</span></span>
+<span id="cb201-23"><a href="fenv.html#cb201-23"></a></span>
+<span id="cb201-24"><a href="fenv.html#cb201-24"></a>    rm <span class="op">=</span> fegetround<span class="op">();</span></span>
+<span id="cb201-25"><a href="fenv.html#cb201-25"></a></span>
+<span id="cb201-26"><a href="fenv.html#cb201-26"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> rounding_mode_str<span class="op">(</span>rm<span class="op">));</span>    <span class="co">// Print current mode</span></span>
+<span id="cb201-27"><a href="fenv.html#cb201-27"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%f</span><span class="st"> </span><span class="sc">%f\n</span><span class="st">&quot;</span><span class="op">,</span> rint<span class="op">(</span><span class="fl">2.1</span><span class="op">),</span> rint<span class="op">(</span><span class="fl">2.7</span><span class="op">));</span>  <span class="co">// Try rounding</span></span>
+<span id="cb201-28"><a href="fenv.html#cb201-28"></a></span>
+<span id="cb201-29"><a href="fenv.html#cb201-29"></a>    fesetround<span class="op">(</span>FE_TOWARDZERO<span class="op">);</span>                <span class="co">// Set the mode</span></span>
+<span id="cb201-30"><a href="fenv.html#cb201-30"></a></span>
+<span id="cb201-31"><a href="fenv.html#cb201-31"></a>    rm <span class="op">=</span> fegetround<span class="op">();</span></span>
+<span id="cb201-32"><a href="fenv.html#cb201-32"></a></span>
+<span id="cb201-33"><a href="fenv.html#cb201-33"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> rounding_mode_str<span class="op">(</span>rm<span class="op">));</span>    <span class="co">// Print it</span></span>
+<span id="cb201-34"><a href="fenv.html#cb201-34"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%f</span><span class="st"> </span><span class="sc">%f\n</span><span class="st">&quot;</span><span class="op">,</span> rint<span class="op">(</span><span class="fl">2.1</span><span class="op">),</span> rint<span class="op">(</span><span class="fl">2.7</span><span class="op">));</span>  <span class="co">// Try it now!</span></span>
+<span id="cb201-35"><a href="fenv.html#cb201-35"></a><span class="op">}</span></span></code></pre></div>
+<p>Output:</p>
+<div class="sourceCode" id="cb202"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb202-1"><a href="fenv.html#cb202-1" aria-hidden="true" tabindex="-1"></a>FE_TONEAREST</span>
+<span id="cb202-2"><a href="fenv.html#cb202-2" aria-hidden="true" tabindex="-1"></a>2.000000 3.000000</span>
+<span id="cb202-3"><a href="fenv.html#cb202-3" aria-hidden="true" tabindex="-1"></a>FE_TOWARDZERO</span>
+<span id="cb202-4"><a href="fenv.html#cb202-4" aria-hidden="true" tabindex="-1"></a>2.000000 2.000000</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-40">See Also</h3>
+<p><a href="math.html#man-nearbyint"><code>nearbyint()</code></a>, <a href="math.html#man-nearbyint"><code>nearbyintf()</code></a>, <a href="math.html#man-nearbyint"><code>nearbyintl()</code></a>, <a href="math.html#man-rint"><code>rint()</code></a>, <a href="math.html#man-rint"><code>rintf()</code></a>, <a href="math.html#man-rint"><code>rintl()</code></a>, <a href="math.html#man-lrint"><code>lrint()</code></a>, <a href="math.html#man-lrint"><code>lrintf()</code></a>, <a href="math.html#man-lrint"><code>lrintl()</code></a>, <a href="math.html#man-lrint"><code>llrint()</code></a>, <a href="math.html#man-lrint"><code>llrintf()</code></a>, <a href="math.html#man-lrint"><code>llrintl()</code></a></p>
+<hr />
+<h2 data-number="7.8" id="man-fegetenv"><span class="header-section-number">7.8</span> <code>fegetenv()</code> <code>fesetenv()</code></h2>
+<p> </p>
+<p>Save or restore the entire floating point environment</p>
+<h3 class="unnumbered unlisted" id="synopsis-45">Synopsis</h3>
+<div class="sourceCode" id="cb203"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb203-1"><a href="fenv.html#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb203-2"><a href="fenv.html#cb203-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb203-3"><a href="fenv.html#cb203-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> fegetenv<span class="op">(</span>fenv_t <span class="op">*</span>envp<span class="op">);</span></span>
+<span id="cb203-4"><a href="fenv.html#cb203-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> fesetenv<span class="op">(</span><span class="dt">const</span> fenv_t <span class="op">*</span>envp<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-45">Description</h3>
+<p>You can save the environment (exceptions, rounding direction, etc.) by calling <code>fegetenv()</code> and restore it with <code>fesetenv()</code>.</p>
+<p>Use this if you want to restore the state after a function call, i.e. hide from the caller that some floating point exceptions or changes occurred.</p>
+<h3 class="unnumbered unlisted" id="return-value-44">Return Value</h3>
+<p><code>fegetenv()</code> and <code>fesetenv()</code> return <code>0</code> on success, and non-zero otherwise.</p>
+<h3 class="unnumbered unlisted" id="example-45">Example</h3>
+<p>This example saves the environment, messes with the rounding and exceptions, then restores it. After the environment is restored, we see that the rounding is back to default and the exception is cleared.</p>
+<div class="sourceCode" id="cb204"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb204-1"><a href="fenv.html#cb204-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb204-2"><a href="fenv.html#cb204-2"></a><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></span>
+<span id="cb204-3"><a href="fenv.html#cb204-3"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb204-4"><a href="fenv.html#cb204-4"></a></span>
+<span id="cb204-5"><a href="fenv.html#cb204-5"></a><span class="dt">void</span> show_status<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb204-6"><a href="fenv.html#cb204-6"></a><span class="op">{</span></span>
+<span id="cb204-7"><a href="fenv.html#cb204-7"></a>    printf<span class="op">(</span><span class="st">&quot;Rounding is FE_TOWARDZERO: </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span></span>
+<span id="cb204-8"><a href="fenv.html#cb204-8"></a>           fegetround<span class="op">()</span> <span class="op">==</span> FE_TOWARDZERO<span class="op">);</span></span>
+<span id="cb204-9"><a href="fenv.html#cb204-9"></a></span>
+<span id="cb204-10"><a href="fenv.html#cb204-10"></a>    printf<span class="op">(</span><span class="st">&quot;FE_DIVBYZERO is set: </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span></span>
+<span id="cb204-11"><a href="fenv.html#cb204-11"></a>           fetestexcept<span class="op">(</span>FE_DIVBYZERO<span class="op">)</span> <span class="op">!=</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb204-12"><a href="fenv.html#cb204-12"></a><span class="op">}</span></span>
+<span id="cb204-13"><a href="fenv.html#cb204-13"></a></span>
+<span id="cb204-14"><a href="fenv.html#cb204-14"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb204-15"><a href="fenv.html#cb204-15"></a><span class="op">{</span></span>
+<span id="cb204-16"><a href="fenv.html#cb204-16"></a>    <span class="pp">#pragma STDC FENV_ACCESS ON </span></span>
+<span id="cb204-17"><a href="fenv.html#cb204-17"></a></span>
+<span id="cb204-18"><a href="fenv.html#cb204-18"></a>    fenv_t env<span class="op">;</span></span>
+<span id="cb204-19"><a href="fenv.html#cb204-19"></a></span>
+<span id="cb204-20"><a href="fenv.html#cb204-20"></a>    fegetenv<span class="op">(&amp;</span>env<span class="op">);</span>  <span class="co">// Save the environment</span></span>
+<span id="cb204-21"><a href="fenv.html#cb204-21"></a></span>
+<span id="cb204-22"><a href="fenv.html#cb204-22"></a>    fesetround<span class="op">(</span>FE_TOWARDZERO<span class="op">);</span>    <span class="co">// Change rounding</span></span>
+<span id="cb204-23"><a href="fenv.html#cb204-23"></a>    feraiseexcept<span class="op">(</span>FE_DIVBYZERO<span class="op">);</span>  <span class="co">// Raise an exception</span></span>
+<span id="cb204-24"><a href="fenv.html#cb204-24"></a></span>
+<span id="cb204-25"><a href="fenv.html#cb204-25"></a>    show_status<span class="op">();</span></span>
+<span id="cb204-26"><a href="fenv.html#cb204-26"></a></span>
+<span id="cb204-27"><a href="fenv.html#cb204-27"></a>    fesetenv<span class="op">(&amp;</span>env<span class="op">);</span>  <span class="co">// Restore the environment</span></span>
+<span id="cb204-28"><a href="fenv.html#cb204-28"></a></span>
+<span id="cb204-29"><a href="fenv.html#cb204-29"></a>    show_status<span class="op">();</span></span>
+<span id="cb204-30"><a href="fenv.html#cb204-30"></a><span class="op">}</span></span></code></pre></div>
+<p>Output:</p>
+<div class="sourceCode" id="cb205"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb205-1"><a href="fenv.html#cb205-1" aria-hidden="true" tabindex="-1"></a>Rounding is FE_TOWARDZERO: 1</span>
+<span id="cb205-2"><a href="fenv.html#cb205-2" aria-hidden="true" tabindex="-1"></a>FE_DIVBYZERO is set: 1</span>
+<span id="cb205-3"><a href="fenv.html#cb205-3" aria-hidden="true" tabindex="-1"></a>Rounding is FE_TOWARDZERO: 0</span>
+<span id="cb205-4"><a href="fenv.html#cb205-4" aria-hidden="true" tabindex="-1"></a>FE_DIVBYZERO is set: 0</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-41">See Also</h3>
+<p><a href="fenv.html#man-feholdexcept"><code>feholdexcept()</code></a>, <a href="fenv.html#man-feupdateenv"><code>feupdateenv()</code></a></p>
+<hr />
+<h2 data-number="7.9" id="man-feholdexcept"><span class="header-section-number">7.9</span> <code>feholdexcept()</code></h2>
+<p></p>
+<p>Save floating point state and install non-stop mode</p>
+<h3 class="unnumbered unlisted" id="synopsis-46">Synopsis</h3>
+<div class="sourceCode" id="cb206"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb206-1"><a href="fenv.html#cb206-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb206-2"><a href="fenv.html#cb206-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb206-3"><a href="fenv.html#cb206-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> feholdexcept<span class="op">(</span>fenv_t <span class="op">*</span>envp<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-46">Description</h3>
+<p>This is just like <code>fegetenv()</code> except that it updates the current environment to be in <em>non-stop</em> mode, namely it won’t halt on any exceptions.</p>
+<p>It remains in this state until you restore the state with <code>fesetenv()</code> or <code>feupdateenv()</code>.</p>
+<h3 class="unnumbered unlisted" id="return-value-45">Return Value</h3>
+<h3 class="unnumbered unlisted" id="example-46">Example</h3>
+<p>This example saves the environment and goes into non-stop mode, messes with the rounding and exceptions, then restores it. After the environment is restored, we see that the rounding is back to default and the exception is cleared. We’ll also be out of non-stop mode.</p>
+<div class="sourceCode" id="cb207"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb207-1"><a href="fenv.html#cb207-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb207-2"><a href="fenv.html#cb207-2"></a><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></span>
+<span id="cb207-3"><a href="fenv.html#cb207-3"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb207-4"><a href="fenv.html#cb207-4"></a></span>
+<span id="cb207-5"><a href="fenv.html#cb207-5"></a><span class="dt">void</span> show_status<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb207-6"><a href="fenv.html#cb207-6"></a><span class="op">{</span></span>
+<span id="cb207-7"><a href="fenv.html#cb207-7"></a>    printf<span class="op">(</span><span class="st">&quot;Rounding is FE_TOWARDZERO: </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span></span>
+<span id="cb207-8"><a href="fenv.html#cb207-8"></a>           fegetround<span class="op">()</span> <span class="op">==</span> FE_TOWARDZERO<span class="op">);</span></span>
+<span id="cb207-9"><a href="fenv.html#cb207-9"></a></span>
+<span id="cb207-10"><a href="fenv.html#cb207-10"></a>    printf<span class="op">(</span><span class="st">&quot;FE_DIVBYZERO is set: </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span></span>
+<span id="cb207-11"><a href="fenv.html#cb207-11"></a>           fetestexcept<span class="op">(</span>FE_DIVBYZERO<span class="op">)</span> <span class="op">!=</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb207-12"><a href="fenv.html#cb207-12"></a><span class="op">}</span></span>
+<span id="cb207-13"><a href="fenv.html#cb207-13"></a></span>
+<span id="cb207-14"><a href="fenv.html#cb207-14"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb207-15"><a href="fenv.html#cb207-15"></a><span class="op">{</span></span>
+<span id="cb207-16"><a href="fenv.html#cb207-16"></a>    <span class="pp">#pragma STDC FENV_ACCESS ON </span></span>
+<span id="cb207-17"><a href="fenv.html#cb207-17"></a></span>
+<span id="cb207-18"><a href="fenv.html#cb207-18"></a>    fenv_t env<span class="op">;</span></span>
+<span id="cb207-19"><a href="fenv.html#cb207-19"></a></span>
+<span id="cb207-20"><a href="fenv.html#cb207-20"></a>    <span class="co">// Save the environment and don&#39;t stop on exceptions</span></span>
+<span id="cb207-21"><a href="fenv.html#cb207-21"></a>    feholdexcept<span class="op">(&amp;</span>env<span class="op">);</span></span>
+<span id="cb207-22"><a href="fenv.html#cb207-22"></a></span>
+<span id="cb207-23"><a href="fenv.html#cb207-23"></a>    fesetround<span class="op">(</span>FE_TOWARDZERO<span class="op">);</span>    <span class="co">// Change rounding</span></span>
+<span id="cb207-24"><a href="fenv.html#cb207-24"></a>    feraiseexcept<span class="op">(</span>FE_DIVBYZERO<span class="op">);</span>  <span class="co">// Raise an exception</span></span>
+<span id="cb207-25"><a href="fenv.html#cb207-25"></a></span>
+<span id="cb207-26"><a href="fenv.html#cb207-26"></a>    show_status<span class="op">();</span></span>
+<span id="cb207-27"><a href="fenv.html#cb207-27"></a></span>
+<span id="cb207-28"><a href="fenv.html#cb207-28"></a>    fesetenv<span class="op">(&amp;</span>env<span class="op">);</span>  <span class="co">// Restore the environment</span></span>
+<span id="cb207-29"><a href="fenv.html#cb207-29"></a></span>
+<span id="cb207-30"><a href="fenv.html#cb207-30"></a>    show_status<span class="op">();</span></span>
+<span id="cb207-31"><a href="fenv.html#cb207-31"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-42">See Also</h3>
+<p><a href="fenv.html#man-fegetenv"><code>fegetenv()</code></a>, <a href="fenv.html#man-fegetenv"><code>fesetenv()</code></a>, <a href="fenv.html#man-feupdateenv"><code>feupdateenv()</code></a></p>
+<hr />
+<h2 data-number="7.10" id="man-feupdateenv"><span class="header-section-number">7.10</span> <code>feupdateenv()</code></h2>
+<p></p>
+<p>Restore floating point environment and apply recent exceptions</p>
+<h3 class="unnumbered unlisted" id="synopsis-47">Synopsis</h3>
+<div class="sourceCode" id="cb208"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb208-1"><a href="fenv.html#cb208-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb208-2"><a href="fenv.html#cb208-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb208-3"><a href="fenv.html#cb208-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> feupdateenv<span class="op">(</span><span class="dt">const</span> fenv_t <span class="op">*</span>envp<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-47">Description</h3>
+<p>This is like <code>fesetenv()</code> except that it modifies the passed-in environment so that it is updated with exceptions that have happened in the meantime.</p>
+<p>So let’s say you had a function that might raise exceptions, but you wanted to hide those in the caller. One option might be to:</p>
+<ol type="1">
+<li>Save the environment with <code>fegetenv()</code> or <code>feholdexcept()</code>.</li>
+<li>Do whatever you do that might raise exceptions.</li>
+<li>Restore the environment with <code>fesetenv()</code>, thereby hiding the exceptions that happened in step 2.</li>
+</ol>
+<p>But that hides <em>all</em> exceptions. What if you just wanted to hide some of them? You could use <code>feupdateenv()</code> like this:</p>
+<ol type="1">
+<li>Save the environment with <code>fegetenv()</code> or <code>feholdexcept()</code>.</li>
+<li>Do whatever you do that might raise exceptions.</li>
+<li>Call <code>feclearexcept()</code> to clear the exceptions you want to hide from the caller.</li>
+<li>Call <code>feupdateenv()</code> to restore the previous environment and update it with the other exceptions that have occurred.</li>
+</ol>
+<p>So it’s like a more capable way of restoring the environment than simply <code>fegetenv()</code>/<code>fesetenv()</code>.</p>
+<h3 class="unnumbered unlisted" id="return-value-46">Return Value</h3>
+<p>Returns <code>0</code> on success, non-zero otherwise.</p>
+<h3 class="unnumbered unlisted" id="example-47">Example</h3>
+<p>This program saves state, raises some exceptions, then clears one of the exceptions, then restores and updates the state.</p>
+<div class="sourceCode" id="cb209"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb209-1"><a href="fenv.html#cb209-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb209-2"><a href="fenv.html#cb209-2"></a><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></span>
+<span id="cb209-3"><a href="fenv.html#cb209-3"></a><span class="pp">#include </span><span class="im">&lt;fenv.h&gt;</span></span>
+<span id="cb209-4"><a href="fenv.html#cb209-4"></a></span>
+<span id="cb209-5"><a href="fenv.html#cb209-5"></a><span class="dt">void</span> show_status<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb209-6"><a href="fenv.html#cb209-6"></a><span class="op">{</span></span>
+<span id="cb209-7"><a href="fenv.html#cb209-7"></a>    printf<span class="op">(</span><span class="st">&quot;FE_DIVBYZERO: </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> fetestexcept<span class="op">(</span>FE_DIVBYZERO<span class="op">)</span> <span class="op">!=</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb209-8"><a href="fenv.html#cb209-8"></a>    printf<span class="op">(</span><span class="st">&quot;FE_INVALID  : </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> fetestexcept<span class="op">(</span>FE_INVALID<span class="op">)</span> <span class="op">!=</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb209-9"><a href="fenv.html#cb209-9"></a>    printf<span class="op">(</span><span class="st">&quot;FE_OVERFLOW : </span><span class="sc">%d\n\n</span><span class="st">&quot;</span><span class="op">,</span> fetestexcept<span class="op">(</span>FE_OVERFLOW<span class="op">)</span> <span class="op">!=</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb209-10"><a href="fenv.html#cb209-10"></a><span class="op">}</span></span>
+<span id="cb209-11"><a href="fenv.html#cb209-11"></a></span>
+<span id="cb209-12"><a href="fenv.html#cb209-12"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb209-13"><a href="fenv.html#cb209-13"></a><span class="op">{</span></span>
+<span id="cb209-14"><a href="fenv.html#cb209-14"></a>    <span class="pp">#pragma STDC FENV_ACCESS ON </span></span>
+<span id="cb209-15"><a href="fenv.html#cb209-15"></a></span>
+<span id="cb209-16"><a href="fenv.html#cb209-16"></a>    fenv_t env<span class="op">;</span></span>
+<span id="cb209-17"><a href="fenv.html#cb209-17"></a></span>
+<span id="cb209-18"><a href="fenv.html#cb209-18"></a>    feholdexcept<span class="op">(&amp;</span>env<span class="op">);</span>  <span class="co">// Save the environment</span></span>
+<span id="cb209-19"><a href="fenv.html#cb209-19"></a></span>
+<span id="cb209-20"><a href="fenv.html#cb209-20"></a>    <span class="co">// Pretend some bad math happened here:</span></span>
+<span id="cb209-21"><a href="fenv.html#cb209-21"></a>    feraiseexcept<span class="op">(</span>FE_DIVBYZERO<span class="op">);</span>  <span class="co">// Raise an exception</span></span>
+<span id="cb209-22"><a href="fenv.html#cb209-22"></a>    feraiseexcept<span class="op">(</span>FE_INVALID<span class="op">);</span>    <span class="co">// Raise an exception</span></span>
+<span id="cb209-23"><a href="fenv.html#cb209-23"></a>    feraiseexcept<span class="op">(</span>FE_OVERFLOW<span class="op">);</span>   <span class="co">// Raise an exception</span></span>
+<span id="cb209-24"><a href="fenv.html#cb209-24"></a></span>
+<span id="cb209-25"><a href="fenv.html#cb209-25"></a>    show_status<span class="op">();</span></span>
+<span id="cb209-26"><a href="fenv.html#cb209-26"></a></span>
+<span id="cb209-27"><a href="fenv.html#cb209-27"></a>    feclearexcept<span class="op">(</span>FE_INVALID<span class="op">);</span></span>
+<span id="cb209-28"><a href="fenv.html#cb209-28"></a></span>
+<span id="cb209-29"><a href="fenv.html#cb209-29"></a>    feupdateenv<span class="op">(&amp;</span>env<span class="op">);</span>  <span class="co">// Restore the environment</span></span>
+<span id="cb209-30"><a href="fenv.html#cb209-30"></a></span>
+<span id="cb209-31"><a href="fenv.html#cb209-31"></a>    show_status<span class="op">();</span></span>
+<span id="cb209-32"><a href="fenv.html#cb209-32"></a><span class="op">}</span></span></code></pre></div>
+<p>In the output, at first we have no exceptions. Then we have the three we raised. Then after we restore/update the environment, we see the one we cleared (<code>FE_INVALID</code>) hasn’t been applied:</p>
+<div class="sourceCode" id="cb210"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb210-1"><a href="fenv.html#cb210-1" aria-hidden="true" tabindex="-1"></a>FE_DIVBYZERO: 0</span>
+<span id="cb210-2"><a href="fenv.html#cb210-2" aria-hidden="true" tabindex="-1"></a>FE_INVALID  : 0</span>
+<span id="cb210-3"><a href="fenv.html#cb210-3" aria-hidden="true" tabindex="-1"></a>FE_OVERFLOW : 0</span>
+<span id="cb210-4"><a href="fenv.html#cb210-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb210-5"><a href="fenv.html#cb210-5" aria-hidden="true" tabindex="-1"></a>FE_DIVBYZERO: 1</span>
+<span id="cb210-6"><a href="fenv.html#cb210-6" aria-hidden="true" tabindex="-1"></a>FE_INVALID  : 1</span>
+<span id="cb210-7"><a href="fenv.html#cb210-7" aria-hidden="true" tabindex="-1"></a>FE_OVERFLOW : 1</span>
+<span id="cb210-8"><a href="fenv.html#cb210-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb210-9"><a href="fenv.html#cb210-9" aria-hidden="true" tabindex="-1"></a>FE_DIVBYZERO: 1</span>
+<span id="cb210-10"><a href="fenv.html#cb210-10" aria-hidden="true" tabindex="-1"></a>FE_INVALID  : 0</span>
+<span id="cb210-11"><a href="fenv.html#cb210-11" aria-hidden="true" tabindex="-1"></a>FE_OVERFLOW : 1</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-43">See Also</h3>
+<p><a href="fenv.html#man-fegetenv"><code>fegetenv()</code></a>, <a href="fenv.html#man-fegetenv"><code>fesetenv()</code></a>, <a href="fenv.html#man-feholdexcept"><code>feholdexcept()</code></a>, <a href="fenv.html#man-feclearexcept"><code>feclearexcept()</code></a></p>
+<!--
+***
+## `example()` `example()` `example()` {#man-example}
+
+### Synopsis {.unnumbered .unlisted}
+
+``` {.c}
+```
+
+### Description {.unnumbered .unlisted}
+
+### Return Value {.unnumbered .unlisted}
+
+### Example {.unnumbered .unlisted}
+
+``` {.c .numberLines}
+```
+
+### See Also {.unnumbered .unlisted}
+
+[`example()`](#man-example),
+-->
+<!-- BG_NEW_CHAPTER -->
+<!-- Beej's guide to C
+
+# vim: ts=4:sw=4:nosi:et:tw=72
+-->
+<hr><div style="text-align:center"><span><a href="errno.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="float.html" rel="next">Next</a></span></div></body>
+</html>

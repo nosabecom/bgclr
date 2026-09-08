@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to C Programming</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body>
+<div style="text-align:center"><span style="visibility: hidden"><a href="" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="foreword.html" rel="next">Next</a></span></div><hr>
+<header id="title-block-header">
+<h1 class="title">Beej's Guide to C Programming</h1>
+<p class="subtitle">Library Reference</p>
+<p class="author">Brian “Beej Jorgensen” Hall</p>
+<p class="date">v0.9.11, Copyright © April 16, 2025</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="foreword.html#foreword" id="toc-foreword"><span class="toc-section-number">1</span> Foreword</a>
+<ul>
+<li><a href="foreword.html#audience" id="toc-audience"><span class="toc-section-number">1.1</span> Audience</a></li>
+<li><a href="foreword.html#how-to-read-this-book" id="toc-how-to-read-this-book"><span class="toc-section-number">1.2</span> How to Read This Book</a></li>
+<li><a href="foreword.html#platform-and-compiler" id="toc-platform-and-compiler"><span class="toc-section-number">1.3</span> Platform and Compiler</a></li>
+<li><a href="foreword.html#official-homepage" id="toc-official-homepage"><span class="toc-section-number">1.4</span> Official Homepage</a></li>
+<li><a href="foreword.html#email-policy" id="toc-email-policy"><span class="toc-section-number">1.5</span> Email Policy</a></li>
+<li><a href="foreword.html#mirroring" id="toc-mirroring"><span class="toc-section-number">1.6</span> Mirroring</a></li>
+<li><a href="foreword.html#note-for-translators" id="toc-note-for-translators"><span class="toc-section-number">1.7</span> Note for Translators</a></li>
+<li><a href="foreword.html#copyright-and-distribution" id="toc-copyright-and-distribution"><span class="toc-section-number">1.8</span> Copyright and Distribution</a></li>
+<li><a href="foreword.html#dedication" id="toc-dedication"><span class="toc-section-number">1.9</span> Dedication</a></li>
+</ul></li>
+<li><a href="the-c-language.html#the-c-language" id="toc-the-c-language"><span class="toc-section-number">2</span> The C Language</a>
+<ul>
+<li><a href="the-c-language.html#background" id="toc-background"><span class="toc-section-number">2.1</span> Background</a>
+<ul>
+<li><a href="the-c-language.html#comments" id="toc-comments"><span class="toc-section-number">2.1.1</span> Comments</a></li>
+<li><a href="the-c-language.html#separators" id="toc-separators"><span class="toc-section-number">2.1.2</span> Separators</a></li>
+<li><a href="the-c-language.html#expressions" id="toc-expressions"><span class="toc-section-number">2.1.3</span> Expressions</a></li>
+<li><a href="the-c-language.html#statements" id="toc-statements"><span class="toc-section-number">2.1.4</span> Statements</a></li>
+<li><a href="the-c-language.html#booleans" id="toc-booleans"><span class="toc-section-number">2.1.5</span> Booleans</a></li>
+<li><a href="the-c-language.html#blocks" id="toc-blocks"><span class="toc-section-number">2.1.6</span> Blocks</a></li>
+<li><a href="the-c-language.html#code-examples" id="toc-code-examples"><span class="toc-section-number">2.1.7</span> Code Examples</a></li>
+</ul></li>
+<li><a href="the-c-language.html#operators" id="toc-operators"><span class="toc-section-number">2.2</span> Operators</a>
+<ul>
+<li><a href="the-c-language.html#arithmetic-operators" id="toc-arithmetic-operators"><span class="toc-section-number">2.2.1</span> Arithmetic Operators</a></li>
+<li><a href="the-c-language.html#pre--and-post-increment-and--decrement" id="toc-pre--and-post-increment-and--decrement"><span class="toc-section-number">2.2.2</span> Pre- and Post-Increment and -Decrement</a></li>
+<li><a href="the-c-language.html#comparison-operators" id="toc-comparison-operators"><span class="toc-section-number">2.2.3</span> Comparison Operators</a></li>
+<li><a href="the-c-language.html#pointer-operators" id="toc-pointer-operators"><span class="toc-section-number">2.2.4</span> Pointer Operators</a></li>
+<li><a href="the-c-language.html#structure-and-union-operators" id="toc-structure-and-union-operators"><span class="toc-section-number">2.2.5</span> Structure and Union Operators</a></li>
+<li><a href="the-c-language.html#array-operators" id="toc-array-operators"><span class="toc-section-number">2.2.6</span> Array Operators</a></li>
+<li><a href="the-c-language.html#bitwise-operators" id="toc-bitwise-operators"><span class="toc-section-number">2.2.7</span> Bitwise Operators</a></li>
+<li><a href="the-c-language.html#assignment-operators" id="toc-assignment-operators"><span class="toc-section-number">2.2.8</span> Assignment Operators</a></li>
+<li><a href="the-c-language.html#the-sizeof-operator" id="toc-the-sizeof-operator"><span class="toc-section-number">2.2.9</span> The <code>sizeof</code> Operator</a></li>
+<li><a href="the-c-language.html#type-casts" id="toc-type-casts"><span class="toc-section-number">2.2.10</span> Type Casts</a></li>
+<li><a href="the-c-language.html#alignof-operator" id="toc-alignof-operator"><span class="toc-section-number">2.2.11</span> <code>_Alignof</code> Operator</a></li>
+<li><a href="the-c-language.html#comma-operator" id="toc-comma-operator"><span class="toc-section-number">2.2.12</span> Comma Operator</a></li>
+</ul></li>
+<li><a href="the-c-language.html#type-specifiers" id="toc-type-specifiers"><span class="toc-section-number">2.3</span> Type Specifiers</a></li>
+<li><a href="the-c-language.html#constant-types" id="toc-constant-types"><span class="toc-section-number">2.4</span> Constant Types</a></li>
+<li><a href="the-c-language.html#composite-types" id="toc-composite-types"><span class="toc-section-number">2.5</span> Composite Types</a>
+<ul>
+<li><a href="the-c-language.html#struct-types" id="toc-struct-types"><span class="toc-section-number">2.5.1</span> <code>struct</code> Types</a></li>
+<li><a href="the-c-language.html#union-types" id="toc-union-types"><span class="toc-section-number">2.5.2</span> <code>union</code> Types</a></li>
+<li><a href="the-c-language.html#enum-types" id="toc-enum-types"><span class="toc-section-number">2.5.3</span> <code>enum</code> Types</a></li>
+</ul></li>
+<li><a href="the-c-language.html#initializers" id="toc-initializers"><span class="toc-section-number">2.6</span> Initializers</a></li>
+<li><a href="the-c-language.html#compound-literals" id="toc-compound-literals"><span class="toc-section-number">2.7</span> Compound Literals</a></li>
+<li><a href="the-c-language.html#type-aliases" id="toc-type-aliases"><span class="toc-section-number">2.8</span> Type Aliases</a></li>
+<li><a href="the-c-language.html#additional-type-related-specifiers" id="toc-additional-type-related-specifiers"><span class="toc-section-number">2.9</span> Additional Type-Related Specifiers</a>
+<ul>
+<li><a href="the-c-language.html#storage-class-specifiers" id="toc-storage-class-specifiers"><span class="toc-section-number">2.9.1</span> Storage Class Specifiers</a></li>
+<li><a href="the-c-language.html#type-qualifiers" id="toc-type-qualifiers"><span class="toc-section-number">2.9.2</span> Type Qualifiers</a></li>
+<li><a href="the-c-language.html#function-specifiers" id="toc-function-specifiers"><span class="toc-section-number">2.9.3</span> Function Specifiers</a></li>
+<li><a href="the-c-language.html#alignment-specifier" id="toc-alignment-specifier"><span class="toc-section-number">2.9.4</span> Alignment Specifier</a></li>
+</ul></li>
+<li><a href="the-c-language.html#if-statement" id="toc-if-statement"><span class="toc-section-number">2.10</span> <code>if</code> Statement</a></li>
+<li><a href="the-c-language.html#for-statement" id="toc-for-statement"><span class="toc-section-number">2.11</span> <code>for</code> Statement</a></li>
+<li><a href="the-c-language.html#while-statement" id="toc-while-statement"><span class="toc-section-number">2.12</span> <code>while</code> Statement</a></li>
+<li><a href="the-c-language.html#do-while-statement" id="toc-do-while-statement"><span class="toc-section-number">2.13</span> <code>do</code>-<code>while</code> Statement</a></li>
+<li><a href="the-c-language.html#switch-statement" id="toc-switch-statement"><span class="toc-section-number">2.14</span> <code>switch</code> Statement</a></li>
+<li><a href="the-c-language.html#break-statement" id="toc-break-statement"><span class="toc-section-number">2.15</span> <code>break</code> Statement</a></li>
+<li><a href="the-c-language.html#continue-statement" id="toc-continue-statement"><span class="toc-section-number">2.16</span> <code>continue</code> Statement</a></li>
+<li><a href="the-c-language.html#goto-statement" id="toc-goto-statement"><span class="toc-section-number">2.17</span> <code>goto</code> Statement</a></li>
+<li><a href="the-c-language.html#return-statement" id="toc-return-statement"><span class="toc-section-number">2.18</span> <code>return</code> Statement</a></li>
+<li><a href="the-c-language.html#static_assert-statement" id="toc-static_assert-statement"><span class="toc-section-number">2.19</span> <code>_Static_assert</code> Statement</a></li>
+<li><a href="the-c-language.html#functions" id="toc-functions"><span class="toc-section-number">2.20</span> Functions</a>
+<ul>
+<li><a href="the-c-language.html#main-function" id="toc-main-function"><span class="toc-section-number">2.20.1</span> <code>main()</code> Function</a></li>
+<li><a href="the-c-language.html#variadic-functions" id="toc-variadic-functions"><span class="toc-section-number">2.20.2</span> Variadic Functions</a></li>
+</ul></li>
+</ul></li>
+<li><a href="assert.html#assert" id="toc-assert"><span class="toc-section-number">3</span> <code>&lt;assert.h&gt;</code> Runtime and Compile-time Diagnostics</a>
+<ul>
+<li><a href="assert.html#macros" id="toc-macros"><span class="toc-section-number">3.1</span> Macros</a></li>
+<li><a href="assert.html#man-assert" id="toc-man-assert"><span class="toc-section-number">3.2</span> <code>assert()</code></a></li>
+<li><a href="assert.html#man-static_assert" id="toc-man-static_assert"><span class="toc-section-number">3.3</span> <code>static_assert()</code></a></li>
+</ul></li>
+<li><a href="complex.html#complex" id="toc-complex"><span class="toc-section-number">4</span> <code>&lt;complex.h&gt;</code> Complex Number Functionality</a>
+<ul>
+<li><a href="complex.html#man-cacos" id="toc-man-cacos"><span class="toc-section-number">4.1</span> <code>cacos()</code>, <code>cacosf()</code>, <code>cacosl()</code></a></li>
+<li><a href="complex.html#man-casin" id="toc-man-casin"><span class="toc-section-number">4.2</span> <code>casin()</code>, <code>casinf()</code>, <code>casinl()</code></a></li>
+<li><a href="complex.html#man-catan" id="toc-man-catan"><span class="toc-section-number">4.3</span> <code>catan()</code>, <code>catanf()</code>, <code>catanl()</code></a></li>
+<li><a href="complex.html#man-ccos" id="toc-man-ccos"><span class="toc-section-number">4.4</span> <code>ccos()</code>, <code>ccosf()</code>, <code>ccosl()</code></a></li>
+<li><a href="complex.html#man-csin" id="toc-man-csin"><span class="toc-section-number">4.5</span> <code>csin()</code>, <code>csinf()</code>, <code>csinl()</code></a></li>
+<li><a href="complex.html#man-ctan" id="toc-man-ctan"><span class="toc-section-number">4.6</span> <code>ctan()</code>, <code>ctanf()</code>, <code>ctanl()</code></a></li>
+<li><a href="complex.html#man-cacosh" id="toc-man-cacosh"><span class="toc-section-number">4.7</span> <code>cacosh()</code>, <code>cacoshf()</code>, <code>cacoshl()</code></a></li>
+<li><a href="complex.html#man-casinh" id="toc-man-casinh"><span class="toc-section-number">4.8</span> <code>casinh()</code>, <code>casinhf()</code>, <code>casinhl()</code></a></li>
+<li><a href="complex.html#man-catanh" id="toc-man-catanh"><span class="toc-section-number">4.9</span> <code>catanh()</code>, <code>catanhf()</code>, <code>catanhl()</code></a></li>
+<li><a href="complex.html#man-ccosh" id="toc-man-ccosh"><span class="toc-section-number">4.10</span> <code>ccosh()</code>, <code>ccoshf()</code>, <code>ccoshl()</code></a></li>
+<li><a href="complex.html#man-csinh" id="toc-man-csinh"><span class="toc-section-number">4.11</span> <code>csinh()</code>, <code>csinhf()</code>, <code>csinhl()</code></a></li>
+<li><a href="complex.html#man-ctanh" id="toc-man-ctanh"><span class="toc-section-number">4.12</span> <code>ctanh()</code>, <code>ctanhf()</code>, <code>ctanhl()</code></a></li>
+<li><a href="complex.html#man-cexp" id="toc-man-cexp"><span class="toc-section-number">4.13</span> <code>cexp()</code>, <code>cexpf()</code>, <code>cexpl()</code></a></li>
+<li><a href="complex.html#man-clog" id="toc-man-clog"><span class="toc-section-number">4.14</span> <code>clog()</code>, <code>clogf()</code>, <code>clogl()</code></a></li>
+<li><a href="complex.html#man-cabs" id="toc-man-cabs"><span class="toc-section-number">4.15</span> <code>cabs()</code>, <code>cabsf()</code>, <code>cabsl()</code></a></li>
+<li><a href="complex.html#man-cpow" id="toc-man-cpow"><span class="toc-section-number">4.16</span> <code>cpow()</code>, <code>cpowf()</code>, <code>cpowl()</code></a></li>
+<li><a href="complex.html#man-csqrt" id="toc-man-csqrt"><span class="toc-section-number">4.17</span> <code>csqrt()</code>, <code>csqrtf()</code>, <code>csqrtl()</code></a></li>
+<li><a href="complex.html#man-carg" id="toc-man-carg"><span class="toc-section-number">4.18</span> <code>carg()</code>, <code>cargf()</code>, <code>cargl()</code></a></li>
+<li><a href="complex.html#man-cimag" id="toc-man-cimag"><span class="toc-section-number">4.19</span> <code>cimag()</code>, <code>cimagf()</code>, <code>cimagl()</code></a></li>
+<li><a href="complex.html#man-CMPLX" id="toc-man-CMPLX"><span class="toc-section-number">4.20</span> <code>CMPLX()</code>, <code>CMPLXF()</code>, <code>CMPLXL()</code></a></li>
+<li><a href="complex.html#man-conj" id="toc-man-conj"><span class="toc-section-number">4.21</span> <code>conj()</code>, <code>conjf()</code>, <code>conjl()</code></a></li>
+<li><a href="complex.html#man-cproj" id="toc-man-cproj"><span class="toc-section-number">4.22</span> <code>cproj()</code>, <code>cproj()</code>, <code>cproj()</code></a></li>
+<li><a href="complex.html#man-creal" id="toc-man-creal"><span class="toc-section-number">4.23</span> <code>creal()</code>, <code>crealf()</code>, <code>creall()</code></a></li>
+</ul></li>
+<li><a href="ctype.html#ctype" id="toc-ctype"><span class="toc-section-number">5</span> <code>&lt;ctype.h&gt;</code> Character Classification and Conversion</a>
+<ul>
+<li><a href="ctype.html#man-isalnum" id="toc-man-isalnum"><span class="toc-section-number">5.1</span> <code>isalnum()</code></a></li>
+<li><a href="ctype.html#man-isalpha" id="toc-man-isalpha"><span class="toc-section-number">5.2</span> <code>isalpha()</code></a></li>
+<li><a href="ctype.html#man-isblank" id="toc-man-isblank"><span class="toc-section-number">5.3</span> <code>isblank()</code></a></li>
+<li><a href="ctype.html#man-iscntrl" id="toc-man-iscntrl"><span class="toc-section-number">5.4</span> <code>iscntrl()</code></a></li>
+<li><a href="ctype.html#man-isdigit" id="toc-man-isdigit"><span class="toc-section-number">5.5</span> <code>isdigit()</code></a></li>
+<li><a href="ctype.html#man-isgraph" id="toc-man-isgraph"><span class="toc-section-number">5.6</span> <code>isgraph()</code></a></li>
+<li><a href="ctype.html#man-islower" id="toc-man-islower"><span class="toc-section-number">5.7</span> <code>islower()</code></a></li>
+<li><a href="ctype.html#man-isprint" id="toc-man-isprint"><span class="toc-section-number">5.8</span> <code>isprint()</code></a></li>
+<li><a href="ctype.html#man-ispunct" id="toc-man-ispunct"><span class="toc-section-number">5.9</span> <code>ispunct()</code></a></li>
+<li><a href="ctype.html#man-isspace" id="toc-man-isspace"><span class="toc-section-number">5.10</span> <code>isspace()</code></a></li>
+<li><a href="ctype.html#man-isupper" id="toc-man-isupper"><span class="toc-section-number">5.11</span> <code>isupper()</code></a></li>
+<li><a href="ctype.html#man-isxdigit" id="toc-man-isxdigit"><span class="toc-section-number">5.12</span> <code>isxdigit()</code></a></li>
+<li><a href="ctype.html#man-tolower" id="toc-man-tolower"><span class="toc-section-number">5.13</span> <code>tolower()</code></a></li>
+<li><a href="ctype.html#man-toupper" id="toc-man-toupper"><span class="toc-section-number">5.14</span> <code>toupper()</code></a></li>
+</ul></li>
+<li><a href="errno.html#errno" id="toc-errno"><span class="toc-section-number">6</span> <code>&lt;errno.h&gt;</code> Error Information</a>
+<ul>
+<li><a href="errno.html#man-errno" id="toc-man-errno"><span class="toc-section-number">6.1</span> <code>errno</code></a></li>
+</ul></li>
+<li><a href="fenv.html#fenv" id="toc-fenv"><span class="toc-section-number">7</span> <code>&lt;fenv.h&gt;</code> Floating Point Exceptions and Environment</a>
+<ul>
+<li><a href="fenv.html#types-and-macros" id="toc-types-and-macros"><span class="toc-section-number">7.1</span> Types and Macros</a></li>
+<li><a href="fenv.html#pragmas" id="toc-pragmas"><span class="toc-section-number">7.2</span> Pragmas</a></li>
+<li><a href="fenv.html#man-feclearexcept" id="toc-man-feclearexcept"><span class="toc-section-number">7.3</span> <code>feclearexcept()</code></a></li>
+<li><a href="fenv.html#man-fegetexceptflag" id="toc-man-fegetexceptflag"><span class="toc-section-number">7.4</span> <code>fegetexceptflag()</code> <code>fesetexceptflag()</code></a></li>
+<li><a href="fenv.html#man-feraiseexcept" id="toc-man-feraiseexcept"><span class="toc-section-number">7.5</span> <code>feraiseexcept()</code></a></li>
+<li><a href="fenv.html#man-fetestexcept" id="toc-man-fetestexcept"><span class="toc-section-number">7.6</span> <code>fetestexcept()</code></a></li>
+<li><a href="fenv.html#man-fegetround" id="toc-man-fegetround"><span class="toc-section-number">7.7</span> <code>fegetround()</code> <code>fesetround()</code></a></li>
+<li><a href="fenv.html#man-fegetenv" id="toc-man-fegetenv"><span class="toc-section-number">7.8</span> <code>fegetenv()</code> <code>fesetenv()</code></a></li>
+<li><a href="fenv.html#man-feholdexcept" id="toc-man-feholdexcept"><span class="toc-section-number">7.9</span> <code>feholdexcept()</code></a></li>
+<li><a href="fenv.html#man-feupdateenv" id="toc-man-feupdateenv"><span class="toc-section-number">7.10</span> <code>feupdateenv()</code></a></li>
+</ul></li>
+<li><a href="float.html#float" id="toc-float"><span class="toc-section-number">8</span> <code>&lt;float.h&gt;</code> Floating Point Limits</a>
+<ul>
+<li><a href="float.html#background-1" id="toc-background-1"><span class="toc-section-number">8.1</span> Background</a></li>
+<li><a href="float.html#flt_rounds-details" id="toc-flt_rounds-details"><span class="toc-section-number">8.2</span> <code>FLT_ROUNDS</code> Details</a></li>
+<li><a href="float.html#flt_eval_method-details" id="toc-flt_eval_method-details"><span class="toc-section-number">8.3</span> <code>FLT_EVAL_METHOD</code> Details</a></li>
+<li><a href="float.html#subnormal-numbers" id="toc-subnormal-numbers"><span class="toc-section-number">8.4</span> Subnormal Numbers</a></li>
+<li><a href="float.html#how-many-decimal-places-can-i-use" id="toc-how-many-decimal-places-can-i-use"><span class="toc-section-number">8.5</span> How Many Decimal Places Can I Use?</a></li>
+<li><a href="float.html#comprehensive-example" id="toc-comprehensive-example"><span class="toc-section-number">8.6</span> Comprehensive Example</a></li>
+</ul></li>
+<li><a href="inttypes.html#inttypes" id="toc-inttypes"><span class="toc-section-number">9</span> <code>&lt;inttypes.h&gt;</code> More Integer Conversions</a>
+<ul>
+<li><a href="inttypes.html#macros-1" id="toc-macros-1"><span class="toc-section-number">9.1</span> Macros</a></li>
+<li><a href="inttypes.html#man-imaxabs" id="toc-man-imaxabs"><span class="toc-section-number">9.2</span> <code>imaxabs()</code></a></li>
+<li><a href="inttypes.html#man-imaxdiv" id="toc-man-imaxdiv"><span class="toc-section-number">9.3</span> <code>imaxdiv()</code></a></li>
+<li><a href="inttypes.html#man-strtoimax" id="toc-man-strtoimax"><span class="toc-section-number">9.4</span> <code>strtoimax()</code> <code>strtoumax()</code></a></li>
+<li><a href="inttypes.html#man-wcstoimax" id="toc-man-wcstoimax"><span class="toc-section-number">9.5</span> <code>wcstoimax()</code> <code>wcstoumax()</code></a></li>
+</ul></li>
+<li><a href="iso646.html#iso646" id="toc-iso646"><span class="toc-section-number">10</span> <code>&lt;iso646.h&gt;</code> Alternative Operator Spellings</a></li>
+<li><a href="limits.html#limits" id="toc-limits"><span class="toc-section-number">11</span> <code>&lt;limits.h&gt;</code> Numeric Limits</a>
+<ul>
+<li><a href="limits.html#char_min-and-char_max" id="toc-char_min-and-char_max"><span class="toc-section-number">11.1</span> <code>CHAR_MIN</code> and <code>CHAR_MAX</code></a></li>
+<li><a href="limits.html#choosing-the-correct-type" id="toc-choosing-the-correct-type"><span class="toc-section-number">11.2</span> Choosing the Correct Type</a></li>
+<li><a href="limits.html#whither-twos-complement" id="toc-whither-twos-complement"><span class="toc-section-number">11.3</span> Whither Two’s Complement?</a></li>
+<li><a href="limits.html#demo-program" id="toc-demo-program"><span class="toc-section-number">11.4</span> Demo Program</a></li>
+</ul></li>
+<li><a href="locale.html#locale" id="toc-locale"><span class="toc-section-number">12</span> <code>&lt;locale.h&gt;</code> locale handling</a>
+<ul>
+<li><a href="locale.html#man-setlocale" id="toc-man-setlocale"><span class="toc-section-number">12.1</span> <code>setlocale()</code></a></li>
+<li><a href="locale.html#man-localeconv" id="toc-man-localeconv"><span class="toc-section-number">12.2</span> <code>localeconv()</code></a></li>
+</ul></li>
+<li><a href="math.html#math" id="toc-math"><span class="toc-section-number">13</span> <code>&lt;math.h&gt;</code> Mathematics</a>
+<ul>
+<li><a href="math.html#func-idioms" id="toc-func-idioms"><span class="toc-section-number">13.1</span> Math Function Idioms</a></li>
+<li><a href="math.html#math-types" id="toc-math-types"><span class="toc-section-number">13.2</span> Math Types</a></li>
+<li><a href="math.html#math-macros" id="toc-math-macros"><span class="toc-section-number">13.3</span> Math Macros</a></li>
+<li><a href="math.html#math-errors" id="toc-math-errors"><span class="toc-section-number">13.4</span> Math Errors</a></li>
+<li><a href="math.html#math-pragmas" id="toc-math-pragmas"><span class="toc-section-number">13.5</span> Math Pragmas</a></li>
+<li><a href="math.html#man-fpclassify" id="toc-man-fpclassify"><span class="toc-section-number">13.6</span> <code>fpclassify()</code></a></li>
+<li><a href="math.html#man-isnan" id="toc-man-isnan"><span class="toc-section-number">13.7</span> <code>isfinite()</code>, <code>isinf()</code>, <code>isnan()</code>, <code>isnormal()</code></a></li>
+<li><a href="math.html#man-signbit" id="toc-man-signbit"><span class="toc-section-number">13.8</span> <code>signbit()</code></a></li>
+<li><a href="math.html#man-acos" id="toc-man-acos"><span class="toc-section-number">13.9</span> <code>acos()</code>, <code>acosf()</code>, <code>acosl()</code></a></li>
+<li><a href="math.html#man-asin" id="toc-man-asin"><span class="toc-section-number">13.10</span> <code>asin()</code>, <code>asinf()</code>, <code>asinl()</code></a></li>
+<li><a href="math.html#man-atan" id="toc-man-atan"><span class="toc-section-number">13.11</span> <code>atan()</code>, <code>atanf()</code>, <code>atanl()</code>, <code>atan2()</code>, <code>atan2f()</code>, <code>atan2l()</code></a></li>
+<li><a href="math.html#man-cos" id="toc-man-cos"><span class="toc-section-number">13.12</span> <code>cos()</code>, <code>cosf()</code>, <code>cosl()</code></a></li>
+<li><a href="math.html#man-sin" id="toc-man-sin"><span class="toc-section-number">13.13</span> <code>sin()</code>, <code>sinf()</code>, <code>sinl()</code></a></li>
+<li><a href="math.html#man-tan" id="toc-man-tan"><span class="toc-section-number">13.14</span> <code>tan()</code>, <code>tanf()</code>, <code>tanl()</code></a></li>
+<li><a href="math.html#man-acosh" id="toc-man-acosh"><span class="toc-section-number">13.15</span> <code>acosh()</code>, <code>acoshf()</code>, <code>acoshl()</code></a></li>
+<li><a href="math.html#man-asinh" id="toc-man-asinh"><span class="toc-section-number">13.16</span> <code>asinh()</code>, <code>asinhf()</code>, <code>asinhl()</code></a></li>
+<li><a href="math.html#man-atanh" id="toc-man-atanh"><span class="toc-section-number">13.17</span> <code>atanh()</code>, <code>atanhf()</code>, <code>atanhl()</code></a></li>
+<li><a href="math.html#man-cosh" id="toc-man-cosh"><span class="toc-section-number">13.18</span> <code>cosh()</code>, <code>coshf()</code>, <code>coshl()</code></a></li>
+<li><a href="math.html#man-sinh" id="toc-man-sinh"><span class="toc-section-number">13.19</span> <code>sinh()</code>, <code>sinhf()</code>, <code>sinhl()</code></a></li>
+<li><a href="math.html#man-tanh" id="toc-man-tanh"><span class="toc-section-number">13.20</span> <code>tanh()</code>, <code>tanhf()</code>, <code>tanhl()</code></a></li>
+<li><a href="math.html#man-exp" id="toc-man-exp"><span class="toc-section-number">13.21</span> <code>exp()</code>, <code>expf()</code>, <code>expl()</code></a></li>
+<li><a href="math.html#man-exp2" id="toc-man-exp2"><span class="toc-section-number">13.22</span> <code>exp2()</code>, <code>exp2f()</code>, <code>exp2l()</code></a></li>
+<li><a href="math.html#man-expm1" id="toc-man-expm1"><span class="toc-section-number">13.23</span> <code>expm1()</code>, <code>expm1f()</code>, <code>expm1l()</code></a></li>
+<li><a href="math.html#man-frexp" id="toc-man-frexp"><span class="toc-section-number">13.24</span> <code>frexp()</code>, <code>frexpf()</code>, <code>frexpl()</code></a></li>
+<li><a href="math.html#man-ilogb" id="toc-man-ilogb"><span class="toc-section-number">13.25</span> <code>ilogb()</code>, <code>ilogbf()</code>, <code>ilogbl()</code></a></li>
+<li><a href="math.html#man-ldexp" id="toc-man-ldexp"><span class="toc-section-number">13.26</span> <code>ldexp()</code>, <code>ldexpf()</code>, <code>ldexpl()</code></a></li>
+<li><a href="math.html#man-log" id="toc-man-log"><span class="toc-section-number">13.27</span> <code>log()</code>, <code>logf()</code>, <code>logl()</code></a></li>
+<li><a href="math.html#man-log10" id="toc-man-log10"><span class="toc-section-number">13.28</span> <code>log10()</code>, <code>log10f()</code>, <code>log10l()</code></a></li>
+<li><a href="math.html#man-log1p" id="toc-man-log1p"><span class="toc-section-number">13.29</span> <code>log1p()</code>, <code>log1pf()</code>, <code>log1pl()</code></a></li>
+<li><a href="math.html#man-log2" id="toc-man-log2"><span class="toc-section-number">13.30</span> <code>log2()</code>, <code>log2f()</code>, <code>log2l()</code></a></li>
+<li><a href="math.html#man-logb" id="toc-man-logb"><span class="toc-section-number">13.31</span> <code>logb()</code>, <code>logbf()</code>, <code>logbl()</code></a></li>
+<li><a href="math.html#man-modf" id="toc-man-modf"><span class="toc-section-number">13.32</span> <code>modf()</code>, <code>modff()</code>, <code>modfl()</code></a></li>
+<li><a href="math.html#man-scalb" id="toc-man-scalb"><span class="toc-section-number">13.33</span> <code>scalbn()</code>, <code>scalbnf()</code>, <code>scalbnl()</code> <code>scalbln()</code>, <code>scalblnf()</code>, <code>scalblnl()</code></a></li>
+<li><a href="math.html#man-cbrt" id="toc-man-cbrt"><span class="toc-section-number">13.34</span> <code>cbrt()</code>, <code>cbrtf()</code>, <code>cbrtl()</code></a></li>
+<li><a href="math.html#man-fabs" id="toc-man-fabs"><span class="toc-section-number">13.35</span> <code>fabs()</code>, <code>fabsf()</code>, <code>fabsl()</code></a></li>
+<li><a href="math.html#man-hypot" id="toc-man-hypot"><span class="toc-section-number">13.36</span> <code>hypot()</code>, <code>hypotf()</code>, <code>hypotl()</code></a></li>
+<li><a href="math.html#man-pow" id="toc-man-pow"><span class="toc-section-number">13.37</span> <code>pow()</code>, <code>powf()</code>, <code>powl()</code></a></li>
+<li><a href="math.html#man-sqrt" id="toc-man-sqrt"><span class="toc-section-number">13.38</span> <code>sqrt()</code></a></li>
+<li><a href="math.html#man-erf" id="toc-man-erf"><span class="toc-section-number">13.39</span> <code>erf()</code>, <code>erff()</code>, <code>erfl()</code></a></li>
+<li><a href="math.html#man-erfc" id="toc-man-erfc"><span class="toc-section-number">13.40</span> <code>erfc()</code>, <code>erfcf()</code>, <code>erfcl()</code></a></li>
+<li><a href="math.html#man-lgamma" id="toc-man-lgamma"><span class="toc-section-number">13.41</span> <code>lgamma()</code>, <code>lgammaf()</code>, <code>lgammal()</code></a></li>
+<li><a href="math.html#man-tgamma" id="toc-man-tgamma"><span class="toc-section-number">13.42</span> <code>tgamma()</code>, <code>tgammaf()</code>, <code>tgammal()</code></a></li>
+<li><a href="math.html#man-ceil" id="toc-man-ceil"><span class="toc-section-number">13.43</span> <code>ceil()</code>, <code>ceilf()</code>, <code>ceill()</code></a></li>
+<li><a href="math.html#man-floor" id="toc-man-floor"><span class="toc-section-number">13.44</span> <code>floor()</code>, <code>floorf()</code>, <code>floorl()</code></a></li>
+<li><a href="math.html#man-nearbyint" id="toc-man-nearbyint"><span class="toc-section-number">13.45</span> <code>nearbyint()</code>, <code>nearbyintf()</code>, <code>nearbyintl()</code></a></li>
+<li><a href="math.html#man-rint" id="toc-man-rint"><span class="toc-section-number">13.46</span> <code>rint()</code>, <code>rintf()</code>, <code>rintl()</code></a></li>
+<li><a href="math.html#man-lrint" id="toc-man-lrint"><span class="toc-section-number">13.47</span> <code>lrint()</code>, <code>lrintf()</code>, <code>lrintl()</code>, <code>llrint()</code>, <code>llrintf()</code>, <code>llrintl()</code></a></li>
+<li><a href="math.html#man-round" id="toc-man-round"><span class="toc-section-number">13.48</span> <code>round()</code>, <code>roundf()</code>, <code>roundl()</code></a></li>
+<li><a href="math.html#man-lround" id="toc-man-lround"><span class="toc-section-number">13.49</span> <code>lround()</code>, <code>lroundf()</code>, <code>lroundl()</code> <code>llround()</code>, <code>llroundf()</code>, <code>llroundl()</code></a></li>
+<li><a href="math.html#man-trunc" id="toc-man-trunc"><span class="toc-section-number">13.50</span> <code>trunc()</code>, <code>truncf()</code>, <code>truncl()</code></a></li>
+<li><a href="math.html#man-fmod" id="toc-man-fmod"><span class="toc-section-number">13.51</span> <code>fmod()</code>, <code>fmodf()</code>, <code>fmodl()</code></a></li>
+<li><a href="math.html#man-remainder" id="toc-man-remainder"><span class="toc-section-number">13.52</span> <code>remainder()</code>, <code>remainderf()</code>, <code>remainderl()</code></a></li>
+<li><a href="math.html#man-remquo" id="toc-man-remquo"><span class="toc-section-number">13.53</span> <code>remquo()</code>, <code>remquof()</code>, <code>remquol()</code></a></li>
+<li><a href="math.html#man-copysign" id="toc-man-copysign"><span class="toc-section-number">13.54</span> <code>copysign()</code>, <code>copysignf()</code>, <code>copysignl()</code></a></li>
+<li><a href="math.html#man-nan" id="toc-man-nan"><span class="toc-section-number">13.55</span> <code>nan()</code>, <code>nanf()</code>, <code>nanl()</code></a></li>
+<li><a href="math.html#man-nextafter" id="toc-man-nextafter"><span class="toc-section-number">13.56</span> <code>nextafter()</code>, <code>nextafterf()</code>, <code>nextafterl()</code></a></li>
+<li><a href="math.html#man-nexttoward" id="toc-man-nexttoward"><span class="toc-section-number">13.57</span> <code>nexttoward()</code>, <code>nexttowardf()</code>, <code>nexttowardl()</code></a></li>
+<li><a href="math.html#man-fdim" id="toc-man-fdim"><span class="toc-section-number">13.58</span> <code>fdim()</code>, <code>fdimf()</code>, <code>fdiml()</code></a></li>
+<li><a href="math.html#man-fmax" id="toc-man-fmax"><span class="toc-section-number">13.59</span> <code>fmax()</code>, <code>fmaxf()</code>, <code>fmaxl()</code>, <code>fmin()</code>, <code>fminf()</code>, <code>fminl()</code></a></li>
+<li><a href="math.html#man-fma" id="toc-man-fma"><span class="toc-section-number">13.60</span> <code>fma()</code>, <code>fmaf()</code>, <code>fmal()</code></a></li>
+<li><a href="math.html#man-isgreater" id="toc-man-isgreater"><span class="toc-section-number">13.61</span> <code>isgreater()</code>, <code>isgreaterequal()</code>, <code>isless()</code>, <code>islessequal()</code></a></li>
+<li><a href="math.html#man-islessgreater" id="toc-man-islessgreater"><span class="toc-section-number">13.62</span> <code>islessgreater()</code></a></li>
+<li><a href="math.html#man-isunordered" id="toc-man-isunordered"><span class="toc-section-number">13.63</span> <code>isunordered()</code></a></li>
+</ul></li>
+<li><a href="setjmp.html#setjmp" id="toc-setjmp"><span class="toc-section-number">14</span> <code>&lt;setjmp.h&gt;</code> Non-local Goto</a>
+<ul>
+<li><a href="setjmp.html#man-setjmp" id="toc-man-setjmp"><span class="toc-section-number">14.1</span> <code>setjmp()</code></a></li>
+<li><a href="setjmp.html#man-longjmp" id="toc-man-longjmp"><span class="toc-section-number">14.2</span> <code>longjmp()</code></a></li>
+</ul></li>
+<li><a href="signal.html#signal" id="toc-signal"><span class="toc-section-number">15</span> <code>&lt;signal.h&gt;</code> signal handling</a>
+<ul>
+<li><a href="signal.html#man-signal" id="toc-man-signal"><span class="toc-section-number">15.1</span> <code>signal()</code></a></li>
+<li><a href="signal.html#man-raise" id="toc-man-raise"><span class="toc-section-number">15.2</span> <code>raise()</code></a></li>
+</ul></li>
+<li><a href="stdalign.html#stdalign" id="toc-stdalign"><span class="toc-section-number">16</span> <code>&lt;stdalign.h&gt;</code> Macros for Alignment</a>
+<ul>
+<li><a href="stdalign.html#man-alignas" id="toc-man-alignas"><span class="toc-section-number">16.1</span> <code>alignas()</code> <code>_Alignas()</code></a></li>
+<li><a href="stdalign.html#man-alignof" id="toc-man-alignof"><span class="toc-section-number">16.2</span> <code>alignof()</code> <code>_Alignof()</code></a></li>
+</ul></li>
+<li><a href="stdarg.html#stdarg" id="toc-stdarg"><span class="toc-section-number">17</span> <code>&lt;stdarg.h&gt;</code> Variable Arguments</a>
+<ul>
+<li><a href="stdarg.html#man-va_arg" id="toc-man-va_arg"><span class="toc-section-number">17.1</span> <code>va_arg()</code></a></li>
+<li><a href="stdarg.html#man-va_copy" id="toc-man-va_copy"><span class="toc-section-number">17.2</span> <code>va_copy()</code></a></li>
+<li><a href="stdarg.html#man-va_end" id="toc-man-va_end"><span class="toc-section-number">17.3</span> <code>va_end()</code></a></li>
+<li><a href="stdarg.html#man-va_start" id="toc-man-va_start"><span class="toc-section-number">17.4</span> <code>va_start()</code></a></li>
+</ul></li>
+<li><a href="stdatomic.html#stdatomic" id="toc-stdatomic"><span class="toc-section-number">18</span> <code>&lt;stdatomic.h&gt;</code> Atomic-Related Functions</a>
+<ul>
+<li><a href="stdatomic.html#atomic-types" id="toc-atomic-types"><span class="toc-section-number">18.1</span> Atomic Types</a></li>
+<li><a href="stdatomic.html#lock-free-macros" id="toc-lock-free-macros"><span class="toc-section-number">18.2</span> Lock-free Macros</a></li>
+<li><a href="stdatomic.html#atomic-flag" id="toc-atomic-flag"><span class="toc-section-number">18.3</span> Atomic Flag</a></li>
+<li><a href="stdatomic.html#memory-order" id="toc-memory-order"><span class="toc-section-number">18.4</span> Memory Order</a></li>
+<li><a href="stdatomic.html#man-ATOMIC_VAR_INIT" id="toc-man-ATOMIC_VAR_INIT"><span class="toc-section-number">18.5</span> <code>ATOMIC_VAR_INIT()</code></a></li>
+<li><a href="stdatomic.html#man-atomic_init" id="toc-man-atomic_init"><span class="toc-section-number">18.6</span> <code>atomic_init()</code></a></li>
+<li><a href="stdatomic.html#man-kill_dependency" id="toc-man-kill_dependency"><span class="toc-section-number">18.7</span> <code>kill_dependency()</code></a></li>
+<li><a href="stdatomic.html#man-atomic_thread_fence" id="toc-man-atomic_thread_fence"><span class="toc-section-number">18.8</span> <code>atomic_thread_fence()</code></a></li>
+<li><a href="stdatomic.html#man-atomic_signal_fence" id="toc-man-atomic_signal_fence"><span class="toc-section-number">18.9</span> <code>atomic_signal_fence()</code></a></li>
+<li><a href="stdatomic.html#man-atomic_is_lock_free" id="toc-man-atomic_is_lock_free"><span class="toc-section-number">18.10</span> <code>atomic_is_lock_free()</code></a></li>
+<li><a href="stdatomic.html#man-atomic_store" id="toc-man-atomic_store"><span class="toc-section-number">18.11</span> <code>atomic_store()</code></a></li>
+<li><a href="stdatomic.html#man-atomic_load" id="toc-man-atomic_load"><span class="toc-section-number">18.12</span> <code>atomic_load()</code></a></li>
+<li><a href="stdatomic.html#man-atomic_exchange" id="toc-man-atomic_exchange"><span class="toc-section-number">18.13</span> <code>atomic_exchange()</code></a></li>
+<li><a href="stdatomic.html#man-atomic_compare_exchange" id="toc-man-atomic_compare_exchange"><span class="toc-section-number">18.14</span> <code>atomic_compare_exchange_*()</code></a></li>
+<li><a href="stdatomic.html#man-atomic_fetch" id="toc-man-atomic_fetch"><span class="toc-section-number">18.15</span> <code>atomic_fetch_*()</code></a></li>
+<li><a href="stdatomic.html#man-atomic_flag_test_and_set" id="toc-man-atomic_flag_test_and_set"><span class="toc-section-number">18.16</span> <code>atomic_flag_test_and_set()</code></a></li>
+<li><a href="stdatomic.html#man-atomic_flag_clear" id="toc-man-atomic_flag_clear"><span class="toc-section-number">18.17</span> <code>atomic_flag_clear()</code></a></li>
+</ul></li>
+<li><a href="stdbit.html#stdbit" id="toc-stdbit"><span class="toc-section-number">19</span> <code>&lt;stdbit.h&gt;</code> Bit-Related Functions</a>
+<ul>
+<li><a href="stdbit.html#existence-macro" id="toc-existence-macro"><span class="toc-section-number">19.1</span> Existence Macro</a></li>
+<li><a href="stdbit.html#endianess-macros" id="toc-endianess-macros"><span class="toc-section-number">19.2</span> Endianess Macros</a></li>
+<li><a href="stdbit.html#general-structure-of-these-functions" id="toc-general-structure-of-these-functions"><span class="toc-section-number">19.3</span> General Structure of These Functions</a></li>
+<li><a href="stdbit.html#man-stdc_leading_zeros" id="toc-man-stdc_leading_zeros"><span class="toc-section-number">19.4</span> <code>stdc_leading_zeros()</code></a></li>
+<li><a href="stdbit.html#man-stdc_leading_ones" id="toc-man-stdc_leading_ones"><span class="toc-section-number">19.5</span> <code>stdc_leading_ones()</code></a></li>
+<li><a href="stdbit.html#man-stdc_trailing_zeros" id="toc-man-stdc_trailing_zeros"><span class="toc-section-number">19.6</span> <code>stdc_trailing_zeros()</code></a></li>
+<li><a href="stdbit.html#man-stdc_trailing_ones" id="toc-man-stdc_trailing_ones"><span class="toc-section-number">19.7</span> <code>stdc_trailing_ones()</code></a></li>
+<li><a href="stdbit.html#man-stdc_first_leading_zero" id="toc-man-stdc_first_leading_zero"><span class="toc-section-number">19.8</span> <code>stdc_first_leading_zero()</code></a></li>
+<li><a href="stdbit.html#man-stdc_first_leading_one" id="toc-man-stdc_first_leading_one"><span class="toc-section-number">19.9</span> <code>stdc_first_leading_one()</code></a></li>
+<li><a href="stdbit.html#man-stdc_first_trailing_zero" id="toc-man-stdc_first_trailing_zero"><span class="toc-section-number">19.10</span> <code>stdc_first_trailing_zero()</code></a></li>
+<li><a href="stdbit.html#man-stdc_first_trailing_one" id="toc-man-stdc_first_trailing_one"><span class="toc-section-number">19.11</span> <code>stdc_first_trailing_one()</code></a></li>
+<li><a href="stdbit.html#man-stdc_count_zeros" id="toc-man-stdc_count_zeros"><span class="toc-section-number">19.12</span> <code>stdc_count_zeros()</code></a></li>
+<li><a href="stdbit.html#man-stdc_count_ones" id="toc-man-stdc_count_ones"><span class="toc-section-number">19.13</span> <code>stdc_count_ones()</code></a></li>
+<li><a href="stdbit.html#man-stdc_has_single_bit" id="toc-man-stdc_has_single_bit"><span class="toc-section-number">19.14</span> <code>stdc_has_single_bit()</code></a></li>
+<li><a href="stdbit.html#man-stdc_bit_width" id="toc-man-stdc_bit_width"><span class="toc-section-number">19.15</span> <code>stdc_bit_width()</code></a></li>
+<li><a href="stdbit.html#man-stdc_bit_floor" id="toc-man-stdc_bit_floor"><span class="toc-section-number">19.16</span> <code>stdc_bit_floor()</code></a></li>
+<li><a href="stdbit.html#man-stdc_bit_ceil" id="toc-man-stdc_bit_ceil"><span class="toc-section-number">19.17</span> <code>stdc_bit_ceil()</code></a></li>
+</ul></li>
+<li><a href="stdbool.html#stdbool" id="toc-stdbool"><span class="toc-section-number">20</span> <code>&lt;stdbool.h&gt;</code> Boolean Types</a>
+<ul>
+<li><a href="stdbool.html#example-149" id="toc-example-149"><span class="toc-section-number">20.1</span> Example</a></li>
+<li><a href="stdbool.html#bool" id="toc-bool"><span class="toc-section-number">20.2</span> <code>_Bool</code>?</a></li>
+</ul></li>
+<li><a href="stddef.html#stddef" id="toc-stddef"><span class="toc-section-number">21</span> <code>&lt;stddef.h&gt;</code> A Few Standard Definitions</a>
+<ul>
+<li><a href="stddef.html#man-ptrdiff_t" id="toc-man-ptrdiff_t"><span class="toc-section-number">21.1</span> <code>ptrdiff_t</code></a></li>
+<li><a href="stddef.html#man-size_t" id="toc-man-size_t"><span class="toc-section-number">21.2</span> <code>size_t</code></a></li>
+<li><a href="stddef.html#man-max_align_t" id="toc-man-max_align_t"><span class="toc-section-number">21.3</span> <code>max_align_t</code></a></li>
+<li><a href="stddef.html#man-wchar_t" id="toc-man-wchar_t"><span class="toc-section-number">21.4</span> <code>wchar_t</code></a></li>
+<li><a href="stddef.html#man-offsetof" id="toc-man-offsetof"><span class="toc-section-number">21.5</span> <code>offsetof</code></a></li>
+</ul></li>
+<li><a href="stdint.html#stdint" id="toc-stdint"><span class="toc-section-number">22</span> <code>&lt;stdint.h&gt;</code> More Integer Types</a>
+<ul>
+<li><a href="stdint.html#specific-width-integers" id="toc-specific-width-integers"><span class="toc-section-number">22.1</span> Specific-Width Integers</a></li>
+<li><a href="stdint.html#other-integer-types" id="toc-other-integer-types"><span class="toc-section-number">22.2</span> Other Integer Types</a></li>
+<li><a href="stdint.html#macros-2" id="toc-macros-2"><span class="toc-section-number">22.3</span> Macros</a></li>
+<li><a href="stdint.html#other-limits" id="toc-other-limits"><span class="toc-section-number">22.4</span> Other Limits</a></li>
+<li><a href="stdint.html#macros-for-declaring-constants" id="toc-macros-for-declaring-constants"><span class="toc-section-number">22.5</span> Macros for Declaring Constants</a></li>
+</ul></li>
+<li><a href="stdio.html#stdio" id="toc-stdio"><span class="toc-section-number">23</span> <code>&lt;stdio.h&gt;</code> Standard I/O Library</a>
+<ul>
+<li><a href="stdio.html#man-remove" id="toc-man-remove"><span class="toc-section-number">23.1</span> <code>remove()</code></a></li>
+<li><a href="stdio.html#man-rename" id="toc-man-rename"><span class="toc-section-number">23.2</span> <code>rename()</code></a></li>
+<li><a href="stdio.html#man-tmpfile" id="toc-man-tmpfile"><span class="toc-section-number">23.3</span> <code>tmpfile()</code></a></li>
+<li><a href="stdio.html#man-tmpnam" id="toc-man-tmpnam"><span class="toc-section-number">23.4</span> <code>tmpnam()</code></a></li>
+<li><a href="stdio.html#man-fclose" id="toc-man-fclose"><span class="toc-section-number">23.5</span> <code>fclose()</code></a></li>
+<li><a href="stdio.html#man-fflush" id="toc-man-fflush"><span class="toc-section-number">23.6</span> <code>fflush()</code></a></li>
+<li><a href="stdio.html#man-fopen" id="toc-man-fopen"><span class="toc-section-number">23.7</span> <code>fopen()</code></a></li>
+<li><a href="stdio.html#man-freopen" id="toc-man-freopen"><span class="toc-section-number">23.8</span> <code>freopen()</code></a></li>
+<li><a href="stdio.html#man-setbuf" id="toc-man-setbuf"><span class="toc-section-number">23.9</span> <code>setbuf()</code>, <code>setvbuf()</code></a></li>
+<li><a href="stdio.html#man-printf" id="toc-man-printf"><span class="toc-section-number">23.10</span> <code>printf()</code>, <code>fprintf()</code>, <code>sprintf()</code>, <code>snprintf()</code></a></li>
+<li><a href="stdio.html#man-scanf" id="toc-man-scanf"><span class="toc-section-number">23.11</span> <code>scanf()</code>, <code>fscanf()</code>, <code>sscanf()</code></a></li>
+<li><a href="stdio.html#man-vprintf" id="toc-man-vprintf"><span class="toc-section-number">23.12</span> <code>vprintf()</code>, <code>vfprintf()</code>, <code>vsprintf()</code>, <code>vsnprintf()</code></a></li>
+<li><a href="stdio.html#man-vscanf" id="toc-man-vscanf"><span class="toc-section-number">23.13</span> <code>vscanf()</code>, <code>vfscanf()</code>, <code>vsscanf()</code></a></li>
+<li><a href="stdio.html#man-getc" id="toc-man-getc"><span class="toc-section-number">23.14</span> <code>getc()</code>, <code>fgetc()</code>, <code>getchar()</code></a></li>
+<li><a href="stdio.html#man-gets" id="toc-man-gets"><span class="toc-section-number">23.15</span> <code>gets()</code>, <code>fgets()</code></a></li>
+<li><a href="stdio.html#man-putc" id="toc-man-putc"><span class="toc-section-number">23.16</span> <code>putc()</code>, <code>fputc()</code>, <code>putchar()</code></a></li>
+<li><a href="stdio.html#man-puts" id="toc-man-puts"><span class="toc-section-number">23.17</span> <code>puts()</code>, <code>fputs()</code></a></li>
+<li><a href="stdio.html#man-ungetc" id="toc-man-ungetc"><span class="toc-section-number">23.18</span> <code>ungetc()</code></a></li>
+<li><a href="stdio.html#man-fread" id="toc-man-fread"><span class="toc-section-number">23.19</span> <code>fread()</code></a></li>
+<li><a href="stdio.html#man-fwrite" id="toc-man-fwrite"><span class="toc-section-number">23.20</span> <code>fwrite()</code></a></li>
+<li><a href="stdio.html#man-fgetpos" id="toc-man-fgetpos"><span class="toc-section-number">23.21</span> <code>fgetpos()</code>, <code>fsetpos()</code></a></li>
+<li><a href="stdio.html#man-fseek" id="toc-man-fseek"><span class="toc-section-number">23.22</span> <code>fseek()</code>, <code>rewind()</code></a></li>
+<li><a href="stdio.html#man-ftell" id="toc-man-ftell"><span class="toc-section-number">23.23</span> <code>ftell()</code></a></li>
+<li><a href="stdio.html#man-feof" id="toc-man-feof"><span class="toc-section-number">23.24</span> <code>feof()</code>, <code>ferror()</code>, <code>clearerr()</code></a></li>
+<li><a href="stdio.html#man-perror" id="toc-man-perror"><span class="toc-section-number">23.25</span> <code>perror()</code></a></li>
+</ul></li>
+<li><a href="stdlib.html#stdlib" id="toc-stdlib"><span class="toc-section-number">24</span> <code>&lt;stdlib.h&gt;</code> Standard Library Functions</a>
+<ul>
+<li><a href="stdlib.html#stdlib.h-types-and-macros" id="toc-stdlib.h-types-and-macros"><span class="toc-section-number">24.1</span> <code>&lt;stdlib.h&gt;</code> Types and Macros</a></li>
+<li><a href="stdlib.html#man-atof" id="toc-man-atof"><span class="toc-section-number">24.2</span> <code>atof()</code></a></li>
+<li><a href="stdlib.html#man-atoi" id="toc-man-atoi"><span class="toc-section-number">24.3</span> <code>atoi()</code>, <code>atol()</code>, <code>atoll()</code></a></li>
+<li><a href="stdlib.html#man-strtod" id="toc-man-strtod"><span class="toc-section-number">24.4</span> <code>strtod()</code>, <code>strtof()</code>, <code>strtold()</code></a></li>
+<li><a href="stdlib.html#man-strtol" id="toc-man-strtol"><span class="toc-section-number">24.5</span> <code>strtol()</code>, <code>strtoll()</code>, <code>strtoul()</code>, <code>strtoull()</code></a></li>
+<li><a href="stdlib.html#man-rand" id="toc-man-rand"><span class="toc-section-number">24.6</span> <code>rand()</code></a></li>
+<li><a href="stdlib.html#man-srand" id="toc-man-srand"><span class="toc-section-number">24.7</span> <code>srand()</code></a></li>
+<li><a href="stdlib.html#man-aligned_alloc" id="toc-man-aligned_alloc"><span class="toc-section-number">24.8</span> <code>aligned_alloc()</code></a></li>
+<li><a href="stdlib.html#man-malloc" id="toc-man-malloc"><span class="toc-section-number">24.9</span> <code>calloc()</code>, <code>malloc()</code></a></li>
+<li><a href="stdlib.html#man-free" id="toc-man-free"><span class="toc-section-number">24.10</span> <code>free()</code></a></li>
+<li><a href="stdlib.html#man-realloc" id="toc-man-realloc"><span class="toc-section-number">24.11</span> <code>realloc()</code></a></li>
+<li><a href="stdlib.html#man-abort" id="toc-man-abort"><span class="toc-section-number">24.12</span> <code>abort()</code></a></li>
+<li><a href="stdlib.html#man-atexit" id="toc-man-atexit"><span class="toc-section-number">24.13</span> <code>atexit()</code>, <code>at_quick_exit()</code></a></li>
+<li><a href="stdlib.html#man-exit" id="toc-man-exit"><span class="toc-section-number">24.14</span> <code>exit()</code>, <code>quick_exit()</code>, <code>_Exit()</code></a></li>
+<li><a href="stdlib.html#man-getenv" id="toc-man-getenv"><span class="toc-section-number">24.15</span> <code>getenv()</code></a></li>
+<li><a href="stdlib.html#man-system" id="toc-man-system"><span class="toc-section-number">24.16</span> <code>system()</code></a></li>
+<li><a href="stdlib.html#man-bsearch" id="toc-man-bsearch"><span class="toc-section-number">24.17</span> <code>bsearch()</code></a></li>
+<li><a href="stdlib.html#man-qsort" id="toc-man-qsort"><span class="toc-section-number">24.18</span> <code>qsort()</code></a></li>
+<li><a href="stdlib.html#man-abs" id="toc-man-abs"><span class="toc-section-number">24.19</span> <code>abs()</code>, <code>labs()</code>, <code>llabs()</code></a></li>
+<li><a href="stdlib.html#man-div" id="toc-man-div"><span class="toc-section-number">24.20</span> <code>div()</code>, <code>ldiv()</code>, <code>lldiv()</code></a></li>
+<li><a href="stdlib.html#man-mblen" id="toc-man-mblen"><span class="toc-section-number">24.21</span> <code>mblen()</code></a></li>
+<li><a href="stdlib.html#man-mbtowc" id="toc-man-mbtowc"><span class="toc-section-number">24.22</span> <code>mbtowc()</code></a></li>
+<li><a href="stdlib.html#man-wctomb" id="toc-man-wctomb"><span class="toc-section-number">24.23</span> <code>wctomb()</code></a></li>
+<li><a href="stdlib.html#man-mbstowcs" id="toc-man-mbstowcs"><span class="toc-section-number">24.24</span> <code>mbstowcs()</code></a></li>
+<li><a href="stdlib.html#man-wcstombs" id="toc-man-wcstombs"><span class="toc-section-number">24.25</span> <code>wcstombs()</code></a></li>
+<li><a href="stdlib.html#man-memalignment" id="toc-man-memalignment"><span class="toc-section-number">24.26</span> <code>memalignment()</code></a></li>
+</ul></li>
+<li><a href="stdnoreturn.html#stdnoreturn" id="toc-stdnoreturn"><span class="toc-section-number">25</span> <code>&lt;stdnoreturn.h&gt;</code> Macros for Non-Returning Functions</a></li>
+<li><a href="stringref.html#stringref" id="toc-stringref"><span class="toc-section-number">26</span> <code>&lt;string.h&gt;</code> String Manipulation</a>
+<ul>
+<li><a href="stringref.html#man-memcpy" id="toc-man-memcpy"><span class="toc-section-number">26.1</span> <code>memcpy()</code>, <code>memccpy()</code>, <code>memmove()</code></a></li>
+<li><a href="stringref.html#man-strcpy" id="toc-man-strcpy"><span class="toc-section-number">26.2</span> <code>strcpy()</code>, <code>strncpy()</code></a></li>
+<li><a href="stringref.html#man-strdup" id="toc-man-strdup"><span class="toc-section-number">26.3</span> <code>strdup()</code>, <code>strndup()</code></a></li>
+<li><a href="stringref.html#man-strcat" id="toc-man-strcat"><span class="toc-section-number">26.4</span> <code>strcat()</code>, <code>strncat()</code></a></li>
+<li><a href="stringref.html#man-strcmp" id="toc-man-strcmp"><span class="toc-section-number">26.5</span> <code>strcmp()</code>, <code>strncmp()</code>, <code>memcmp()</code></a></li>
+<li><a href="stringref.html#man-strcoll" id="toc-man-strcoll"><span class="toc-section-number">26.6</span> <code>strcoll()</code></a></li>
+<li><a href="stringref.html#man-strxfrm" id="toc-man-strxfrm"><span class="toc-section-number">26.7</span> <code>strxfrm()</code></a></li>
+<li><a href="stringref.html#man-strchr" id="toc-man-strchr"><span class="toc-section-number">26.8</span> <code>strchr()</code>, <code>strrchr()</code>, <code>memchr()</code></a></li>
+<li><a href="stringref.html#man-strspn" id="toc-man-strspn"><span class="toc-section-number">26.9</span> <code>strspn()</code>, <code>strcspn()</code></a></li>
+<li><a href="stringref.html#man-strpbrk" id="toc-man-strpbrk"><span class="toc-section-number">26.10</span> <code>strpbrk()</code></a></li>
+<li><a href="stringref.html#man-strstr" id="toc-man-strstr"><span class="toc-section-number">26.11</span> <code>strstr()</code></a></li>
+<li><a href="stringref.html#man-strtok" id="toc-man-strtok"><span class="toc-section-number">26.12</span> <code>strtok()</code></a></li>
+<li><a href="stringref.html#man-memset" id="toc-man-memset"><span class="toc-section-number">26.13</span> <code>memset()</code>, `memset_explicit</a></li>
+<li><a href="stringref.html#man-strerror" id="toc-man-strerror"><span class="toc-section-number">26.14</span> <code>strerror()</code></a></li>
+<li><a href="stringref.html#man-strlen" id="toc-man-strlen"><span class="toc-section-number">26.15</span> <code>strlen()</code></a></li>
+</ul></li>
+<li><a href="tgmath.html#tgmath" id="toc-tgmath"><span class="toc-section-number">27</span> <code>&lt;tgmath.h&gt;</code> Type-Generic Math Functions</a>
+<ul>
+<li><a href="tgmath.html#example-215" id="toc-example-215"><span class="toc-section-number">27.1</span> Example</a></li>
+</ul></li>
+<li><a href="threads.html#threads" id="toc-threads"><span class="toc-section-number">28</span> <code>&lt;threads.h&gt;</code> Multithreading Functions</a>
+<ul>
+<li><a href="threads.html#man-call_once" id="toc-man-call_once"><span class="toc-section-number">28.1</span> <code>call_once()</code></a></li>
+<li><a href="threads.html#man-cnd_broadcast" id="toc-man-cnd_broadcast"><span class="toc-section-number">28.2</span> <code>cnd_broadcast()</code></a></li>
+<li><a href="threads.html#man-cnd_destroy" id="toc-man-cnd_destroy"><span class="toc-section-number">28.3</span> <code>cnd_destroy()</code></a></li>
+<li><a href="threads.html#man-cnd_init" id="toc-man-cnd_init"><span class="toc-section-number">28.4</span> <code>cnd_init()</code></a></li>
+<li><a href="threads.html#man-cnd_signal" id="toc-man-cnd_signal"><span class="toc-section-number">28.5</span> <code>cnd_signal()</code></a></li>
+<li><a href="threads.html#man-cnd_timedwait" id="toc-man-cnd_timedwait"><span class="toc-section-number">28.6</span> <code>cnd_timedwait()</code></a></li>
+<li><a href="threads.html#man-cnd_wait" id="toc-man-cnd_wait"><span class="toc-section-number">28.7</span> <code>cnd_wait()</code></a></li>
+<li><a href="threads.html#man-mtx_destroy" id="toc-man-mtx_destroy"><span class="toc-section-number">28.8</span> <code>mtx_destroy()</code></a></li>
+<li><a href="threads.html#man-mtx_init" id="toc-man-mtx_init"><span class="toc-section-number">28.9</span> <code>mtx_init()</code></a></li>
+<li><a href="threads.html#man-mtx_lock" id="toc-man-mtx_lock"><span class="toc-section-number">28.10</span> <code>mtx_lock()</code></a></li>
+<li><a href="threads.html#man-mtx_timedlock" id="toc-man-mtx_timedlock"><span class="toc-section-number">28.11</span> <code>mtx_timedlock()</code></a></li>
+<li><a href="threads.html#man-mtx_trylock" id="toc-man-mtx_trylock"><span class="toc-section-number">28.12</span> <code>mtx_trylock()</code></a></li>
+<li><a href="threads.html#man-mtx_unlock" id="toc-man-mtx_unlock"><span class="toc-section-number">28.13</span> <code>mtx_unlock()</code></a></li>
+<li><a href="threads.html#man-thrd_create" id="toc-man-thrd_create"><span class="toc-section-number">28.14</span> <code>thrd_create()</code></a></li>
+<li><a href="threads.html#man-thrd_current" id="toc-man-thrd_current"><span class="toc-section-number">28.15</span> <code>thrd_current()</code></a></li>
+<li><a href="threads.html#man-thrd_detach" id="toc-man-thrd_detach"><span class="toc-section-number">28.16</span> <code>thrd_detach()</code></a></li>
+<li><a href="threads.html#man-thrd_equal" id="toc-man-thrd_equal"><span class="toc-section-number">28.17</span> <code>thrd_equal()</code></a></li>
+<li><a href="threads.html#man-thrd_exit" id="toc-man-thrd_exit"><span class="toc-section-number">28.18</span> <code>thrd_exit()</code></a></li>
+<li><a href="threads.html#man-thrd_join" id="toc-man-thrd_join"><span class="toc-section-number">28.19</span> <code>thrd_join()</code></a></li>
+<li><a href="threads.html#man-thrd_sleep" id="toc-man-thrd_sleep"><span class="toc-section-number">28.20</span> <code>thrd_sleep()</code></a></li>
+<li><a href="threads.html#man-thrd_yield" id="toc-man-thrd_yield"><span class="toc-section-number">28.21</span> <code>thrd_yield()</code></a></li>
+<li><a href="threads.html#man-tss_create" id="toc-man-tss_create"><span class="toc-section-number">28.22</span> <code>tss_create()</code></a></li>
+<li><a href="threads.html#man-tss_delete" id="toc-man-tss_delete"><span class="toc-section-number">28.23</span> <code>tss_delete()</code></a></li>
+<li><a href="threads.html#man-tss_get" id="toc-man-tss_get"><span class="toc-section-number">28.24</span> <code>tss_get()</code></a></li>
+<li><a href="threads.html#man-tss_set" id="toc-man-tss_set"><span class="toc-section-number">28.25</span> <code>tss_set()</code></a></li>
+</ul></li>
+<li><a href="time.html#time" id="toc-time"><span class="toc-section-number">29</span> <code>&lt;time.h&gt;</code> Date and Time Functions</a>
+<ul>
+<li><a href="time.html#thread-safety-warning" id="toc-thread-safety-warning"><span class="toc-section-number">29.1</span> Thread Safety Warning</a></li>
+<li><a href="time.html#man-clock" id="toc-man-clock"><span class="toc-section-number">29.2</span> <code>clock()</code></a></li>
+<li><a href="time.html#man-difftime" id="toc-man-difftime"><span class="toc-section-number">29.3</span> <code>difftime()</code></a></li>
+<li><a href="time.html#man-mktime" id="toc-man-mktime"><span class="toc-section-number">29.4</span> <code>mktime()</code></a></li>
+<li><a href="time.html#man-timegm" id="toc-man-timegm"><span class="toc-section-number">29.5</span> <code>timegm()</code></a></li>
+<li><a href="time.html#man-time" id="toc-man-time"><span class="toc-section-number">29.6</span> <code>time()</code></a></li>
+<li><a href="time.html#man-timespec_get" id="toc-man-timespec_get"><span class="toc-section-number">29.7</span> <code>timespec_get()</code></a></li>
+<li><a href="time.html#man-asctime" id="toc-man-asctime"><span class="toc-section-number">29.8</span> <code>asctime()</code></a></li>
+<li><a href="time.html#man-ctime" id="toc-man-ctime"><span class="toc-section-number">29.9</span> <code>ctime()</code></a></li>
+<li><a href="time.html#man-gmtime" id="toc-man-gmtime"><span class="toc-section-number">29.10</span> <code>gmtime()</code></a></li>
+<li><a href="time.html#man-localtime" id="toc-man-localtime"><span class="toc-section-number">29.11</span> <code>localtime()</code></a></li>
+<li><a href="time.html#man-strftime" id="toc-man-strftime"><span class="toc-section-number">29.12</span> <code>strftime()</code></a></li>
+</ul></li>
+<li><a href="uchar.html#uchar" id="toc-uchar"><span class="toc-section-number">30</span> <code>&lt;uchar.h&gt;</code> Unicode utility functions</a>
+<ul>
+<li><a href="uchar.html#types" id="toc-types"><span class="toc-section-number">30.1</span> Types</a></li>
+<li><a href="uchar.html#os-x-issue" id="toc-os-x-issue"><span class="toc-section-number">30.2</span> OS X issue</a></li>
+<li><a href="uchar.html#man-mbrtoc16" id="toc-man-mbrtoc16"><span class="toc-section-number">30.3</span> <code>mbrtoc16()</code> <code>mbrtoc32()</code></a></li>
+<li><a href="uchar.html#man-c16rtomb" id="toc-man-c16rtomb"><span class="toc-section-number">30.4</span> <code>c16rtomb()</code> <code>c32rtomb()</code></a></li>
+</ul></li>
+<li><a href="wchar.html#wchar" id="toc-wchar"><span class="toc-section-number">31</span> <code>&lt;wchar.h&gt;</code> Wide Character Handling</a>
+<ul>
+<li><a href="wchar.html#restartable-functions" id="toc-restartable-functions"><span class="toc-section-number">31.1</span> Restartable Functions</a></li>
+<li><a href="wchar.html#man-wprintf" id="toc-man-wprintf"><span class="toc-section-number">31.2</span> <code>wprintf()</code>, <code>fwprintf()</code>, <code>swprintf()</code></a></li>
+<li><a href="wchar.html#man-wscanf" id="toc-man-wscanf"><span class="toc-section-number">31.3</span> <code>wscanf()</code> <code>fwscanf()</code> <code>swscanf()</code></a></li>
+<li><a href="wchar.html#man-vwprintf" id="toc-man-vwprintf"><span class="toc-section-number">31.4</span> <code>vwprintf()</code> <code>vfwprintf()</code> <code>vswprintf()</code></a></li>
+<li><a href="wchar.html#man-vwscanf" id="toc-man-vwscanf"><span class="toc-section-number">31.5</span> <code>vwscanf()</code>, <code>vfwscanf()</code>, <code>vswscanf()</code></a></li>
+<li><a href="wchar.html#man-getwc" id="toc-man-getwc"><span class="toc-section-number">31.6</span> <code>getwc()</code> <code>fgetwc()</code> <code>getwchar()</code></a></li>
+<li><a href="wchar.html#man-fgetws" id="toc-man-fgetws"><span class="toc-section-number">31.7</span> <code>fgetws()</code></a></li>
+<li><a href="wchar.html#man-putwc" id="toc-man-putwc"><span class="toc-section-number">31.8</span> <code>putwchar()</code> <code>putwc()</code> <code>fputwc()</code></a></li>
+<li><a href="wchar.html#man-fputws" id="toc-man-fputws"><span class="toc-section-number">31.9</span> <code>fputws()</code></a></li>
+<li><a href="wchar.html#man-fwide" id="toc-man-fwide"><span class="toc-section-number">31.10</span> <code>fwide()</code></a></li>
+<li><a href="wchar.html#man-ungetwc" id="toc-man-ungetwc"><span class="toc-section-number">31.11</span> <code>ungetwc()</code></a></li>
+<li><a href="wchar.html#man-wcstod" id="toc-man-wcstod"><span class="toc-section-number">31.12</span> <code>wcstod()</code> <code>wcstof()</code> <code>wcstold()</code></a></li>
+<li><a href="wchar.html#man-wcstol" id="toc-man-wcstol"><span class="toc-section-number">31.13</span> <code>wcstol()</code> <code>wcstoll()</code> <code>wcstoul()</code> <code>wcstoull()</code></a></li>
+<li><a href="wchar.html#man-wcscpy" id="toc-man-wcscpy"><span class="toc-section-number">31.14</span> <code>wcscpy()</code> <code>wcsncpy()</code></a></li>
+<li><a href="wchar.html#man-wmemcpy" id="toc-man-wmemcpy"><span class="toc-section-number">31.15</span> <code>wmemcpy()</code> <code>wmemmove()</code></a></li>
+<li><a href="wchar.html#man-wcscat" id="toc-man-wcscat"><span class="toc-section-number">31.16</span> <code>wcscat()</code> <code>wcsncat()</code></a></li>
+<li><a href="wchar.html#man-wcscmp" id="toc-man-wcscmp"><span class="toc-section-number">31.17</span> <code>wcscmp()</code>, <code>wcsncmp()</code>, <code>wmemcmp()</code></a></li>
+<li><a href="wchar.html#man-wcscoll" id="toc-man-wcscoll"><span class="toc-section-number">31.18</span> <code>wcscoll()</code></a></li>
+<li><a href="wchar.html#man-wcsxfrm" id="toc-man-wcsxfrm"><span class="toc-section-number">31.19</span> <code>wcsxfrm()</code></a></li>
+<li><a href="wchar.html#man-wcschr" id="toc-man-wcschr"><span class="toc-section-number">31.20</span> <code>wcschr()</code> <code>wcsrchr()</code></a></li>
+<li><a href="wchar.html#man-wcsspn" id="toc-man-wcsspn"><span class="toc-section-number">31.21</span> <code>wcsspn()</code> <code>wcscspn()</code></a></li>
+<li><a href="wchar.html#man-wcspbrk" id="toc-man-wcspbrk"><span class="toc-section-number">31.22</span> <code>wcspbrk()</code></a></li>
+<li><a href="wchar.html#man-wcsstr" id="toc-man-wcsstr"><span class="toc-section-number">31.23</span> <code>wcsstr()</code></a></li>
+<li><a href="wchar.html#man-wcstok" id="toc-man-wcstok"><span class="toc-section-number">31.24</span> <code>wcstok()</code></a></li>
+<li><a href="wchar.html#man-wcslen" id="toc-man-wcslen"><span class="toc-section-number">31.25</span> <code>wcslen()</code></a></li>
+<li><a href="wchar.html#man-wcsftime" id="toc-man-wcsftime"><span class="toc-section-number">31.26</span> <code>wcsftime()</code></a></li>
+<li><a href="wchar.html#man-btowc" id="toc-man-btowc"><span class="toc-section-number">31.27</span> <code>btowc()</code> <code>wctob()</code></a></li>
+<li><a href="wchar.html#man-mbsinit" id="toc-man-mbsinit"><span class="toc-section-number">31.28</span> <code>mbsinit()</code></a></li>
+<li><a href="wchar.html#man-mbrlen" id="toc-man-mbrlen"><span class="toc-section-number">31.29</span> <code>mbrlen()</code></a></li>
+<li><a href="wchar.html#man-mbrtowc" id="toc-man-mbrtowc"><span class="toc-section-number">31.30</span> <code>mbrtowc()</code></a></li>
+<li><a href="wchar.html#man-wcrtomb" id="toc-man-wcrtomb"><span class="toc-section-number">31.31</span> <code>wcrtomb()</code></a></li>
+<li><a href="wchar.html#man-mbsrtowcs" id="toc-man-mbsrtowcs"><span class="toc-section-number">31.32</span> <code>mbsrtowcs()</code></a></li>
+<li><a href="wchar.html#man-wcsrtombs" id="toc-man-wcsrtombs"><span class="toc-section-number">31.33</span> <code>wcsrtombs()</code></a></li>
+</ul></li>
+<li><a href="wctype.html#wctype" id="toc-wctype"><span class="toc-section-number">32</span> <code>&lt;wctype.h&gt;</code> Wide Character Classification and Transformation</a>
+<ul>
+<li><a href="wctype.html#man-iswalnum" id="toc-man-iswalnum"><span class="toc-section-number">32.1</span> <code>iswalnum()</code></a></li>
+<li><a href="wctype.html#man-iswalpha" id="toc-man-iswalpha"><span class="toc-section-number">32.2</span> <code>iswalpha()</code></a></li>
+<li><a href="wctype.html#man-iswblank" id="toc-man-iswblank"><span class="toc-section-number">32.3</span> <code>iswblank()</code></a></li>
+<li><a href="wctype.html#man-iswcntrl" id="toc-man-iswcntrl"><span class="toc-section-number">32.4</span> <code>iswcntrl()</code></a></li>
+<li><a href="wctype.html#man-iswdigit" id="toc-man-iswdigit"><span class="toc-section-number">32.5</span> <code>iswdigit()</code></a></li>
+<li><a href="wctype.html#man-iswgraph" id="toc-man-iswgraph"><span class="toc-section-number">32.6</span> <code>iswgraph()</code></a></li>
+<li><a href="wctype.html#man-iswlower" id="toc-man-iswlower"><span class="toc-section-number">32.7</span> <code>iswlower()</code></a></li>
+<li><a href="wctype.html#man-iswprint" id="toc-man-iswprint"><span class="toc-section-number">32.8</span> <code>iswprint()</code></a></li>
+<li><a href="wctype.html#man-iswpunct" id="toc-man-iswpunct"><span class="toc-section-number">32.9</span> <code>iswpunct()</code></a></li>
+<li><a href="wctype.html#man-iswspace" id="toc-man-iswspace"><span class="toc-section-number">32.10</span> <code>iswspace()</code></a></li>
+<li><a href="wctype.html#man-iswupper" id="toc-man-iswupper"><span class="toc-section-number">32.11</span> <code>iswupper()</code></a></li>
+<li><a href="wctype.html#man-iswxdigit" id="toc-man-iswxdigit"><span class="toc-section-number">32.12</span> <code>iswxdigit()</code></a></li>
+<li><a href="wctype.html#man-iswctype" id="toc-man-iswctype"><span class="toc-section-number">32.13</span> <code>iswctype()</code></a></li>
+<li><a href="wctype.html#man-wctype" id="toc-man-wctype"><span class="toc-section-number">32.14</span> <code>wctype()</code></a></li>
+<li><a href="wctype.html#man-towlower" id="toc-man-towlower"><span class="toc-section-number">32.15</span> <code>towlower()</code></a></li>
+<li><a href="wctype.html#man-towupper" id="toc-man-towupper"><span class="toc-section-number">32.16</span> <code>towupper()</code></a></li>
+<li><a href="wctype.html#man-towctrans" id="toc-man-towctrans"><span class="toc-section-number">32.17</span> <code>towctrans()</code></a></li>
+<li><a href="wctype.html#man-wctrans" id="toc-man-wctrans"><span class="toc-section-number">32.18</span> <code>wctrans()</code></a></li>
+</ul></li>
+</ul>
+</nav>
+<!-- BG_NEW_CHAPTER -->
+<hr><div style="text-align:center"><span style="visibility: hidden"><a href="" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="foreword.html" rel="next">Next</a></span></div></body>
+</html>

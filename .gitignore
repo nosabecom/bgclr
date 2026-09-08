@@ -24,5 +24,13 @@ bar
 bar.[ch]
 baz
 baz.[ch]
+
+# Personal reference application
+node_modules/
+dist/
+.vercel/
+.env*
+!.env.example
+bgclr.zip
 .vscode/*
 .DS_Store

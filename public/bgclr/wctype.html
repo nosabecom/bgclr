@@ -1,0 +1,1924 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to C Programming</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body>
+<div style="text-align:center"><span><a href="wchar.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span style="visibility: hidden"> | <a href="" rel="next">Next</a></span></div><hr>
+<h1 data-number="32" id="wctype"><span class="header-section-number">32</span> <code>&lt;wctype.h&gt;</code> Wide Character Classification and Transformation</h1>
+<p></p>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="wctype.html#man-iswalnum"><code>iswalnum()</code></a></td>
+<td>Test if a wide character is alphanumeric.</td>
+</tr>
+<tr class="even">
+<td><a href="wctype.html#man-iswalpha"><code>iswalpha()</code></a></td>
+<td>Tests if a wide character is alphabetic</td>
+</tr>
+<tr class="odd">
+<td><a href="wctype.html#man-iswblank"><code>iswblank()</code></a></td>
+<td>Tests if this is a wide blank character</td>
+</tr>
+<tr class="even">
+<td><a href="wctype.html#man-iswcntrl"><code>iswcntrl()</code></a></td>
+<td>Tests if this is a wide control character.</td>
+</tr>
+<tr class="odd">
+<td><a href="wctype.html#man-iswctype"><code>iswctype()</code></a></td>
+<td>Determine wide character classification</td>
+</tr>
+<tr class="even">
+<td><a href="wctype.html#man-iswdigit"><code>iswdigit()</code></a></td>
+<td>Test if this wide character is a digit</td>
+</tr>
+<tr class="odd">
+<td><a href="wctype.html#man-iswgraph"><code>iswgraph()</code></a></td>
+<td>Test to see if a wide character is a printable non-space</td>
+</tr>
+<tr class="even">
+<td><a href="wctype.html#man-iswlower"><code>iswlower()</code></a></td>
+<td>Tests if a wide character is lowercase</td>
+</tr>
+<tr class="odd">
+<td><a href="wctype.html#man-iswprint"><code>iswprint()</code></a></td>
+<td>Tests if a wide character is printable</td>
+</tr>
+<tr class="even">
+<td><a href="wctype.html#man-iswpunct"><code>iswpunct()</code></a></td>
+<td>Test if a wide character is punctuation</td>
+</tr>
+<tr class="odd">
+<td><a href="wctype.html#man-iswspace"><code>iswspace()</code></a></td>
+<td>Test if a wide character is whitespace</td>
+</tr>
+<tr class="even">
+<td><a href="wctype.html#man-iswupper"><code>iswupper()</code></a></td>
+<td>Tests if a wide character is uppercase</td>
+</tr>
+<tr class="odd">
+<td><a href="wctype.html#man-iswxdigit"><code>iswxdigit()</code></a></td>
+<td>Tests if a wide character is a hexadecimal digit</td>
+</tr>
+<tr class="even">
+<td><a href="wctype.html#man-towctrans"><code>towctrans()</code></a></td>
+<td>Convert wide characters to upper or lowercase</td>
+</tr>
+<tr class="odd">
+<td><a href="wctype.html#man-towlower"><code>towlower()</code></a></td>
+<td>Convert an uppercase wide character to lowercase</td>
+</tr>
+<tr class="even">
+<td><a href="wctype.html#man-towupper"><code>towupper()</code></a></td>
+<td>Convert a lowercase wide character to uppercase</td>
+</tr>
+<tr class="odd">
+<td><a href="wctype.html#man-wctrans"><code>wctrans()</code></a></td>
+<td>Helper function for <code>towctrans()</code></td>
+</tr>
+<tr class="even">
+<td><a href="wctype.html#man-wctype"><code>wctype()</code></a></td>
+<td>Helper function for <code>iswctype()</code></td>
+</tr>
+</tbody>
+</table>
+<p>This is like <a href="ctype.html#ctype"><code>&lt;ctype.h&gt;</code></a> except for wide characters.</p>
+<p>With it you can test for character classifications (like “is this character whitespace?”) or do basic character conversions (like “force this character to lowercase”).</p>
+<hr />
+<h2 data-number="32.1" id="man-iswalnum"><span class="header-section-number">32.1</span> <code>iswalnum()</code></h2>
+<p></p>
+<p>Test if a wide character is alphanumeric.</p>
+<h3 class="unnumbered unlisted" id="synopsis-284">Synopsis</h3>
+<div class="sourceCode" id="cb943"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb943-1"><a href="wctype.html#cb943-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb943-2"><a href="wctype.html#cb943-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb943-3"><a href="wctype.html#cb943-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iswalnum<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-284">Description</h3>
+<p>Basically tests if a character is alphabetic (<code>A</code>-<code>Z</code> or <code>a</code>-<code>z</code>) or a digit (<code>0</code>-<code>9</code>). But some other characters might also qualify based on the locale.</p>
+<p>This is equivalent to testing if <code>iswalpha()</code> or <code>iswdigit()</code> is true.</p>
+<h3 class="unnumbered unlisted" id="return-value-282">Return Value</h3>
+<p>Returns true if the character is alphanumeric.</p>
+<h3 class="unnumbered unlisted" id="example-286">Example</h3>
+<div class="sourceCode" id="cb944"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb944-1"><a href="wctype.html#cb944-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb944-2"><a href="wctype.html#cb944-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb944-3"><a href="wctype.html#cb944-3"></a></span>
+<span id="cb944-4"><a href="wctype.html#cb944-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb944-5"><a href="wctype.html#cb944-5"></a><span class="op">{</span></span>
+<span id="cb944-6"><a href="wctype.html#cb944-6"></a>    <span class="co">//                  testing this char</span></span>
+<span id="cb944-7"><a href="wctype.html#cb944-7"></a>    <span class="co">//                           v</span></span>
+<span id="cb944-8"><a href="wctype.html#cb944-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswalnum<span class="op">(</span><span class="ch">L&#39;a&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb944-9"><a href="wctype.html#cb944-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswalnum<span class="op">(</span><span class="ch">L&#39;B&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb944-10"><a href="wctype.html#cb944-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswalnum<span class="op">(</span><span class="ch">L&#39;5&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb944-11"><a href="wctype.html#cb944-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswalnum<span class="op">(</span><span class="ch">L&#39;?&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb944-12"><a href="wctype.html#cb944-12"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-269">See Also</h3>
+<p><a href="wctype.html#man-iswalpha"><code>iswalpha()</code></a>, <a href="wctype.html#man-iswdigit"><code>iswdigit()</code></a>, <a href="ctype.html#man-isalnum"><code>isalnum()</code></a></p>
+<hr />
+<h2 data-number="32.2" id="man-iswalpha"><span class="header-section-number">32.2</span> <code>iswalpha()</code></h2>
+<p></p>
+<p>Tests if a wide character is alphabetic</p>
+<h3 class="unnumbered unlisted" id="synopsis-285">Synopsis</h3>
+<div class="sourceCode" id="cb945"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb945-1"><a href="wctype.html#cb945-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb945-2"><a href="wctype.html#cb945-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb945-3"><a href="wctype.html#cb945-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iswalpha<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-285">Description</h3>
+<p>Basically tests if a character is alphabetic (<code>A</code>-<code>Z</code> or <code>a</code>-<code>z</code>). But some other characters might also qualify based on the locale. (If other characters qualify, they won’t be control characters, digits, punctuation, or spaces.)</p>
+<p>This is the same as testing for <code>iswupper()</code> or <code>iswlower()</code>.</p>
+<h3 class="unnumbered unlisted" id="return-value-283">Return Value</h3>
+<p>Returns true if the character is alphabetic.</p>
+<h3 class="unnumbered unlisted" id="example-287">Example</h3>
+<div class="sourceCode" id="cb946"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb946-1"><a href="wctype.html#cb946-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb946-2"><a href="wctype.html#cb946-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb946-3"><a href="wctype.html#cb946-3"></a></span>
+<span id="cb946-4"><a href="wctype.html#cb946-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb946-5"><a href="wctype.html#cb946-5"></a><span class="op">{</span></span>
+<span id="cb946-6"><a href="wctype.html#cb946-6"></a>    <span class="co">//                  testing this char</span></span>
+<span id="cb946-7"><a href="wctype.html#cb946-7"></a>    <span class="co">//                           v</span></span>
+<span id="cb946-8"><a href="wctype.html#cb946-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswalpha<span class="op">(</span><span class="ch">L&#39;a&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb946-9"><a href="wctype.html#cb946-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswalpha<span class="op">(</span><span class="ch">L&#39;B&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb946-10"><a href="wctype.html#cb946-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswalpha<span class="op">(</span><span class="ch">L&#39;5&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb946-11"><a href="wctype.html#cb946-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswalpha<span class="op">(</span><span class="ch">L&#39;?&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb946-12"><a href="wctype.html#cb946-12"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-270">See Also</h3>
+<p><a href="wctype.html#man-iswalnum"><code>iswalnum()</code></a>, <a href="ctype.html#man-isalpha"><code>isalpha()</code></a></p>
+<hr />
+<h2 data-number="32.3" id="man-iswblank"><span class="header-section-number">32.3</span> <code>iswblank()</code></h2>
+<p></p>
+<p>Tests if this is a wide blank character</p>
+<h3 class="unnumbered unlisted" id="synopsis-286">Synopsis</h3>
+<div class="sourceCode" id="cb947"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb947-1"><a href="wctype.html#cb947-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb947-2"><a href="wctype.html#cb947-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb947-3"><a href="wctype.html#cb947-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iswblank<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-286">Description</h3>
+<p>Blank characters are whitespace that are also used as word separators on the same line. In the “C” locale, the only blank characters are space and tab.</p>
+<p>Other locales might define other blank characters.</p>
+<h3 class="unnumbered unlisted" id="return-value-284">Return Value</h3>
+<p>Returns true if this is a blank character.</p>
+<h3 class="unnumbered unlisted" id="example-288">Example</h3>
+<div class="sourceCode" id="cb948"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb948-1"><a href="wctype.html#cb948-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb948-2"><a href="wctype.html#cb948-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb948-3"><a href="wctype.html#cb948-3"></a></span>
+<span id="cb948-4"><a href="wctype.html#cb948-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb948-5"><a href="wctype.html#cb948-5"></a><span class="op">{</span></span>
+<span id="cb948-6"><a href="wctype.html#cb948-6"></a>    <span class="co">//                   testing this char</span></span>
+<span id="cb948-7"><a href="wctype.html#cb948-7"></a>    <span class="co">//                           v</span></span>
+<span id="cb948-8"><a href="wctype.html#cb948-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswblank<span class="op">(</span><span class="ch">L&#39; &#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb948-9"><a href="wctype.html#cb948-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswblank<span class="op">(</span><span class="ch">L&#39;</span><span class="sc">\t</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb948-10"><a href="wctype.html#cb948-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswblank<span class="op">(</span><span class="ch">L&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb948-11"><a href="wctype.html#cb948-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswblank<span class="op">(</span><span class="ch">L&#39;a&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb948-12"><a href="wctype.html#cb948-12"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswblank<span class="op">(</span><span class="ch">L&#39;?&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb948-13"><a href="wctype.html#cb948-13"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-271">See Also</h3>
+<p><a href="wctype.html#man-iswspace"><code>iswspace()</code></a>, <a href="ctype.html#man-isblank"><code>isblank()</code></a></p>
+<hr />
+<h2 data-number="32.4" id="man-iswcntrl"><span class="header-section-number">32.4</span> <code>iswcntrl()</code></h2>
+<p></p>
+<p>Tests if this is a wide control character.</p>
+<h3 class="unnumbered unlisted" id="synopsis-287">Synopsis</h3>
+<div class="sourceCode" id="cb949"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb949-1"><a href="wctype.html#cb949-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb949-2"><a href="wctype.html#cb949-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb949-3"><a href="wctype.html#cb949-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iswcntrl<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-287">Description</h3>
+<p>The spec is pretty barren, here. But I’m just going to assume that it works like the non-wide version. So let’s look at that.</p>
+<p>A <em>control character</em> is a locale-specific non-printing character.</p>
+<p>For the “C” locale, this means control characters are in the range 0x00 to 0x1F (the character right before SPACE) and 0x7F (the DEL character).</p>
+<p>Basically if it’s not an ASCII (or Unicode less than 128) printable character, it’s a control character in the “C” locale.</p>
+<p>Probably.</p>
+<h3 class="unnumbered unlisted" id="return-value-285">Return Value</h3>
+<p>Returns true if this is a control character.</p>
+<h3 class="unnumbered unlisted" id="example-289">Example</h3>
+<div class="sourceCode" id="cb950"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb950-1"><a href="wctype.html#cb950-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb950-2"><a href="wctype.html#cb950-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb950-3"><a href="wctype.html#cb950-3"></a></span>
+<span id="cb950-4"><a href="wctype.html#cb950-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb950-5"><a href="wctype.html#cb950-5"></a><span class="op">{</span></span>
+<span id="cb950-6"><a href="wctype.html#cb950-6"></a>    <span class="co">//                   testing this char</span></span>
+<span id="cb950-7"><a href="wctype.html#cb950-7"></a>    <span class="co">//                           v</span></span>
+<span id="cb950-8"><a href="wctype.html#cb950-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswcntrl<span class="op">(</span><span class="ch">L&#39;</span><span class="sc">\t</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes (tab)</span></span>
+<span id="cb950-9"><a href="wctype.html#cb950-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswcntrl<span class="op">(</span><span class="ch">L&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes (newline)</span></span>
+<span id="cb950-10"><a href="wctype.html#cb950-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswcntrl<span class="op">(</span><span class="ch">L&#39;</span><span class="sc">\r</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes (return)</span></span>
+<span id="cb950-11"><a href="wctype.html#cb950-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswcntrl<span class="op">(</span><span class="ch">L&#39;</span><span class="sc">\a</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes (bell)</span></span>
+<span id="cb950-12"><a href="wctype.html#cb950-12"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswcntrl<span class="op">(</span><span class="ch">L&#39; &#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb950-13"><a href="wctype.html#cb950-13"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswcntrl<span class="op">(</span><span class="ch">L&#39;a&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb950-14"><a href="wctype.html#cb950-14"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswcntrl<span class="op">(</span><span class="ch">L&#39;?&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb950-15"><a href="wctype.html#cb950-15"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-272">See Also</h3>
+<p><a href="ctype.html#man-iscntrl"><code>iscntrl()</code></a></p>
+<hr />
+<h2 data-number="32.5" id="man-iswdigit"><span class="header-section-number">32.5</span> <code>iswdigit()</code></h2>
+<p></p>
+<p>Test if this wide character is a digit</p>
+<h3 class="unnumbered unlisted" id="synopsis-288">Synopsis</h3>
+<div class="sourceCode" id="cb951"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb951-1"><a href="wctype.html#cb951-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb951-2"><a href="wctype.html#cb951-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb951-3"><a href="wctype.html#cb951-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iswdigit<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-288">Description</h3>
+<p>Tests if the wide character is a digit (<code>0</code>-<code>9</code>).</p>
+<h3 class="unnumbered unlisted" id="return-value-286">Return Value</h3>
+<p>Returns true if the character is a digit.</p>
+<h3 class="unnumbered unlisted" id="example-290">Example</h3>
+<div class="sourceCode" id="cb952"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb952-1"><a href="wctype.html#cb952-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb952-2"><a href="wctype.html#cb952-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb952-3"><a href="wctype.html#cb952-3"></a></span>
+<span id="cb952-4"><a href="wctype.html#cb952-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb952-5"><a href="wctype.html#cb952-5"></a><span class="op">{</span></span>
+<span id="cb952-6"><a href="wctype.html#cb952-6"></a>    <span class="co">//                   testing this char</span></span>
+<span id="cb952-7"><a href="wctype.html#cb952-7"></a>    <span class="co">//                           v</span></span>
+<span id="cb952-8"><a href="wctype.html#cb952-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswdigit<span class="op">(</span><span class="ch">L&#39;0&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb952-9"><a href="wctype.html#cb952-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswdigit<span class="op">(</span><span class="ch">L&#39;5&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb952-10"><a href="wctype.html#cb952-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswdigit<span class="op">(</span><span class="ch">L&#39;a&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb952-11"><a href="wctype.html#cb952-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswdigit<span class="op">(</span><span class="ch">L&#39;B&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb952-12"><a href="wctype.html#cb952-12"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswdigit<span class="op">(</span><span class="ch">L&#39;?&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb952-13"><a href="wctype.html#cb952-13"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-273">See Also</h3>
+<p><a href="wctype.html#man-iswalnum"><code>iswalnum()</code></a>, <a href="ctype.html#man-isdigit"><code>isdigit()</code></a></p>
+<hr />
+<h2 data-number="32.6" id="man-iswgraph"><span class="header-section-number">32.6</span> <code>iswgraph()</code></h2>
+<p></p>
+<p>Test to see if a wide character is a printable non-space</p>
+<h3 class="unnumbered unlisted" id="synopsis-289">Synopsis</h3>
+<div class="sourceCode" id="cb953"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb953-1"><a href="wctype.html#cb953-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb953-2"><a href="wctype.html#cb953-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb953-3"><a href="wctype.html#cb953-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iswgraph<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-289">Description</h3>
+<p>Returns true if this is a printable (non-control) character and also not a whitespace character.</p>
+<p>Basically if <code>iswprint()</code> is true and <code>iswspace()</code> is false.</p>
+<h3 class="unnumbered unlisted" id="return-value-287">Return Value</h3>
+<p>Returns true if this is a printable non-space character.</p>
+<h3 class="unnumbered unlisted" id="example-291">Example</h3>
+<div class="sourceCode" id="cb954"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb954-1"><a href="wctype.html#cb954-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb954-2"><a href="wctype.html#cb954-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb954-3"><a href="wctype.html#cb954-3"></a></span>
+<span id="cb954-4"><a href="wctype.html#cb954-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb954-5"><a href="wctype.html#cb954-5"></a><span class="op">{</span></span>
+<span id="cb954-6"><a href="wctype.html#cb954-6"></a>    <span class="co">//                   testing this char</span></span>
+<span id="cb954-7"><a href="wctype.html#cb954-7"></a>    <span class="co">//                           v</span></span>
+<span id="cb954-8"><a href="wctype.html#cb954-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswgraph<span class="op">(</span><span class="ch">L&#39;0&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb954-9"><a href="wctype.html#cb954-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswgraph<span class="op">(</span><span class="ch">L&#39;a&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb954-10"><a href="wctype.html#cb954-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswgraph<span class="op">(</span><span class="ch">L&#39;B&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb954-11"><a href="wctype.html#cb954-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswgraph<span class="op">(</span><span class="ch">L&#39;?&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb954-12"><a href="wctype.html#cb954-12"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswgraph<span class="op">(</span><span class="ch">L&#39; &#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb954-13"><a href="wctype.html#cb954-13"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswgraph<span class="op">(</span><span class="ch">L&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb954-14"><a href="wctype.html#cb954-14"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-274">See Also</h3>
+<p><a href="wctype.html#man-iswprint"><code>iswprint()</code></a>, <a href="wctype.html#man-iswspace"><code>iswspace()</code></a>, <a href="ctype.html#man-isgraph"><code>isgraph()</code></a></p>
+<hr />
+<h2 data-number="32.7" id="man-iswlower"><span class="header-section-number">32.7</span> <code>iswlower()</code></h2>
+<p></p>
+<p>Tests if a wide character is lowercase</p>
+<h3 class="unnumbered unlisted" id="synopsis-290">Synopsis</h3>
+<div class="sourceCode" id="cb955"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb955-1"><a href="wctype.html#cb955-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb955-2"><a href="wctype.html#cb955-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb955-3"><a href="wctype.html#cb955-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iswlower<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-290">Description</h3>
+<p>Tests if a character is lowercase, in the range <code>a</code>-<code>z</code>.</p>
+<p>In other locales, there could be other lowercase characters. In all cases, to be lowercase, the following must be true:</p>
+<div class="sourceCode" id="cb956"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb956-1"><a href="wctype.html#cb956-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>iswcntrl<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>iswdigit<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>iswpunct<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>iswspace<span class="op">(</span>c<span class="op">)</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="return-value-288">Return Value</h3>
+<p>Returns true if the wide character is lowercase.</p>
+<h3 class="unnumbered unlisted" id="example-292">Example</h3>
+<div class="sourceCode" id="cb957"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb957-1"><a href="wctype.html#cb957-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb957-2"><a href="wctype.html#cb957-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb957-3"><a href="wctype.html#cb957-3"></a></span>
+<span id="cb957-4"><a href="wctype.html#cb957-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb957-5"><a href="wctype.html#cb957-5"></a><span class="op">{</span></span>
+<span id="cb957-6"><a href="wctype.html#cb957-6"></a>    <span class="co">//                   testing this char</span></span>
+<span id="cb957-7"><a href="wctype.html#cb957-7"></a>    <span class="co">//                           v</span></span>
+<span id="cb957-8"><a href="wctype.html#cb957-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswlower<span class="op">(</span><span class="ch">L&#39;c&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb957-9"><a href="wctype.html#cb957-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswlower<span class="op">(</span><span class="ch">L&#39;0&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb957-10"><a href="wctype.html#cb957-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswlower<span class="op">(</span><span class="ch">L&#39;B&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb957-11"><a href="wctype.html#cb957-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswlower<span class="op">(</span><span class="ch">L&#39;?&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb957-12"><a href="wctype.html#cb957-12"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswlower<span class="op">(</span><span class="ch">L&#39; &#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb957-13"><a href="wctype.html#cb957-13"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-275">See Also</h3>
+<p><a href="ctype.html#man-islower"><code>islower()</code></a>, <a href="ctype.html#man-isupper"><code>iswupper()</code></a>, <a href="ctype.html#man-isalpha"><code>iswalpha()</code></a>, <a href="ctype.html#man-toupper"><code>towupper()</code></a>, <a href="ctype.html#man-tolower"><code>towlower()</code></a></p>
+<hr />
+<h2 data-number="32.8" id="man-iswprint"><span class="header-section-number">32.8</span> <code>iswprint()</code></h2>
+<p></p>
+<p>Tests if a wide character is printable</p>
+<h3 class="unnumbered unlisted" id="synopsis-291">Synopsis</h3>
+<div class="sourceCode" id="cb958"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb958-1"><a href="wctype.html#cb958-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb958-2"><a href="wctype.html#cb958-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb958-3"><a href="wctype.html#cb958-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iswprint<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-291">Description</h3>
+<p>Tests if a wide character is printable, including space (<code>' '</code>). So like <code>isgraph()</code>, except space isn’t left out in the cold.</p>
+<h3 class="unnumbered unlisted" id="return-value-289">Return Value</h3>
+<p>Returns true if the wide character is printable, including space (<code>' '</code>).</p>
+<h3 class="unnumbered unlisted" id="example-293">Example</h3>
+<div class="sourceCode" id="cb959"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb959-1"><a href="wctype.html#cb959-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb959-2"><a href="wctype.html#cb959-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb959-3"><a href="wctype.html#cb959-3"></a></span>
+<span id="cb959-4"><a href="wctype.html#cb959-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb959-5"><a href="wctype.html#cb959-5"></a><span class="op">{</span></span>
+<span id="cb959-6"><a href="wctype.html#cb959-6"></a>    <span class="co">//                   testing this char</span></span>
+<span id="cb959-7"><a href="wctype.html#cb959-7"></a>    <span class="co">//                           v</span></span>
+<span id="cb959-8"><a href="wctype.html#cb959-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswprint<span class="op">(</span><span class="ch">L&#39;c&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb959-9"><a href="wctype.html#cb959-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswprint<span class="op">(</span><span class="ch">L&#39;0&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb959-10"><a href="wctype.html#cb959-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswprint<span class="op">(</span><span class="ch">L&#39; &#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb959-11"><a href="wctype.html#cb959-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswprint<span class="op">(</span><span class="ch">L&#39;</span><span class="sc">\r</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb959-12"><a href="wctype.html#cb959-12"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-276">See Also</h3>
+<p><a href="ctype.html#man-isprint"><code>isprint()</code></a>, <a href="wctype.html#man-iswgraph"><code>iswgraph()</code></a>, <a href="wctype.html#man-iswcntrl"><code>iswcntrl()</code></a></p>
+<hr />
+<h2 data-number="32.9" id="man-iswpunct"><span class="header-section-number">32.9</span> <code>iswpunct()</code></h2>
+<p></p>
+<p>Test if a wide character is punctuation</p>
+<h3 class="unnumbered unlisted" id="synopsis-292">Synopsis</h3>
+<div class="sourceCode" id="cb960"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb960-1"><a href="wctype.html#cb960-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb960-2"><a href="wctype.html#cb960-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb960-3"><a href="wctype.html#cb960-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iswpunct<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-292">Description</h3>
+<p>Tests if a wide character is punctuation.</p>
+<p>This means for any given locale:</p>
+<div class="sourceCode" id="cb961"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb961-1"><a href="wctype.html#cb961-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>isspace<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>isalnum<span class="op">(</span>c<span class="op">)</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="return-value-290">Return Value</h3>
+<p>True if the wide character is punctuation.</p>
+<h3 class="unnumbered unlisted" id="example-294">Example</h3>
+<p>Results may vary based on locale.</p>
+<div class="sourceCode" id="cb962"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb962-1"><a href="wctype.html#cb962-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb962-2"><a href="wctype.html#cb962-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb962-3"><a href="wctype.html#cb962-3"></a></span>
+<span id="cb962-4"><a href="wctype.html#cb962-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb962-5"><a href="wctype.html#cb962-5"></a><span class="op">{</span></span>
+<span id="cb962-6"><a href="wctype.html#cb962-6"></a>    <span class="co">//                   testing this char</span></span>
+<span id="cb962-7"><a href="wctype.html#cb962-7"></a>    <span class="co">//                           v</span></span>
+<span id="cb962-8"><a href="wctype.html#cb962-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswpunct<span class="op">(</span><span class="ch">L&#39;,&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb962-9"><a href="wctype.html#cb962-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswpunct<span class="op">(</span><span class="ch">L&#39;!&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb962-10"><a href="wctype.html#cb962-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswpunct<span class="op">(</span><span class="ch">L&#39;c&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb962-11"><a href="wctype.html#cb962-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswpunct<span class="op">(</span><span class="ch">L&#39;0&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb962-12"><a href="wctype.html#cb962-12"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswpunct<span class="op">(</span><span class="ch">L&#39; &#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb962-13"><a href="wctype.html#cb962-13"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswpunct<span class="op">(</span><span class="ch">L&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb962-14"><a href="wctype.html#cb962-14"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-277">See Also</h3>
+<p><a href="ctype.html#man-ispunct"><code>ispunct()</code></a>, <a href="wctype.html#man-iswspace"><code>iswspace()</code></a>, <a href="wctype.html#man-iswalnum"><code>iswalnum()</code></a></p>
+<hr />
+<h2 data-number="32.10" id="man-iswspace"><span class="header-section-number">32.10</span> <code>iswspace()</code></h2>
+<p></p>
+<p>Test if a wide character is whitespace</p>
+<h3 class="unnumbered unlisted" id="synopsis-293">Synopsis</h3>
+<div class="sourceCode" id="cb963"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb963-1"><a href="wctype.html#cb963-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb963-2"><a href="wctype.html#cb963-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb963-3"><a href="wctype.html#cb963-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iswspace<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-293">Description</h3>
+<p>Tests if <code>c</code> is a whitespace character. These are probably:</p>
+<ul>
+<li>Space (<code>' '</code>)</li>
+<li>Formfeed (<code>'\f'</code>)</li>
+<li>Newline (<code>'\n'</code>)</li>
+<li>Carriage Return (<code>'\r'</code>)</li>
+<li>Horizontal Tab (<code>'\t'</code>)</li>
+<li>Vertical Tab (<code>'\v'</code>)</li>
+</ul>
+<p>Other locales might specify other whitespace characters. <code>iswalnum()</code>, <code>iswgraph()</code>, and <code>iswpunct()</code> are all false for all whitespace characters.</p>
+<h3 class="unnumbered unlisted" id="return-value-291">Return Value</h3>
+<p>True if the character is whitespace.</p>
+<h3 class="unnumbered unlisted" id="example-295">Example</h3>
+<p>Results may vary based on locale.</p>
+<div class="sourceCode" id="cb964"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb964-1"><a href="wctype.html#cb964-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb964-2"><a href="wctype.html#cb964-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb964-3"><a href="wctype.html#cb964-3"></a></span>
+<span id="cb964-4"><a href="wctype.html#cb964-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb964-5"><a href="wctype.html#cb964-5"></a><span class="op">{</span></span>
+<span id="cb964-6"><a href="wctype.html#cb964-6"></a>    <span class="co">//                   testing this char</span></span>
+<span id="cb964-7"><a href="wctype.html#cb964-7"></a>    <span class="co">//                           v</span></span>
+<span id="cb964-8"><a href="wctype.html#cb964-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswspace<span class="op">(</span><span class="ch">L&#39; &#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb964-9"><a href="wctype.html#cb964-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswspace<span class="op">(</span><span class="ch">L&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb964-10"><a href="wctype.html#cb964-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswspace<span class="op">(</span><span class="ch">L&#39;</span><span class="sc">\t</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb964-11"><a href="wctype.html#cb964-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswspace<span class="op">(</span><span class="ch">L&#39;,&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb964-12"><a href="wctype.html#cb964-12"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswspace<span class="op">(</span><span class="ch">L&#39;!&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb964-13"><a href="wctype.html#cb964-13"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswspace<span class="op">(</span><span class="ch">L&#39;c&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb964-14"><a href="wctype.html#cb964-14"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-278">See Also</h3>
+<p><a href="ctype.html#man-isspace"><code>isspace()</code></a>, <a href="wctype.html#man-iswblank"><code>iswblank()</code></a></p>
+<hr />
+<h2 data-number="32.11" id="man-iswupper"><span class="header-section-number">32.11</span> <code>iswupper()</code></h2>
+<p></p>
+<p>Tests if a wide character is uppercase</p>
+<h3 class="unnumbered unlisted" id="synopsis-294">Synopsis</h3>
+<div class="sourceCode" id="cb965"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb965-1"><a href="wctype.html#cb965-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb965-2"><a href="wctype.html#cb965-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb965-3"><a href="wctype.html#cb965-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iswupper<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-294">Description</h3>
+<p>Tests if a character is uppercase in the current locale.</p>
+<p>To be uppercase, the following must be true:</p>
+<div class="sourceCode" id="cb966"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb966-1"><a href="wctype.html#cb966-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>iscntrl<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>isdigit<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>ispunct<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>isspace<span class="op">(</span>c<span class="op">)</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="return-value-292">Return Value</h3>
+<p>Returns true if the wide character is uppercase.</p>
+<h3 class="unnumbered unlisted" id="example-296">Example</h3>
+<div class="sourceCode" id="cb967"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb967-1"><a href="wctype.html#cb967-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb967-2"><a href="wctype.html#cb967-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb967-3"><a href="wctype.html#cb967-3"></a></span>
+<span id="cb967-4"><a href="wctype.html#cb967-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb967-5"><a href="wctype.html#cb967-5"></a><span class="op">{</span></span>
+<span id="cb967-6"><a href="wctype.html#cb967-6"></a>    <span class="co">//                   testing this char</span></span>
+<span id="cb967-7"><a href="wctype.html#cb967-7"></a>    <span class="co">//                           v</span></span>
+<span id="cb967-8"><a href="wctype.html#cb967-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswupper<span class="op">(</span><span class="ch">L&#39;B&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb967-9"><a href="wctype.html#cb967-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswupper<span class="op">(</span><span class="ch">L&#39;c&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb967-10"><a href="wctype.html#cb967-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswupper<span class="op">(</span><span class="ch">L&#39;0&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb967-11"><a href="wctype.html#cb967-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswupper<span class="op">(</span><span class="ch">L&#39;?&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb967-12"><a href="wctype.html#cb967-12"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswupper<span class="op">(</span><span class="ch">L&#39; &#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb967-13"><a href="wctype.html#cb967-13"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-279">See Also</h3>
+<p><a href="ctype.html#man-isupper"><code>isupper()</code></a>, <a href="wctype.html#man-iswlower"><code>iswlower()</code></a>, <a href="wctype.html#man-iswalpha"><code>iswalpha()</code></a>, <a href="wctype.html#man-towupper"><code>towupper()</code></a>, <a href="wctype.html#man-towlower"><code>towlower()</code></a></p>
+<hr />
+<h2 data-number="32.12" id="man-iswxdigit"><span class="header-section-number">32.12</span> <code>iswxdigit()</code></h2>
+<p></p>
+<p>Tests if a wide character is a hexadecimal digit</p>
+<h3 class="unnumbered unlisted" id="synopsis-295">Synopsis</h3>
+<div class="sourceCode" id="cb968"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb968-1"><a href="wctype.html#cb968-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb968-2"><a href="wctype.html#cb968-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb968-3"><a href="wctype.html#cb968-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iswxdigit<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-295">Description</h3>
+<p>Returns true if the wide character is a hexadecimal digit. Namely if it’s <code>0</code>-<code>9</code>, <code>a</code>-<code>f</code>, or <code>A</code>-<code>F</code>.</p>
+<h3 class="unnumbered unlisted" id="return-value-293">Return Value</h3>
+<p>True if the character is a hexadecimal digit.</p>
+<h3 class="unnumbered unlisted" id="example-297">Example</h3>
+<div class="sourceCode" id="cb969"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb969-1"><a href="wctype.html#cb969-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb969-2"><a href="wctype.html#cb969-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb969-3"><a href="wctype.html#cb969-3"></a></span>
+<span id="cb969-4"><a href="wctype.html#cb969-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb969-5"><a href="wctype.html#cb969-5"></a><span class="op">{</span></span>
+<span id="cb969-6"><a href="wctype.html#cb969-6"></a>    <span class="co">//                    testing this char</span></span>
+<span id="cb969-7"><a href="wctype.html#cb969-7"></a>    <span class="co">//                            v</span></span>
+<span id="cb969-8"><a href="wctype.html#cb969-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswxdigit<span class="op">(</span><span class="ch">L&#39;B&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb969-9"><a href="wctype.html#cb969-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswxdigit<span class="op">(</span><span class="ch">L&#39;c&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb969-10"><a href="wctype.html#cb969-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswxdigit<span class="op">(</span><span class="ch">L&#39;2&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb969-11"><a href="wctype.html#cb969-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswxdigit<span class="op">(</span><span class="ch">L&#39;G&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb969-12"><a href="wctype.html#cb969-12"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%ls\n</span><span class="st">&quot;</span><span class="op">,</span> iswxdigit<span class="op">(</span><span class="ch">L&#39;?&#39;</span><span class="op">)?</span> <span class="st">L&quot;yes&quot;</span><span class="op">:</span> <span class="st">L&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb969-13"><a href="wctype.html#cb969-13"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-280">See Also</h3>
+<p><a href="ctype.html#man-isxdigit"><code>isxdigit()</code></a>, <a href="wctype.html#man-iswdigit"><code>iswdigit()</code></a></p>
+<hr />
+<h2 data-number="32.13" id="man-iswctype"><span class="header-section-number">32.13</span> <code>iswctype()</code></h2>
+<p></p>
+<p>Determine wide character classification</p>
+<h3 class="unnumbered unlisted" id="synopsis-296">Synopsis</h3>
+<div class="sourceCode" id="cb970"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb970-1"><a href="wctype.html#cb970-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb970-2"><a href="wctype.html#cb970-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb970-3"><a href="wctype.html#cb970-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iswctype<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">,</span> wctype_t desc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-296">Description</h3>
+<p>This is the Swiss Army knife of classification functions; it’s all the other ones rolled into one.</p>
+<p>You call it with something like this:</p>
+<div class="sourceCode" id="cb971"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb971-1"><a href="wctype.html#cb971-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>iswctype<span class="op">(</span>c<span class="op">,</span> wctype<span class="op">(</span><span class="st">&quot;digit&quot;</span><span class="op">)))</span>  <span class="co">// or &quot;alpha&quot; or &quot;space&quot; or...</span></span></code></pre></div>
+<p>and it behaves just like you’d called:</p>
+<div class="sourceCode" id="cb972"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb972-1"><a href="wctype.html#cb972-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>iswdigit<span class="op">(</span>c<span class="op">))</span></span></code></pre></div>
+<p>The difference is that you can specify the type of matching you want to do as a string at runtime, which might be convenient.</p>
+<p><code>iswctype()</code> relies on the return value from the <a href="wctype.html#man-wctype"><code>wctype()</code></a> call to get its work done.</p>
+<p>Stolen from the spec, here are the <code>iswctype()</code> calls and their equivalents:</p>
+<table>
+<thead>
+<tr class="header">
+<th><code>iswctype()</code> call</th>
+<th>Hard-coded equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>iswctype(c, wctype("alnum"))</code></td>
+<td><code>iswalnum(c)</code></td>
+</tr>
+<tr class="even">
+<td><code>iswctype(c, wctype("alpha"))</code></td>
+<td><code>iswalpha(c)</code></td>
+</tr>
+<tr class="odd">
+<td><code>iswctype(c, wctype("blank"))</code></td>
+<td><code>iswblank(c)</code></td>
+</tr>
+<tr class="even">
+<td><code>iswctype(c, wctype("cntrl"))</code></td>
+<td><code>iswcntrl(c)</code></td>
+</tr>
+<tr class="odd">
+<td><code>iswctype(c, wctype("digit"))</code></td>
+<td><code>iswdigit(c)</code></td>
+</tr>
+<tr class="even">
+<td><code>iswctype(c, wctype("graph"))</code></td>
+<td><code>iswgraph(c)</code></td>
+</tr>
+<tr class="odd">
+<td><code>iswctype(c, wctype("lower"))</code></td>
+<td><code>iswlower(c)</code></td>
+</tr>
+<tr class="even">
+<td><code>iswctype(c, wctype("print"))</code></td>
+<td><code>iswprint(c)</code></td>
+</tr>
+<tr class="odd">
+<td><code>iswctype(c, wctype("punct"))</code></td>
+<td><code>iswpunct(c)</code></td>
+</tr>
+<tr class="even">
+<td><code>iswctype(c, wctype("space"))</code></td>
+<td><code>iswspace(c)</code></td>
+</tr>
+<tr class="odd">
+<td><code>iswctype(c, wctype("upper"))</code></td>
+<td><code>iswupper(c)</code></td>
+</tr>
+<tr class="even">
+<td><code>iswctype(c, wctype("xdigit"))</code></td>
+<td><code>iswxdigit(c)</code></td>
+</tr>
+</tbody>
+</table>
+<p>See the <a href="wctype.html#man-wctype"><code>wctype()</code> documentation</a> for how that helper function works.</p>
+<h3 class="unnumbered unlisted" id="return-value-294">Return Value</h3>
+<p>Returns true if the wide character <code>wc</code> matches the character class in <code>desc</code>.</p>
+<h3 class="unnumbered unlisted" id="example-298">Example</h3>
+<p>Test for a given character classification at when the classification isn’t known at compile time:</p>
+<div class="sourceCode" id="cb973"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb973-1"><a href="wctype.html#cb973-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span><span class="pp">  </span><span class="co">// for fflush(stdout)</span></span>
+<span id="cb973-2"><a href="wctype.html#cb973-2"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb973-3"><a href="wctype.html#cb973-3"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb973-4"><a href="wctype.html#cb973-4"></a></span>
+<span id="cb973-5"><a href="wctype.html#cb973-5"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb973-6"><a href="wctype.html#cb973-6"></a><span class="op">{</span></span>
+<span id="cb973-7"><a href="wctype.html#cb973-7"></a>    <span class="dt">wchar_t</span> c<span class="op">;</span>        <span class="co">// Holds a single wide character (to test)</span></span>
+<span id="cb973-8"><a href="wctype.html#cb973-8"></a>    <span class="dt">char</span> desc<span class="op">[</span><span class="dv">128</span><span class="op">];</span>   <span class="co">// Holds the character class</span></span>
+<span id="cb973-9"><a href="wctype.html#cb973-9"></a></span>
+<span id="cb973-10"><a href="wctype.html#cb973-10"></a>    <span class="co">// Get the character and classification from the user</span></span>
+<span id="cb973-11"><a href="wctype.html#cb973-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;Enter a character and character class: &quot;</span><span class="op">);</span></span>
+<span id="cb973-12"><a href="wctype.html#cb973-12"></a>    fflush<span class="op">(</span>stdout<span class="op">);</span></span>
+<span id="cb973-13"><a href="wctype.html#cb973-13"></a>    wscanf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%lc</span><span class="st"> </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">&amp;</span>c<span class="op">,</span> desc<span class="op">);</span></span>
+<span id="cb973-14"><a href="wctype.html#cb973-14"></a></span>
+<span id="cb973-15"><a href="wctype.html#cb973-15"></a>    <span class="co">// Compute the type from the given class</span></span>
+<span id="cb973-16"><a href="wctype.html#cb973-16"></a>    wctype_t t <span class="op">=</span> wctype<span class="op">(</span>desc<span class="op">);</span></span>
+<span id="cb973-17"><a href="wctype.html#cb973-17"></a></span>
+<span id="cb973-18"><a href="wctype.html#cb973-18"></a>    <span class="cf">if</span> <span class="op">(</span>t <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb973-19"><a href="wctype.html#cb973-19"></a>        <span class="co">// If the type is 0, it&#39;s an unknown class</span></span>
+<span id="cb973-20"><a href="wctype.html#cb973-20"></a>        wprintf<span class="op">(</span><span class="st">L&quot;Unknown character class: </span><span class="sc">\&quot;%s\&quot;\n</span><span class="st">&quot;</span><span class="op">,</span> desc<span class="op">);</span></span>
+<span id="cb973-21"><a href="wctype.html#cb973-21"></a>    <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb973-22"><a href="wctype.html#cb973-22"></a>        <span class="co">// Otherwise, let&#39;s test the character and see if its that</span></span>
+<span id="cb973-23"><a href="wctype.html#cb973-23"></a>        <span class="co">// classification</span></span>
+<span id="cb973-24"><a href="wctype.html#cb973-24"></a>        <span class="cf">if</span> <span class="op">(</span>iswctype<span class="op">(</span>c<span class="op">,</span> t<span class="op">))</span></span>
+<span id="cb973-25"><a href="wctype.html#cb973-25"></a>            wprintf<span class="op">(</span><span class="st">L&quot;Yes! &#39;</span><span class="sc">%lc</span><span class="st">&#39; is </span><span class="sc">%s</span><span class="st">!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> c<span class="op">,</span> desc<span class="op">);</span></span>
+<span id="cb973-26"><a href="wctype.html#cb973-26"></a>        <span class="cf">else</span></span>
+<span id="cb973-27"><a href="wctype.html#cb973-27"></a>            wprintf<span class="op">(</span><span class="st">L&quot;Nope! &#39;</span><span class="sc">%lc</span><span class="st">&#39; is not </span><span class="sc">%s</span><span class="st">.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> c<span class="op">,</span> desc<span class="op">);</span></span>
+<span id="cb973-28"><a href="wctype.html#cb973-28"></a>    <span class="op">}</span></span>
+<span id="cb973-29"><a href="wctype.html#cb973-29"></a><span class="op">}</span></span></code></pre></div>
+<p>Output:</p>
+<div class="sourceCode" id="cb974"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb974-1"><a href="wctype.html#cb974-1" aria-hidden="true" tabindex="-1"></a>Enter a character and character class: 5 digit</span>
+<span id="cb974-2"><a href="wctype.html#cb974-2" aria-hidden="true" tabindex="-1"></a>Yes! &#39;5&#39; is digit!</span>
+<span id="cb974-3"><a href="wctype.html#cb974-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb974-4"><a href="wctype.html#cb974-4" aria-hidden="true" tabindex="-1"></a>Enter a character and character class: b digit</span>
+<span id="cb974-5"><a href="wctype.html#cb974-5" aria-hidden="true" tabindex="-1"></a>Nope! &#39;b&#39; is not digit.</span>
+<span id="cb974-6"><a href="wctype.html#cb974-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb974-7"><a href="wctype.html#cb974-7" aria-hidden="true" tabindex="-1"></a>Enter a character and character class: x alnum</span>
+<span id="cb974-8"><a href="wctype.html#cb974-8" aria-hidden="true" tabindex="-1"></a>Yes! &#39;x&#39; is alnum!</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-281">See Also</h3>
+<p><a href="wctype.html#man-wctype"><code>wctype()</code></a></p>
+<hr />
+<h2 data-number="32.14" id="man-wctype"><span class="header-section-number">32.14</span> <code>wctype()</code></h2>
+<p></p>
+<p>Helper function for <code>iswctype()</code></p>
+<h3 class="unnumbered unlisted" id="synopsis-297">Synopsis</h3>
+<div class="sourceCode" id="cb975"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb975-1"><a href="wctype.html#cb975-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb975-2"><a href="wctype.html#cb975-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb975-3"><a href="wctype.html#cb975-3" aria-hidden="true" tabindex="-1"></a>wctype_t wctype<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>property<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-297">Description</h3>
+<p>This function returns an opaque value for the given <code>property</code> that is meant to be passed as the second argument to <a href="wctype.html#man-iswctype"><code>iswctype()</code></a>.</p>
+<p>The returned value is of type <code>wctype_t</code>.</p>
+<p>Valid properties in all locales are:</p>
+<div class="sourceCode" id="cb976"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb976-1"><a href="wctype.html#cb976-1" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;alnum&quot;</span>   <span class="st">&quot;alpha&quot;</span>   <span class="st">&quot;blank&quot;</span>   <span class="st">&quot;cntrl&quot;</span></span>
+<span id="cb976-2"><a href="wctype.html#cb976-2" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;digit&quot;</span>   <span class="st">&quot;graph&quot;</span>   <span class="st">&quot;lower&quot;</span>   <span class="st">&quot;print&quot;</span></span>
+<span id="cb976-3"><a href="wctype.html#cb976-3" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;punct&quot;</span>   <span class="st">&quot;space&quot;</span>   <span class="st">&quot;upper&quot;</span>   <span class="st">&quot;xdigit&quot;</span></span></code></pre></div>
+<p>Other properties might be defined as determined by the <code>LC_CTYPE</code> category of the current locale.</p>
+<p>See the <a href="wctype.html#man-iswctype"><code>iswctype()</code> reference page</a> for more usage details.</p>
+<h3 class="unnumbered unlisted" id="return-value-295">Return Value</h3>
+<p>Returns the <code>wctype_t</code> value associated with the given <code>property</code>.</p>
+<p>If an invalid value is passed for <code>property</code>, returns <code>0</code>.</p>
+<h3 class="unnumbered unlisted" id="example-299">Example</h3>
+<p>Test for a given character classification at when the classification isn’t known at compile time:</p>
+<div class="sourceCode" id="cb977"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb977-1"><a href="wctype.html#cb977-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span><span class="pp">  </span><span class="co">// for fflush(stdout)</span></span>
+<span id="cb977-2"><a href="wctype.html#cb977-2"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb977-3"><a href="wctype.html#cb977-3"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb977-4"><a href="wctype.html#cb977-4"></a></span>
+<span id="cb977-5"><a href="wctype.html#cb977-5"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb977-6"><a href="wctype.html#cb977-6"></a><span class="op">{</span></span>
+<span id="cb977-7"><a href="wctype.html#cb977-7"></a>    <span class="dt">wchar_t</span> c<span class="op">;</span>        <span class="co">// Holds a single wide character (to test)</span></span>
+<span id="cb977-8"><a href="wctype.html#cb977-8"></a>    <span class="dt">char</span> desc<span class="op">[</span><span class="dv">128</span><span class="op">];</span>   <span class="co">// Holds the character class</span></span>
+<span id="cb977-9"><a href="wctype.html#cb977-9"></a></span>
+<span id="cb977-10"><a href="wctype.html#cb977-10"></a>    <span class="co">// Get the character and classification from the user</span></span>
+<span id="cb977-11"><a href="wctype.html#cb977-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;Enter a character and character class: &quot;</span><span class="op">);</span></span>
+<span id="cb977-12"><a href="wctype.html#cb977-12"></a>    fflush<span class="op">(</span>stdout<span class="op">);</span></span>
+<span id="cb977-13"><a href="wctype.html#cb977-13"></a>    wscanf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%lc</span><span class="st"> </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">&amp;</span>c<span class="op">,</span> desc<span class="op">);</span></span>
+<span id="cb977-14"><a href="wctype.html#cb977-14"></a></span>
+<span id="cb977-15"><a href="wctype.html#cb977-15"></a>    <span class="co">// Compute the type from the given class</span></span>
+<span id="cb977-16"><a href="wctype.html#cb977-16"></a>    wctype_t t <span class="op">=</span> wctype<span class="op">(</span>desc<span class="op">);</span></span>
+<span id="cb977-17"><a href="wctype.html#cb977-17"></a></span>
+<span id="cb977-18"><a href="wctype.html#cb977-18"></a>    <span class="cf">if</span> <span class="op">(</span>t <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb977-19"><a href="wctype.html#cb977-19"></a>        <span class="co">// If the type is 0, it&#39;s an unknown class</span></span>
+<span id="cb977-20"><a href="wctype.html#cb977-20"></a>        wprintf<span class="op">(</span><span class="st">L&quot;Unknown character class: </span><span class="sc">\&quot;%s\&quot;\n</span><span class="st">&quot;</span><span class="op">,</span> desc<span class="op">);</span></span>
+<span id="cb977-21"><a href="wctype.html#cb977-21"></a>    <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb977-22"><a href="wctype.html#cb977-22"></a>        <span class="co">// Otherwise, let&#39;s test the character and see if its that</span></span>
+<span id="cb977-23"><a href="wctype.html#cb977-23"></a>        <span class="co">// classification</span></span>
+<span id="cb977-24"><a href="wctype.html#cb977-24"></a>        <span class="cf">if</span> <span class="op">(</span>iswctype<span class="op">(</span>c<span class="op">,</span> t<span class="op">))</span></span>
+<span id="cb977-25"><a href="wctype.html#cb977-25"></a>            wprintf<span class="op">(</span><span class="st">L&quot;Yes! &#39;</span><span class="sc">%lc</span><span class="st">&#39; is </span><span class="sc">%s</span><span class="st">!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> c<span class="op">,</span> desc<span class="op">);</span></span>
+<span id="cb977-26"><a href="wctype.html#cb977-26"></a>        <span class="cf">else</span></span>
+<span id="cb977-27"><a href="wctype.html#cb977-27"></a>            wprintf<span class="op">(</span><span class="st">L&quot;Nope! &#39;</span><span class="sc">%lc</span><span class="st">&#39; is not </span><span class="sc">%s</span><span class="st">.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> c<span class="op">,</span> desc<span class="op">);</span></span>
+<span id="cb977-28"><a href="wctype.html#cb977-28"></a>    <span class="op">}</span></span>
+<span id="cb977-29"><a href="wctype.html#cb977-29"></a><span class="op">}</span></span></code></pre></div>
+<p>Output:</p>
+<div class="sourceCode" id="cb978"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb978-1"><a href="wctype.html#cb978-1" aria-hidden="true" tabindex="-1"></a>Enter a character and character class: 5 digit</span>
+<span id="cb978-2"><a href="wctype.html#cb978-2" aria-hidden="true" tabindex="-1"></a>Yes! &#39;5&#39; is digit!</span>
+<span id="cb978-3"><a href="wctype.html#cb978-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb978-4"><a href="wctype.html#cb978-4" aria-hidden="true" tabindex="-1"></a>Enter a character and character class: b digit</span>
+<span id="cb978-5"><a href="wctype.html#cb978-5" aria-hidden="true" tabindex="-1"></a>Nope! &#39;b&#39; is not digit.</span>
+<span id="cb978-6"><a href="wctype.html#cb978-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb978-7"><a href="wctype.html#cb978-7" aria-hidden="true" tabindex="-1"></a>Enter a character and character class: x alnum</span>
+<span id="cb978-8"><a href="wctype.html#cb978-8" aria-hidden="true" tabindex="-1"></a>Yes! &#39;x&#39; is alnum!</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-282">See Also</h3>
+<p><a href="wctype.html#man-iswctype"><code>iswctype()</code></a></p>
+<hr />
+<h2 data-number="32.15" id="man-towlower"><span class="header-section-number">32.15</span> <code>towlower()</code></h2>
+<p></p>
+<p>Convert an uppercase wide character to lowercase</p>
+<h3 class="unnumbered unlisted" id="synopsis-298">Synopsis</h3>
+<div class="sourceCode" id="cb979"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb979-1"><a href="wctype.html#cb979-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb979-2"><a href="wctype.html#cb979-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb979-3"><a href="wctype.html#cb979-3" aria-hidden="true" tabindex="-1"></a><span class="dt">wint_t</span> towlower<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-298">Description</h3>
+<p>If the character is upper (i.e. <code>iswupper(c)</code> is true), this function returns the corresponding lowercase letter.</p>
+<p>Different locales might have different upper and lowercase letters.</p>
+<h3 class="unnumbered unlisted" id="return-value-296">Return Value</h3>
+<p>If the letter <code>wc</code> is uppercase, a lowercase version of that letter will be returned according to the current locale.</p>
+<p>If the letter is not uppercase, <code>wc</code> is returned unchanged.</p>
+<h3 class="unnumbered unlisted" id="example-300">Example</h3>
+<div class="sourceCode" id="cb980"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb980-1"><a href="wctype.html#cb980-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb980-2"><a href="wctype.html#cb980-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb980-3"><a href="wctype.html#cb980-3"></a></span>
+<span id="cb980-4"><a href="wctype.html#cb980-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb980-5"><a href="wctype.html#cb980-5"></a><span class="op">{</span></span>
+<span id="cb980-6"><a href="wctype.html#cb980-6"></a>    <span class="co">//                  changing this char</span></span>
+<span id="cb980-7"><a href="wctype.html#cb980-7"></a>    <span class="co">//                           v</span></span>
+<span id="cb980-8"><a href="wctype.html#cb980-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%lc\n</span><span class="st">&quot;</span><span class="op">,</span> towlower<span class="op">(</span><span class="ch">L&#39;B&#39;</span><span class="op">));</span>  <span class="co">// b (made lowercase!)</span></span>
+<span id="cb980-9"><a href="wctype.html#cb980-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%lc\n</span><span class="st">&quot;</span><span class="op">,</span> towlower<span class="op">(</span><span class="ch">L&#39;e&#39;</span><span class="op">));</span>  <span class="co">// e (unchanged)</span></span>
+<span id="cb980-10"><a href="wctype.html#cb980-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%lc\n</span><span class="st">&quot;</span><span class="op">,</span> towlower<span class="op">(</span><span class="ch">L&#39;!&#39;</span><span class="op">));</span>  <span class="co">// ! (unchanged)</span></span>
+<span id="cb980-11"><a href="wctype.html#cb980-11"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-283">See Also</h3>
+<p><a href="ctype.html#man-tolower"><code>tolower()</code></a>, <a href="wctype.html#man-towupper"><code>towupper()</code></a>, <a href="wctype.html#man-iswlower"><code>iswlower()</code></a>, <a href="wctype.html#man-iswupper"><code>iswupper()</code></a></p>
+<hr />
+<h2 data-number="32.16" id="man-towupper"><span class="header-section-number">32.16</span> <code>towupper()</code></h2>
+<p></p>
+<p>Convert a lowercase wide character to uppercase</p>
+<h3 class="unnumbered unlisted" id="synopsis-299">Synopsis</h3>
+<div class="sourceCode" id="cb981"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb981-1"><a href="wctype.html#cb981-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb981-2"><a href="wctype.html#cb981-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb981-3"><a href="wctype.html#cb981-3" aria-hidden="true" tabindex="-1"></a><span class="dt">wint_t</span> towupper<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-299">Description</h3>
+<p>If the character is lower (i.e. <code>iswlower(c)</code> is true), this function returns the corresponding uppercase letter.</p>
+<p>Different locales might have different upper and lowercase letters.</p>
+<h3 class="unnumbered unlisted" id="return-value-297">Return Value</h3>
+<p>If the letter <code>wc</code> is lowercase, an uppercase version of that letter will be returned according to the current locale.</p>
+<p>If the letter is not lowercase, <code>wc</code> is returned unchanged.</p>
+<h3 class="unnumbered unlisted" id="example-301">Example</h3>
+<div class="sourceCode" id="cb982"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb982-1"><a href="wctype.html#cb982-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb982-2"><a href="wctype.html#cb982-2"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb982-3"><a href="wctype.html#cb982-3"></a></span>
+<span id="cb982-4"><a href="wctype.html#cb982-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb982-5"><a href="wctype.html#cb982-5"></a><span class="op">{</span></span>
+<span id="cb982-6"><a href="wctype.html#cb982-6"></a>    <span class="co">//                  changing this char</span></span>
+<span id="cb982-7"><a href="wctype.html#cb982-7"></a>    <span class="co">//                           v</span></span>
+<span id="cb982-8"><a href="wctype.html#cb982-8"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%lc\n</span><span class="st">&quot;</span><span class="op">,</span> towupper<span class="op">(</span><span class="ch">L&#39;B&#39;</span><span class="op">));</span>  <span class="co">// B (unchanged)</span></span>
+<span id="cb982-9"><a href="wctype.html#cb982-9"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%lc\n</span><span class="st">&quot;</span><span class="op">,</span> towupper<span class="op">(</span><span class="ch">L&#39;e&#39;</span><span class="op">));</span>  <span class="co">// E (made uppercase!)</span></span>
+<span id="cb982-10"><a href="wctype.html#cb982-10"></a>    wprintf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%lc\n</span><span class="st">&quot;</span><span class="op">,</span> towupper<span class="op">(</span><span class="ch">L&#39;!&#39;</span><span class="op">));</span>  <span class="co">// ! (unchanged)</span></span>
+<span id="cb982-11"><a href="wctype.html#cb982-11"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-284">See Also</h3>
+<p><a href="ctype.html#man-toupper"><code>toupper()</code></a>, <a href="wctype.html#man-towlower"><code>towlower()</code></a>, <a href="wctype.html#man-iswlower"><code>iswlower()</code></a>, <a href="wctype.html#man-iswupper"><code>iswupper()</code></a></p>
+<hr />
+<h2 data-number="32.17" id="man-towctrans"><span class="header-section-number">32.17</span> <code>towctrans()</code></h2>
+<p></p>
+<p>Convert wide characters to upper or lowercase</p>
+<h3 class="unnumbered unlisted" id="synopsis-300">Synopsis</h3>
+<div class="sourceCode" id="cb983"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb983-1"><a href="wctype.html#cb983-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb983-2"><a href="wctype.html#cb983-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb983-3"><a href="wctype.html#cb983-3" aria-hidden="true" tabindex="-1"></a><span class="dt">wint_t</span> towctrans<span class="op">(</span><span class="dt">wint_t</span> wc<span class="op">,</span> wctrans_t desc<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-300">Description</h3>
+<p>This is the Swiss Army knife of character conversion functions; it’s all the other ones rolled into one. And by “all the other ones” I mean <code>towupper()</code> and <code>towlower()</code>, since those are the only ones there are.</p>
+<p>You call it with something like this:</p>
+<div class="sourceCode" id="cb984"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb984-1"><a href="wctype.html#cb984-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>towctrans<span class="op">(</span>c<span class="op">,</span> wctrans<span class="op">(</span><span class="st">&quot;toupper&quot;</span><span class="op">)))</span>  <span class="co">// or &quot;tolower&quot;</span></span></code></pre></div>
+<p>and it behaves just like you’d called:</p>
+<div class="sourceCode" id="cb985"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb985-1"><a href="wctype.html#cb985-1" aria-hidden="true" tabindex="-1"></a>towupper<span class="op">(</span>c<span class="op">);</span></span></code></pre></div>
+<p>The difference is that you can specify the type of conversion you want to do as a string at runtime, which might be convenient.</p>
+<p><code>towctrans()</code> relies on the return value from the <a href="wctype.html#man-wctrans"><code>wctrans()</code></a> call to get its work done.</p>
+<table>
+<thead>
+<tr class="header">
+<th><code>towctrans()</code> call</th>
+<th>Hard-coded equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>towctrans(c, wctrans("toupper"))</code></td>
+<td><code>towupper(c)</code></td>
+</tr>
+<tr class="even">
+<td><code>towctrans(c, wctrans("tolower"))</code></td>
+<td><code>towlower(c)</code></td>
+</tr>
+</tbody>
+</table>
+<p>See the <a href="wctype.html#man-wctrans"><code>wctrans()</code> documentation</a> for how that helper function works.</p>
+<h3 class="unnumbered unlisted" id="return-value-298">Return Value</h3>
+<p>Returns the character <code>wc</code> as if run through <code>towupper()</code> or <code>towlower()</code>, depending on the value of <code>desc</code>.</p>
+<p>If the character already matches the classification, it is returned as-is.</p>
+<h3 class="unnumbered unlisted" id="example-302">Example</h3>
+<div class="sourceCode" id="cb986"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb986-1"><a href="wctype.html#cb986-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span><span class="pp">  </span><span class="co">// for fflush(stdout)</span></span>
+<span id="cb986-2"><a href="wctype.html#cb986-2"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb986-3"><a href="wctype.html#cb986-3"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb986-4"><a href="wctype.html#cb986-4"></a></span>
+<span id="cb986-5"><a href="wctype.html#cb986-5"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb986-6"><a href="wctype.html#cb986-6"></a><span class="op">{</span></span>
+<span id="cb986-7"><a href="wctype.html#cb986-7"></a>    <span class="dt">wchar_t</span> c<span class="op">;</span>        <span class="co">// Holds a single wide character (to test)</span></span>
+<span id="cb986-8"><a href="wctype.html#cb986-8"></a>    <span class="dt">char</span> desc<span class="op">[</span><span class="dv">128</span><span class="op">];</span>   <span class="co">// Holds the conversion type</span></span>
+<span id="cb986-9"><a href="wctype.html#cb986-9"></a></span>
+<span id="cb986-10"><a href="wctype.html#cb986-10"></a>    <span class="co">// Get the character and conversion type from the user</span></span>
+<span id="cb986-11"><a href="wctype.html#cb986-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;Enter a character and conversion type: &quot;</span><span class="op">);</span></span>
+<span id="cb986-12"><a href="wctype.html#cb986-12"></a>    fflush<span class="op">(</span>stdout<span class="op">);</span></span>
+<span id="cb986-13"><a href="wctype.html#cb986-13"></a>    wscanf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%lc</span><span class="st"> </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">&amp;</span>c<span class="op">,</span> desc<span class="op">);</span></span>
+<span id="cb986-14"><a href="wctype.html#cb986-14"></a></span>
+<span id="cb986-15"><a href="wctype.html#cb986-15"></a>    <span class="co">// Compute the type from the given conversion type</span></span>
+<span id="cb986-16"><a href="wctype.html#cb986-16"></a>    wctrans_t t <span class="op">=</span> wctrans<span class="op">(</span>desc<span class="op">);</span></span>
+<span id="cb986-17"><a href="wctype.html#cb986-17"></a></span>
+<span id="cb986-18"><a href="wctype.html#cb986-18"></a>    <span class="cf">if</span> <span class="op">(</span>t <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb986-19"><a href="wctype.html#cb986-19"></a>        <span class="co">// If the type is 0, it&#39;s an unknown conversion type</span></span>
+<span id="cb986-20"><a href="wctype.html#cb986-20"></a>        wprintf<span class="op">(</span><span class="st">L&quot;Unknown conversion: </span><span class="sc">\&quot;%s\&quot;\n</span><span class="st">&quot;</span><span class="op">,</span> desc<span class="op">);</span></span>
+<span id="cb986-21"><a href="wctype.html#cb986-21"></a>    <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb986-22"><a href="wctype.html#cb986-22"></a>        <span class="co">// Otherwise, let&#39;s do the conversion</span></span>
+<span id="cb986-23"><a href="wctype.html#cb986-23"></a>        <span class="dt">wint_t</span> result <span class="op">=</span> towctrans<span class="op">(</span>c<span class="op">,</span> t<span class="op">);</span></span>
+<span id="cb986-24"><a href="wctype.html#cb986-24"></a>        wprintf<span class="op">(</span><span class="st">L&quot;&#39;</span><span class="sc">%lc</span><span class="st">&#39; -&gt; </span><span class="sc">%s</span><span class="st"> -&gt; &#39;</span><span class="sc">%lc</span><span class="st">&#39;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> c<span class="op">,</span> desc<span class="op">,</span> result<span class="op">);</span></span>
+<span id="cb986-25"><a href="wctype.html#cb986-25"></a>    <span class="op">}</span></span>
+<span id="cb986-26"><a href="wctype.html#cb986-26"></a><span class="op">}</span></span></code></pre></div>
+<p>Output on my system:</p>
+<div class="sourceCode" id="cb987"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb987-1"><a href="wctype.html#cb987-1" aria-hidden="true" tabindex="-1"></a>Enter a character and conversion type: b toupper</span>
+<span id="cb987-2"><a href="wctype.html#cb987-2" aria-hidden="true" tabindex="-1"></a>&#39;b&#39; -&gt; toupper -&gt; &#39;B&#39;</span>
+<span id="cb987-3"><a href="wctype.html#cb987-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb987-4"><a href="wctype.html#cb987-4" aria-hidden="true" tabindex="-1"></a>Enter a character and conversion type: B toupper</span>
+<span id="cb987-5"><a href="wctype.html#cb987-5" aria-hidden="true" tabindex="-1"></a>&#39;B&#39; -&gt; toupper -&gt; &#39;B&#39;</span>
+<span id="cb987-6"><a href="wctype.html#cb987-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb987-7"><a href="wctype.html#cb987-7" aria-hidden="true" tabindex="-1"></a>Enter a character and conversion type: B tolower</span>
+<span id="cb987-8"><a href="wctype.html#cb987-8" aria-hidden="true" tabindex="-1"></a>&#39;B&#39; -&gt; tolower -&gt; &#39;b&#39;</span>
+<span id="cb987-9"><a href="wctype.html#cb987-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb987-10"><a href="wctype.html#cb987-10" aria-hidden="true" tabindex="-1"></a>Enter a character and conversion type: ! toupper</span>
+<span id="cb987-11"><a href="wctype.html#cb987-11" aria-hidden="true" tabindex="-1"></a>&#39;!&#39; -&gt; toupper -&gt; &#39;!&#39;</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-285">See Also</h3>
+<p><a href="wctype.html#man-wctrans"><code>wctrans()</code></a>, <a href="wctype.html#man-towupper"><code>towupper()</code></a>, <a href="wctype.html#man-towlower"><code>towlower()</code></a></p>
+<hr />
+<h2 data-number="32.18" id="man-wctrans"><span class="header-section-number">32.18</span> <code>wctrans()</code></h2>
+<p></p>
+<p>Helper function for <code>towctrans()</code></p>
+<h3 class="unnumbered unlisted" id="synopsis-301">Synopsis</h3>
+<div class="sourceCode" id="cb988"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb988-1"><a href="wctype.html#cb988-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb988-2"><a href="wctype.html#cb988-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb988-3"><a href="wctype.html#cb988-3" aria-hidden="true" tabindex="-1"></a>wctrans_t wctrans<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>property<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-301">Description</h3>
+<p>This is a helper function for generating the second argument to <a href="wctype.html#man-towctrans"><code>towctrans()</code></a>.</p>
+<p>You can pass in one of two things for the <code>property</code>:</p>
+<ul>
+<li><code>toupper</code> to make <code>towctrans()</code> behave like <code>towupper()</code></li>
+<li><code>tolower</code> to make <code>towctrans()</code> behave like <code>towlower()</code></li>
+</ul>
+<h3 class="unnumbered unlisted" id="return-value-299">Return Value</h3>
+<p>On success, returns a value that can be used as the <code>desc</code> argument to <code>towctrans()</code>.</p>
+<p>Otherwise, if the <code>property</code> isn’t recognized, returns <code>0</code>.</p>
+<h3 class="unnumbered unlisted" id="example-303">Example</h3>
+<div class="sourceCode" id="cb989"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb989-1"><a href="wctype.html#cb989-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span><span class="pp">  </span><span class="co">// for fflush(stdout)</span></span>
+<span id="cb989-2"><a href="wctype.html#cb989-2"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb989-3"><a href="wctype.html#cb989-3"></a><span class="pp">#include </span><span class="im">&lt;wctype.h&gt;</span></span>
+<span id="cb989-4"><a href="wctype.html#cb989-4"></a></span>
+<span id="cb989-5"><a href="wctype.html#cb989-5"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb989-6"><a href="wctype.html#cb989-6"></a><span class="op">{</span></span>
+<span id="cb989-7"><a href="wctype.html#cb989-7"></a>    <span class="dt">wchar_t</span> c<span class="op">;</span>        <span class="co">// Holds a single wide character (to test)</span></span>
+<span id="cb989-8"><a href="wctype.html#cb989-8"></a>    <span class="dt">char</span> desc<span class="op">[</span><span class="dv">128</span><span class="op">];</span>   <span class="co">// Holds the conversion type</span></span>
+<span id="cb989-9"><a href="wctype.html#cb989-9"></a></span>
+<span id="cb989-10"><a href="wctype.html#cb989-10"></a>    <span class="co">// Get the character and conversion type from the user</span></span>
+<span id="cb989-11"><a href="wctype.html#cb989-11"></a>    wprintf<span class="op">(</span><span class="st">L&quot;Enter a character and conversion type: &quot;</span><span class="op">);</span></span>
+<span id="cb989-12"><a href="wctype.html#cb989-12"></a>    fflush<span class="op">(</span>stdout<span class="op">);</span></span>
+<span id="cb989-13"><a href="wctype.html#cb989-13"></a>    wscanf<span class="op">(</span><span class="st">L&quot;</span><span class="sc">%lc</span><span class="st"> </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">&amp;</span>c<span class="op">,</span> desc<span class="op">);</span></span>
+<span id="cb989-14"><a href="wctype.html#cb989-14"></a></span>
+<span id="cb989-15"><a href="wctype.html#cb989-15"></a>    <span class="co">// Compute the type from the given conversion type</span></span>
+<span id="cb989-16"><a href="wctype.html#cb989-16"></a>    wctrans_t t <span class="op">=</span> wctrans<span class="op">(</span>desc<span class="op">);</span></span>
+<span id="cb989-17"><a href="wctype.html#cb989-17"></a></span>
+<span id="cb989-18"><a href="wctype.html#cb989-18"></a>    <span class="cf">if</span> <span class="op">(</span>t <span class="op">==</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb989-19"><a href="wctype.html#cb989-19"></a>        <span class="co">// If the type is 0, it&#39;s an unknown conversion type</span></span>
+<span id="cb989-20"><a href="wctype.html#cb989-20"></a>        wprintf<span class="op">(</span><span class="st">L&quot;Unknown conversion: </span><span class="sc">\&quot;%s\&quot;\n</span><span class="st">&quot;</span><span class="op">,</span> desc<span class="op">);</span></span>
+<span id="cb989-21"><a href="wctype.html#cb989-21"></a>    <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb989-22"><a href="wctype.html#cb989-22"></a>        <span class="co">// Otherwise, let&#39;s do the conversion</span></span>
+<span id="cb989-23"><a href="wctype.html#cb989-23"></a>        <span class="dt">wint_t</span> result <span class="op">=</span> towctrans<span class="op">(</span>c<span class="op">,</span> t<span class="op">);</span></span>
+<span id="cb989-24"><a href="wctype.html#cb989-24"></a>        wprintf<span class="op">(</span><span class="st">L&quot;&#39;</span><span class="sc">%lc</span><span class="st">&#39; -&gt; </span><span class="sc">%s</span><span class="st"> -&gt; &#39;</span><span class="sc">%lc</span><span class="st">&#39;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> c<span class="op">,</span> desc<span class="op">,</span> result<span class="op">);</span></span>
+<span id="cb989-25"><a href="wctype.html#cb989-25"></a>    <span class="op">}</span></span>
+<span id="cb989-26"><a href="wctype.html#cb989-26"></a><span class="op">}</span></span></code></pre></div>
+<p>Output on my system:</p>
+<div class="sourceCode" id="cb990"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb990-1"><a href="wctype.html#cb990-1" aria-hidden="true" tabindex="-1"></a>Enter a character and conversion type: b toupper</span>
+<span id="cb990-2"><a href="wctype.html#cb990-2" aria-hidden="true" tabindex="-1"></a>&#39;b&#39; -&gt; toupper -&gt; &#39;B&#39;</span>
+<span id="cb990-3"><a href="wctype.html#cb990-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb990-4"><a href="wctype.html#cb990-4" aria-hidden="true" tabindex="-1"></a>Enter a character and conversion type: B toupper</span>
+<span id="cb990-5"><a href="wctype.html#cb990-5" aria-hidden="true" tabindex="-1"></a>&#39;B&#39; -&gt; toupper -&gt; &#39;B&#39;</span>
+<span id="cb990-6"><a href="wctype.html#cb990-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb990-7"><a href="wctype.html#cb990-7" aria-hidden="true" tabindex="-1"></a>Enter a character and conversion type: B tolower</span>
+<span id="cb990-8"><a href="wctype.html#cb990-8" aria-hidden="true" tabindex="-1"></a>&#39;B&#39; -&gt; tolower -&gt; &#39;b&#39;</span>
+<span id="cb990-9"><a href="wctype.html#cb990-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb990-10"><a href="wctype.html#cb990-10" aria-hidden="true" tabindex="-1"></a>Enter a character and conversion type: ! toupper</span>
+<span id="cb990-11"><a href="wctype.html#cb990-11" aria-hidden="true" tabindex="-1"></a>&#39;!&#39; -&gt; toupper -&gt; &#39;!&#39;</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-286">See Also</h3>
+<p><a href="wctype.html#man-towctrans"><code>towctrans()</code></a></p>
+<!--
+***
+## `example()` {#man-example}
+
+### Synopsis {.unnumbered .unlisted}
+
+``` {.c}
+```
+
+### Description {.unnumbered .unlisted}
+
+### Return Value {.unnumbered .unlisted}
+
+### Example {.unnumbered .unlisted}
+
+``` {.c .numberLines}
+```
+
+### See Also {.unnumbered .unlisted}
+
+[`example()`](#man-example),
+-->
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>https://beej.us/guide/bgc/<a href="foreword.html#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>https://en.wikipedia.org/wiki/ANSI_C<a href="foreword.html#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>https://en.wikipedia.org/wiki/POSIX<a href="foreword.html#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>https://visualstudio.microsoft.com/vs/community/<a href="foreword.html#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>https://docs.microsoft.com/en-us/windows/wsl/install-win10<a href="foreword.html#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>https://developer.apple.com/xcode/<a href="foreword.html#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>https://beej.us/guide/bgclr/<a href="foreword.html#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>https://en.cppreference.com/<a href="foreword.html#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>https://groups.google.com/g/comp.lang.c<a href="foreword.html#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>https://www.reddit.com/r/C_Programming/<a href="foreword.html#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>This doesn’t change the type of <code>x</code> in other contexts—it’s just in this one usage in this expression.<a href="the-c-language.html#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>Note that this implication only for <code>main()</code>, and not for any other functions.<a href="the-c-language.html#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>https://en.wikipedia.org/wiki/Complex_conjugate<a href="complex.html#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>https://en.wikipedia.org/wiki/Riemann_sphere<a href="complex.html#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>Really it’s just required to be a modifiable lvalue, so not necessarily a variable. But you can treat it as such.<a href="errno.html#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>https://man.archlinux.org/man/errno.3.en<a href="errno.html#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>https://docs.microsoft.com/en-us/cpp/c-runtime-library/errno-constants?view=msvc-160<a href="errno.html#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p>https://en.wikipedia.org/wiki/Subnormal_number<a href="float.html#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>The minimum value of an <code>unsigned char</code> is <code>0</code>. Same fo an <code>unsigned short</code> and <code>unsigned long</code>. Or any unsigned type, for that matter.<a href="limits.html#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20"><p>https://en.wikipedia.org/wiki/Two%27s_complement<a href="limits.html#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21"><p>Remember that <code>char</code> is just a byte-sized integer.<a href="locale.html#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn22"><p>Though the system defines <code>MATH_ERRNO</code> as <code>1</code> and <code>MATH_ERREXCEPT</code> as <code>2</code>, it’s best to always use their symbolic names. Just in case.<a href="math.html#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn23"><p>https://en.wikipedia.org/wiki/Denormal_number<a href="math.html#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24"><p>This is on my system. Some systems will have different points at which numbers become subnormal, or they might not support subnormal values at all.<a href="math.html#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn25"><p>https://en.wikipedia.org/wiki/E_(mathematical_constant)<a href="math.html#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn26"><p>https://en.wikipedia.org/wiki/Denormal_number<a href="math.html#fnref26" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn27"><p>https://en.wikipedia.org/wiki/Pythagorean_theorem<a href="math.html#fnref27" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn28"><p>https://en.wikipedia.org/wiki/Error_function<a href="math.html#fnref28" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn29"><p>https://en.wikipedia.org/wiki/Error_function<a href="math.html#fnref29" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn30"><p>https://en.wikipedia.org/wiki/Gamma_function<a href="math.html#fnref30" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn31"><p>https://en.wikipedia.org/wiki/Gamma_function<a href="math.html#fnref31" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn32"><p>https://en.cppreference.com/w/c/numeric/math/remquo<a href="math.html#fnref32" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn33"><p>https://en.cppreference.com/w/c/numeric/math/remquo<a href="math.html#fnref33" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn34"><p>A <em>quiet NaN</em> is one that doesn’t raise any exceptions.<a href="math.html#fnref34" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn35"><p>https://man.archlinux.org/man/sigaction.2.en<a href="signal.html#fnref35" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn36"><p>As if might be sent from Unix’s <code>kill</code> command.]<a href="signal.html#fnref36" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn37"><p>https://en.wikipedia.org/wiki/Data_structure_alignment<a href="stdalign.html#fnref37" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn38"><p>Maybe it depends on the run-time environment and can’t be known at compile-time.<a href="stdatomic.html#fnref38" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn39"><p>https://en.cppreference.com/w/cpp/atomic/ATOMIC_VAR_INIT<a href="stdatomic.html#fnref39" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn40"><p>http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1138r0.pdf<a href="stdatomic.html#fnref40" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn41"><p>This effectively does the same thing, but it’s clearly not atomic.<a href="stdatomic.html#fnref41" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn42"><p>The spec says, “This spurious failure enables implementation of compare-and-exchange on a broader class of machines, e.g. load-locked store-conditional machines.” And adds, “When a compare-and-exchange is in a loop, the weak version will yield better performance on some platforms. When a weak compare-and-exchange would require a loop and a strong one would not, the strong one is preferable.”<a href="stdatomic.html#fnref42" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn43"><p>Don’t use this unless you know what you’re doing—use the thread mutex functionality instead. It’ll let your blocked thread sleep and stop chewing up CPU.<a href="stdatomic.html#fnref43" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn44"><p>Don’t use this unless you know what you’re doing—use the thread mutex functionality instead. It’ll let your blocked thread sleep and stop chewing up CPU.<a href="stdatomic.html#fnref44" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn45"><p>https://en.wikipedia.org/wiki/Data_structure_alignment<a href="stddef.html#fnref45" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn46"><p>https://man.archlinux.org/man/unlinkat.2.en#DESCRIPTION<a href="stdio.html#fnref46" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn47"><p>https://man.archlinux.org/man/mkstemp.3.en<a href="stdio.html#fnref47" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn48"><p>https://nee.lv/2021/02/28/How-I-cut-GTA-Online-loading-times-by-70/<a href="stdio.html#fnref48" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn49"><p>https://stackoverflow.com/questions/17017331/c99-vscanf-for-dummies/17018046#17018046<a href="stdio.html#fnref49" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn50"><p>http://man.cat-v.org/unix-1st/3/atof<a href="stdlib.html#fnref50" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn51"><p>http://man.cat-v.org/unix-1st/3/atoi<a href="stdlib.html#fnref51" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn52"><p>https://en.wikipedia.org/wiki/Radix<a href="stdlib.html#fnref52" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn53"><p>https://stackoverflow.com/questions/10984974/why-do-people-say-there-is-modulo-bias-when-using-a-random-number-generator<a href="stdlib.html#fnref53" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn54"><p>https://mumble.net/~campbell/2014/04/28/uniform-random-float<a href="stdlib.html#fnref54" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn55"><p>https://www.gnu.org/software/gsl/doc/html/rng.html<a href="stdlib.html#fnref55" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn56"><p>Minecraft enthusiasts might recall that when generating a new world, they were given the option to enter a random number seed. That single value is used to generate that entire random world. And if your friend starts a world with the same seed you did, they’ll get the same world you did.<a href="stdlib.html#fnref56" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn57"><p>https://en.wikipedia.org/wiki/Unix_time<a href="stdlib.html#fnref57" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn58"><p>The C spec doesn’t say exactly what <code>time(NULL)</code> will return, but the POSIX spec does! And virtually everyone returns exactly that: the number of seconds since epoch.<a href="stdlib.html#fnref58" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn59"><p>https://en.wikipedia.org/wiki/Data_structure_alignment<a href="stdlib.html#fnref59" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn60"><p>“Try to imagine all life as you know it stopping instantaneously and every molecule in your body exploding at the speed of light.” —Egon Spengler<a href="stdlib.html#fnref60" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn61"><p>https://en.wikipedia.org/wiki/Core_dump<a href="stdlib.html#fnref61" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn62"><p><code>quick_exit()</code> differs from <code>exit()</code> in that open files might not be flushed and temporary files might not be removed.<a href="stdlib.html#fnref62" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn63"><p>“In-place” meaning that the original array will hold the results; no new array is allocated.<a href="stdlib.html#fnref63" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn64"><p>It always returns the number of bytes the transformed string took, but in this case because <code>s1</code> was <code>NULL</code>, it doesn’t actually write a transformed string.<a href="stringref.html#fnref64" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn65"><p>Which you should because of spurious wakeups.<a href="threads.html#fnref65" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn66"><p>Well, as at least as many things as you have free cores. Your OS will schedule them as it can.<a href="threads.html#fnref66" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn67"><p>For example, if a destructor caused more variables to be set.<a href="threads.html#fnref67" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn68"><p>Unix-like systems have a <code>sleep()</code> syscall that sleeps for an integer number of seconds. But <code>thrd_sleep()</code> is likely more portable and gives subsecond resolution, besides!<a href="threads.html#fnref68" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn69"><p>When you say GMT, unless you’re talking specifically about the time zone and not the time, you probably mean “UTC”.<a href="time.html#fnref69" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn70"><p>The spec doesn’t actually say “clock ticks”, but I… am.<a href="time.html#fnref70" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn71"><p>Unless you’re on a POSIX system where <code>time_t</code> is definitely an integer, in which case you can subtract. But you should still use <code>difftime()</code> for maximum portability.<a href="time.html#fnref71" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn72"><p>https://man.archlinux.org/man/timegm.3.en<a href="time.html#fnref72" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn73"><p>https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/mkgmtime-mkgmtime32-mkgmtime64?view=msvc-160<a href="time.html#fnref73" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn74"><p>https://man.archlinux.org/man/timegm.3.en<a href="time.html#fnref74" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn75"><p>https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/mkgmtime-mkgmtime32-mkgmtime64?view=msvc-160<a href="time.html#fnref75" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn76"><p>https://en.wikipedia.org/wiki/Unix_time<a href="time.html#fnref76" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn77"><p>https://en.wikipedia.org/wiki/ISO_week_date<a href="time.html#fnref77" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn78"><p>https://en.wikipedia.org/wiki/Symbols_for_Legacy_Computing<a href="uchar.html#fnref78" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn79"><p>https://stackoverflow.com/questions/17017331/c99-vscanf-for-dummies/17018046#17018046<a href="wchar.html#fnref79" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn80"><p>This is a variable, not a macro, so if you use it to define an array, it’ll be a variable-length array.<a href="wchar.html#fnref80" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+</body>
+<hr><div style="text-align:center"><span><a href="wchar.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span style="visibility: hidden"> | <a href="" rel="next">Next</a></span></div></body>
+</html>

@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to C Programming</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body>
+<div style="text-align:center"><span><a href="time.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="wchar.html" rel="next">Next</a></span></div><hr>
+<h1 data-number="30" id="uchar"><span class="header-section-number">30</span> <code>&lt;uchar.h&gt;</code> Unicode utility functions</h1>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="uchar.html#man-c16rtomb"><code>c16rtomb()</code></a></td>
+<td>Convert a <code>char16_t</code> to a multibyte character</td>
+</tr>
+<tr class="even">
+<td><a href="uchar.html#man-c16rtomb"><code>c32rtomb()</code></a></td>
+<td>Convert a <code>char32_t</code> to a multibyte character</td>
+</tr>
+<tr class="odd">
+<td><a href="uchar.html#man-mbrtoc16"><code>mbrtoc16()</code></a></td>
+<td>Convert a multibyte character to a <code>char16_t</code></td>
+</tr>
+<tr class="even">
+<td><a href="uchar.html#man-mbrtoc16"><code>mbrtoc32()</code></a></td>
+<td>Convert a multibyte character to a <code>char32_t</code></td>
+</tr>
+</tbody>
+</table>
+<p>These functions are <em>restartable</em>, meaning multiple threads can safely call them at once. They handle this by having their own conversion state variable (of type <code>mbstate_t</code>) per call.</p>
+<h2 data-number="30.1" id="types"><span class="header-section-number">30.1</span> Types</h2>
+<p>This header file defines four types.</p>
+<p> </p>
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 78%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>char16_t</code></td>
+<td>Type to hold 16-bit characters</td>
+</tr>
+<tr class="even">
+<td><code>char32_t</code></td>
+<td>Type to hold 32-bit characters</td>
+</tr>
+<tr class="odd">
+<td><code>mbstate_t</code></td>
+<td>Holds the conversion state for restartable funcitons (also defined in <a href="wchar.html#wchar"><code>&lt;wchar.h&gt;</code></a>)</td>
+</tr>
+<tr class="even">
+<td><code>size_t</code></td>
+<td>To hold various counts (also defined in <a href="stddef.html#stddef"><code>&lt;stddef.h&gt;</code></a>)</td>
+</tr>
+</tbody>
+</table>
+<p>String literals for the character types are <code>u</code> for <code>char16_t</code> and <code>U</code> for <code>char32_t</code>.</p>
+<div class="sourceCode" id="cb839"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb839-1"><a href="uchar.html#cb839-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char16_t</span> <span class="op">*</span>str1 <span class="op">=</span> <span class="st">u&quot;Hello, world!&quot;</span><span class="op">;</span></span>
+<span id="cb839-2"><a href="uchar.html#cb839-2" aria-hidden="true" tabindex="-1"></a><span class="dt">char32_t</span> <span class="op">*</span>str2 <span class="op">=</span> <span class="st">U&quot;Hello, world!&quot;</span><span class="op">;</span></span>
+<span id="cb839-3"><a href="uchar.html#cb839-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb839-4"><a href="uchar.html#cb839-4" aria-hidden="true" tabindex="-1"></a><span class="dt">char16_t</span> <span class="op">*</span>chr1 <span class="op">=</span> <span class="ch">u&#39;A&#39;</span><span class="op">;</span></span>
+<span id="cb839-5"><a href="uchar.html#cb839-5" aria-hidden="true" tabindex="-1"></a><span class="dt">char32_t</span> <span class="op">*</span>chr2 <span class="op">=</span> <span class="ch">U&#39;B&#39;</span><span class="op">;</span></span></code></pre></div>
+<p>Note that <code>char16_t</code> and <code>char32_t</code> <em>might</em> contain Unicode. Or not. If <code>__STDC_UTF_16__</code> or <code>__STDC_UTF_32__</code> is defined as <code>1</code>, then <code>char16_t</code> and <code>char32_t</code> use Unicode, respectively. Otherwise they don’t and the actual value stored depend on the locale. And if you’re not using Unicode, you have my commiserations.</p>
+<h2 data-number="30.2" id="os-x-issue"><span class="header-section-number">30.2</span> OS X issue</h2>
+<p>This header file doesn’t exist on OS X—bummer. If you just want the types, you can:</p>
+<div class="sourceCode" id="cb840"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb840-1"><a href="uchar.html#cb840-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdint.h&gt;</span></span>
+<span id="cb840-2"><a href="uchar.html#cb840-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb840-3"><a href="uchar.html#cb840-3" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">int_least16_t</span> <span class="dt">char16_t</span><span class="op">;</span></span>
+<span id="cb840-4"><a href="uchar.html#cb840-4" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">int_least32_t</span> <span class="dt">char32_t</span><span class="op">;</span></span></code></pre></div>
+<p>But if you also want the functions, that’s all on you.</p>
+<hr />
+<h2 data-number="30.3" id="man-mbrtoc16"><span class="header-section-number">30.3</span> <code>mbrtoc16()</code> <code>mbrtoc32()</code></h2>
+<p> </p>
+<p>Convert a multibyte character to a <code>char16_t</code> or <code>char32_t</code> restartably</p>
+<h3 class="unnumbered unlisted" id="synopsis-250">Synopsis</h3>
+<div class="sourceCode" id="cb841"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb841-1"><a href="uchar.html#cb841-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;uchar.h&gt;</span></span>
+<span id="cb841-2"><a href="uchar.html#cb841-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb841-3"><a href="uchar.html#cb841-3" aria-hidden="true" tabindex="-1"></a><span class="dt">size_t</span> mbrtoc16<span class="op">(</span><span class="dt">char16_t</span> <span class="op">*</span> <span class="dt">restrict</span> pc16<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span> <span class="dt">restrict</span> s<span class="op">,</span> <span class="dt">size_t</span> n<span class="op">,</span></span>
+<span id="cb841-4"><a href="uchar.html#cb841-4" aria-hidden="true" tabindex="-1"></a>                mbstate_t <span class="op">*</span> <span class="dt">restrict</span> ps<span class="op">);</span></span>
+<span id="cb841-5"><a href="uchar.html#cb841-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb841-6"><a href="uchar.html#cb841-6" aria-hidden="true" tabindex="-1"></a><span class="dt">size_t</span> mbrtoc32<span class="op">(</span><span class="dt">char32_t</span> <span class="op">*</span> <span class="dt">restrict</span> pc32<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span> <span class="dt">restrict</span> s<span class="op">,</span> <span class="dt">size_t</span> n<span class="op">,</span></span>
+<span id="cb841-7"><a href="uchar.html#cb841-7" aria-hidden="true" tabindex="-1"></a>                mbstate_t <span class="op">*</span> <span class="dt">restrict</span> ps<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-250">Description</h3>
+<p>Given a source string <code>s</code> and a destination buffer <code>pc16</code> (or <code>pc32</code> for <code>mbrtoc32()</code>), convert the first character of the source to <code>char16_t</code>s (or <code>char32_t</code>s for <code>mbrtoc32()</code>).</p>
+<p>Basically you have a regular character and you want it as <code>char16_t</code> or <code>char32_t</code>. Use these functions to do it. Note that only one character is converted no matter how many characters in <code>s</code>.</p>
+<p>As the functions scan <code>s</code>, you don’t want them to overrun the end. So you pass in <code>n</code> as the maximum number of bytes to inspect. The functions will quit after that many bytes or when they have a complete multibyte character, whichever comes first.</p>
+<p>Since they’re restartable, pass in a conversion state variable for the functions to do their work.</p>
+<p>And the result will be placed in <code>pc16</code> (or <code>pc32</code> for <code>mbrtoc32()</code>).</p>
+<h3 class="unnumbered unlisted" id="return-value-248">Return Value</h3>
+<p>When successful this function returns a number between <code>1</code> and <code>n</code> inclusive representing the number of bytes that made up the multibyte character.</p>
+<p>Or, also in the success category, they can return <code>0</code> if the source character is the NUL character (value <code>0</code>).</p>
+<p>When not entirely successful, they can return a variety of codes. These are all of type <code>size_t</code>, but negative values cast to that type.</p>
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 78%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Return Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>(size_t)(-1)</code></td>
+<td>Encoding error—this isn’t a valid sequence of bytes. <code>errno</code> is set to <code>EILSEQ</code>.</td>
+</tr>
+<tr class="even">
+<td><code>(size_t)(-2)</code></td>
+<td><code>n</code> bytes were examined and were a <em>partial</em> valid character, but not a complete one.</td>
+</tr>
+<tr class="odd">
+<td><code>(size_t)(-3)</code></td>
+<td>A subsequent value of a character that can’t be represented as a single value. See below.</td>
+</tr>
+</tbody>
+</table>
+<p>Case <code>(size_t)(-3)</code> is an odd one. Basically there are some characters that can’t be represented with 16 bits and so can’t be stored in a <code>char16_t</code>. These characters are store in something called (in the Unicode world) <em>surrogate pairs</em>. That is, there are <em>two</em> 16-bit values back to back that represent a larger Unicode value.</p>
+<p>For example, if you want to read the Unicode character <code>\U0001fbc5</code> (which is a <a href="https://en.wikipedia.org/wiki/Symbols_for_Legacy_Computing">stick figure</a><a href="wctype.html#fn78" class="footnote-ref" id="fnref78" role="doc-noteref"><sup>78</sup></a>—I’m just not putting it in the text because my font doesn’t render it) that’s more than 16 bits. But each call to <code>mbrtoc16()</code> only returns a single <code>char16_t</code>!</p>
+<p>So subsequent calls to <code>mbrtoc16()</code> resolves the <em>next</em> value in the surrogate pair and returns <code>(size_t)(-3)</code> to let you know this has happened.</p>
+<p>You can also pass <code>NULL</code> for <code>pc16</code> or <code>pc32</code>. This will cause no result to be stored, but you can use it if you’re only interested in the return value from the functions.</p>
+<p>Finally, if you pass <code>NULL</code> for <code>s</code>, the call is equivalent to:</p>
+<div class="sourceCode" id="cb842"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb842-1"><a href="uchar.html#cb842-1" aria-hidden="true" tabindex="-1"></a>mbrtoc16<span class="op">(</span>NULL<span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> <span class="dv">1</span><span class="op">,</span> ps<span class="op">)</span></span></code></pre></div>
+<p>Since the character is a NUL in that case, this has the effect of setting the state in <code>ps</code> to the initial conversion state.</p>
+<h3 class="unnumbered unlisted" id="example-252">Example</h3>
+<p>Normal use case example where we get the first two character values from the multibyte string <code>"€Zillion"</code>:</p>
+<div class="sourceCode" id="cb843"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb843-1"><a href="uchar.html#cb843-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;uchar.h&gt;</span></span>
+<span id="cb843-2"><a href="uchar.html#cb843-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span><span class="pp">   </span><span class="co">// for printf()</span></span>
+<span id="cb843-3"><a href="uchar.html#cb843-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;locale.h&gt;</span><span class="pp">  </span><span class="co">// for setlocale()</span></span>
+<span id="cb843-4"><a href="uchar.html#cb843-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;string.h&gt;</span><span class="pp">  </span><span class="co">// for memset()</span></span>
+<span id="cb843-5"><a href="uchar.html#cb843-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb843-6"><a href="uchar.html#cb843-6" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb843-7"><a href="uchar.html#cb843-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb843-8"><a href="uchar.html#cb843-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">char</span> <span class="op">*</span>s <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\u20ac</span><span class="st">Zillion&quot;</span><span class="op">;</span>  <span class="co">// 20ac is &quot;€&quot;</span></span>
+<span id="cb843-9"><a href="uchar.html#cb843-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">char16_t</span> pc16<span class="op">;</span></span>
+<span id="cb843-10"><a href="uchar.html#cb843-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">size_t</span> r<span class="op">;</span></span>
+<span id="cb843-11"><a href="uchar.html#cb843-11" aria-hidden="true" tabindex="-1"></a>    mbstate_t mbs<span class="op">;</span></span>
+<span id="cb843-12"><a href="uchar.html#cb843-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb843-13"><a href="uchar.html#cb843-13" aria-hidden="true" tabindex="-1"></a>    setlocale<span class="op">(</span>LC_ALL<span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb843-14"><a href="uchar.html#cb843-14" aria-hidden="true" tabindex="-1"></a>    memset<span class="op">(&amp;</span>mbs<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="kw">sizeof</span> mbs<span class="op">);</span></span>
+<span id="cb843-15"><a href="uchar.html#cb843-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb843-16"><a href="uchar.html#cb843-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Examine the next 8 bytes to see if there&#39;s a character in there</span></span>
+<span id="cb843-17"><a href="uchar.html#cb843-17" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> mbrtoc16<span class="op">(&amp;</span>pc16<span class="op">,</span> s<span class="op">,</span> <span class="dv">8</span><span class="op">,</span> <span class="op">&amp;</span>mbs<span class="op">);</span></span>
+<span id="cb843-18"><a href="uchar.html#cb843-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb843-19"><a href="uchar.html#cb843-19" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%zu\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span>     <span class="co">// Prints a value &gt;= 1 (3 in UTF-8 locale)</span></span>
+<span id="cb843-20"><a href="uchar.html#cb843-20" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%#x\n</span><span class="st">&quot;</span><span class="op">,</span> pc16<span class="op">);</span>  <span class="co">// Prints 0x20ac for &quot;€&quot;</span></span>
+<span id="cb843-21"><a href="uchar.html#cb843-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb843-22"><a href="uchar.html#cb843-22" aria-hidden="true" tabindex="-1"></a>    s <span class="op">+=</span> r<span class="op">;</span>  <span class="co">// Move to next character</span></span>
+<span id="cb843-23"><a href="uchar.html#cb843-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb843-24"><a href="uchar.html#cb843-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Examine the next 8 bytes to see if there&#39;s a character in there</span></span>
+<span id="cb843-25"><a href="uchar.html#cb843-25" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> mbrtoc16<span class="op">(&amp;</span>pc16<span class="op">,</span> s<span class="op">,</span> <span class="dv">8</span><span class="op">,</span> <span class="op">&amp;</span>mbs<span class="op">);</span></span>
+<span id="cb843-26"><a href="uchar.html#cb843-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb843-27"><a href="uchar.html#cb843-27" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%zu\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span>     <span class="co">// Prints 1</span></span>
+<span id="cb843-28"><a href="uchar.html#cb843-28" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%#x\n</span><span class="st">&quot;</span><span class="op">,</span> pc16<span class="op">);</span>  <span class="co">// Prints 0x5a for &quot;Z&quot;</span></span>
+<span id="cb843-29"><a href="uchar.html#cb843-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Example with a surrogate pair. In this case we read plenty to get the entire character, but the result must be stored in two <code>char16_t</code>s, requiring two calls to get them both.</p>
+<div class="sourceCode" id="cb844"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb844-1"><a href="uchar.html#cb844-1"></a><span class="pp">#include </span><span class="im">&lt;uchar.h&gt;</span></span>
+<span id="cb844-2"><a href="uchar.html#cb844-2"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span><span class="pp">   </span><span class="co">// for printf()</span></span>
+<span id="cb844-3"><a href="uchar.html#cb844-3"></a><span class="pp">#include </span><span class="im">&lt;string.h&gt;</span><span class="pp">  </span><span class="co">// for memset()</span></span>
+<span id="cb844-4"><a href="uchar.html#cb844-4"></a><span class="pp">#include </span><span class="im">&lt;locale.h&gt;</span><span class="pp">  </span><span class="co">// for setlocale()</span></span>
+<span id="cb844-5"><a href="uchar.html#cb844-5"></a></span>
+<span id="cb844-6"><a href="uchar.html#cb844-6"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb844-7"><a href="uchar.html#cb844-7"></a><span class="op">{</span></span>
+<span id="cb844-8"><a href="uchar.html#cb844-8"></a>    <span class="dt">char</span> <span class="op">*</span>s <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\U0001fbc5</span><span class="st">*&quot;</span><span class="op">;</span>   <span class="co">// Stick figure glyph, more than 16 bits</span></span>
+<span id="cb844-9"><a href="uchar.html#cb844-9"></a>    <span class="dt">char16_t</span> pc16<span class="op">;</span></span>
+<span id="cb844-10"><a href="uchar.html#cb844-10"></a>    mbstate_t mbs<span class="op">;</span></span>
+<span id="cb844-11"><a href="uchar.html#cb844-11"></a>    <span class="dt">size_t</span> r<span class="op">;</span></span>
+<span id="cb844-12"><a href="uchar.html#cb844-12"></a></span>
+<span id="cb844-13"><a href="uchar.html#cb844-13"></a>    setlocale<span class="op">(</span>LC_ALL<span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb844-14"><a href="uchar.html#cb844-14"></a>    memset<span class="op">(&amp;</span>mbs<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="kw">sizeof</span> mbs<span class="op">);</span></span>
+<span id="cb844-15"><a href="uchar.html#cb844-15"></a></span>
+<span id="cb844-16"><a href="uchar.html#cb844-16"></a>    r <span class="op">=</span> mbrtoc16<span class="op">(&amp;</span>pc16<span class="op">,</span> s<span class="op">,</span> <span class="dv">8</span><span class="op">,</span> <span class="op">&amp;</span>mbs<span class="op">);</span></span>
+<span id="cb844-17"><a href="uchar.html#cb844-17"></a></span>
+<span id="cb844-18"><a href="uchar.html#cb844-18"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%zd\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span>     <span class="co">// r is 4 bytes in UTF-8 locale</span></span>
+<span id="cb844-19"><a href="uchar.html#cb844-19"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%#x\n</span><span class="st">&quot;</span><span class="op">,</span> pc16<span class="op">);</span>  <span class="co">// First value of surrogate pair</span></span>
+<span id="cb844-20"><a href="uchar.html#cb844-20"></a></span>
+<span id="cb844-21"><a href="uchar.html#cb844-21"></a>    s <span class="op">+=</span> r<span class="op">;</span>  <span class="co">// Move to next character</span></span>
+<span id="cb844-22"><a href="uchar.html#cb844-22"></a></span>
+<span id="cb844-23"><a href="uchar.html#cb844-23"></a>    r <span class="op">=</span> mbrtoc16<span class="op">(&amp;</span>pc16<span class="op">,</span> s<span class="op">,</span> <span class="dv">8</span><span class="op">,</span> <span class="op">&amp;</span>mbs<span class="op">);</span></span>
+<span id="cb844-24"><a href="uchar.html#cb844-24"></a></span>
+<span id="cb844-25"><a href="uchar.html#cb844-25"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%zd\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span>     <span class="co">// r is (size_t)(-3) here to indicate...</span></span>
+<span id="cb844-26"><a href="uchar.html#cb844-26"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%#x\n</span><span class="st">&quot;</span><span class="op">,</span> pc16<span class="op">);</span>  <span class="co">// ...Second value of surrogate pair</span></span>
+<span id="cb844-27"><a href="uchar.html#cb844-27"></a></span>
+<span id="cb844-28"><a href="uchar.html#cb844-28"></a>    <span class="co">// Since r is -3, it means we&#39;re still processing the same</span></span>
+<span id="cb844-29"><a href="uchar.html#cb844-29"></a>    <span class="co">// character, so DON&#39;T move to the next character this time</span></span>
+<span id="cb844-30"><a href="uchar.html#cb844-30"></a>    <span class="co">//s += r;  // Commented out</span></span>
+<span id="cb844-31"><a href="uchar.html#cb844-31"></a></span>
+<span id="cb844-32"><a href="uchar.html#cb844-32"></a>    r <span class="op">=</span> mbrtoc16<span class="op">(&amp;</span>pc16<span class="op">,</span> s<span class="op">,</span> <span class="dv">8</span><span class="op">,</span> <span class="op">&amp;</span>mbs<span class="op">);</span></span>
+<span id="cb844-33"><a href="uchar.html#cb844-33"></a></span>
+<span id="cb844-34"><a href="uchar.html#cb844-34"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%zd\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span>     <span class="co">// 1 byte for &quot;*&quot;</span></span>
+<span id="cb844-35"><a href="uchar.html#cb844-35"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%#x\n</span><span class="st">&quot;</span><span class="op">,</span> pc16<span class="op">);</span>  <span class="co">// 0x2a for &quot;*&quot;</span></span>
+<span id="cb844-36"><a href="uchar.html#cb844-36"></a><span class="op">}</span></span></code></pre></div>
+<p>Output on my system, indicating the first character is represented by the pair <code>(0xd83e, 0xdfc5)</code> and the second character is represented by <code>0x2a</code>:</p>
+<div class="sourceCode" id="cb845"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb845-1"><a href="uchar.html#cb845-1" aria-hidden="true" tabindex="-1"></a>4</span>
+<span id="cb845-2"><a href="uchar.html#cb845-2" aria-hidden="true" tabindex="-1"></a>0xd83e</span>
+<span id="cb845-3"><a href="uchar.html#cb845-3" aria-hidden="true" tabindex="-1"></a>-3</span>
+<span id="cb845-4"><a href="uchar.html#cb845-4" aria-hidden="true" tabindex="-1"></a>0xdfc5</span>
+<span id="cb845-5"><a href="uchar.html#cb845-5" aria-hidden="true" tabindex="-1"></a>1</span>
+<span id="cb845-6"><a href="uchar.html#cb845-6" aria-hidden="true" tabindex="-1"></a>0x2a</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-236">See Also</h3>
+<p><a href="uchar.html#man-c16rtomb"><code>c16rtomb()</code></a>, <a href="uchar.html#man-c16rtomb"><code>c32rtomb()</code></a></p>
+<hr />
+<h2 data-number="30.4" id="man-c16rtomb"><span class="header-section-number">30.4</span> <code>c16rtomb()</code> <code>c32rtomb()</code></h2>
+<p> </p>
+<p>Convert a <code>char16_t</code> or <code>char32_t</code> to a multibyte character restartably</p>
+<h3 class="unnumbered unlisted" id="synopsis-251">Synopsis</h3>
+<div class="sourceCode" id="cb846"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb846-1"><a href="uchar.html#cb846-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;uchar.h&gt;</span></span>
+<span id="cb846-2"><a href="uchar.html#cb846-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb846-3"><a href="uchar.html#cb846-3" aria-hidden="true" tabindex="-1"></a><span class="dt">size_t</span> c16rtomb<span class="op">(</span><span class="dt">char</span> <span class="op">*</span> <span class="dt">restrict</span> s<span class="op">,</span> <span class="dt">char16_t</span> c16<span class="op">,</span> mbstate_t <span class="op">*</span> <span class="dt">restrict</span> ps<span class="op">);</span></span>
+<span id="cb846-4"><a href="uchar.html#cb846-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb846-5"><a href="uchar.html#cb846-5" aria-hidden="true" tabindex="-1"></a><span class="dt">size_t</span> c32rtomb<span class="op">(</span><span class="dt">char</span> <span class="op">*</span> <span class="dt">restrict</span> s<span class="op">,</span> <span class="dt">char32_t</span> c32<span class="op">,</span> mbstate_t <span class="op">*</span> <span class="dt">restrict</span> ps<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-251">Description</h3>
+<p>If you have a character in a <code>char16_t</code> or <code>char32_t</code>, use these functions to convert them into a multibyte character.</p>
+<p>These functions figure out how many bytes are needed for the multibyte character in the current locale and stores them in the buffer pointed to by <code>s</code>.</p>
+<p>But how big to make that buffer? Luckily there is a macro to help: it needs be no larger than <code>MB_CUR_MAX</code>.</p>
+<p>As a special case, if <code>s</code> is <code>NULL</code>, it’s the same as calling</p>
+<div class="sourceCode" id="cb847"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb847-1"><a href="uchar.html#cb847-1" aria-hidden="true" tabindex="-1"></a>c16rtomb<span class="op">(</span>buf<span class="op">,</span> <span class="ch">L&#39;</span><span class="sc">\0</span><span class="ch">&#39;</span><span class="op">,</span> ps<span class="op">);</span>  <span class="co">// or...</span></span>
+<span id="cb847-2"><a href="uchar.html#cb847-2" aria-hidden="true" tabindex="-1"></a>c32rtomb<span class="op">(</span>buf<span class="op">,</span> <span class="ch">L&#39;</span><span class="sc">\0</span><span class="ch">&#39;</span><span class="op">,</span> ps<span class="op">);</span></span></code></pre></div>
+<p>where <code>buf</code> is a buffer maintained by the system that you don’t have access to.</p>
+<p>This has the effect of setting the <code>ps</code> state to the initial state.</p>
+<p>Finally for surrogate pairs (where the character has been split into two <code>char16_t</code>s), you call this once with the first of the pair—at this point, the function will return <code>0</code>. Then you call it again with the second of the pair, and the function will return the number of bytes and store the result in the array <code>s</code>.</p>
+<h3 class="unnumbered unlisted" id="return-value-249">Return Value</h3>
+<p>Returns the number of bytes stored in the array pointed to by <code>s</code>.</p>
+<p>Returns 0 if processing is not yet complete for the current character, as in the case of surrogate pairs.</p>
+<p>If there is an encoding error, the functions return <code>(size_t)(-1)</code> and <code>errno</code> is set to <code>EILSEQ</code>.</p>
+<h3 class="unnumbered unlisted" id="example-253">Example</h3>
+<div class="sourceCode" id="cb848"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb848-1"><a href="uchar.html#cb848-1"></a><span class="pp">#include </span><span class="im">&lt;uchar.h&gt;</span></span>
+<span id="cb848-2"><a href="uchar.html#cb848-2"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span><span class="pp">  </span><span class="co">// for MB_CUR_MAX</span></span>
+<span id="cb848-3"><a href="uchar.html#cb848-3"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span><span class="pp">   </span><span class="co">// for printf()</span></span>
+<span id="cb848-4"><a href="uchar.html#cb848-4"></a><span class="pp">#include </span><span class="im">&lt;string.h&gt;</span><span class="pp">  </span><span class="co">// for memset()</span></span>
+<span id="cb848-5"><a href="uchar.html#cb848-5"></a><span class="pp">#include </span><span class="im">&lt;locale.h&gt;</span><span class="pp">  </span><span class="co">// for setlocale()</span></span>
+<span id="cb848-6"><a href="uchar.html#cb848-6"></a></span>
+<span id="cb848-7"><a href="uchar.html#cb848-7"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb848-8"><a href="uchar.html#cb848-8"></a><span class="op">{</span></span>
+<span id="cb848-9"><a href="uchar.html#cb848-9"></a>    <span class="dt">char16_t</span> c16 <span class="op">=</span> <span class="bn">0x20ac</span><span class="op">;</span>  <span class="co">// Unicode for Euro symbol</span></span>
+<span id="cb848-10"><a href="uchar.html#cb848-10"></a>    <span class="dt">char</span> dest<span class="op">[</span>MB_CUR_MAX<span class="op">];</span></span>
+<span id="cb848-11"><a href="uchar.html#cb848-11"></a>    <span class="dt">size_t</span> r<span class="op">;</span></span>
+<span id="cb848-12"><a href="uchar.html#cb848-12"></a>    mbstate_t mbs<span class="op">;</span></span>
+<span id="cb848-13"><a href="uchar.html#cb848-13"></a></span>
+<span id="cb848-14"><a href="uchar.html#cb848-14"></a>    setlocale<span class="op">(</span>LC_ALL<span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb848-15"><a href="uchar.html#cb848-15"></a>    memset<span class="op">(&amp;</span>mbs<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="kw">sizeof</span> mbs<span class="op">);</span>  <span class="co">// Reset conversion state</span></span>
+<span id="cb848-16"><a href="uchar.html#cb848-16"></a></span>
+<span id="cb848-17"><a href="uchar.html#cb848-17"></a>    <span class="co">// Convert</span></span>
+<span id="cb848-18"><a href="uchar.html#cb848-18"></a>    r <span class="op">=</span> c16rtomb<span class="op">(</span>dest<span class="op">,</span> c16<span class="op">,</span> <span class="op">&amp;</span>mbs<span class="op">);</span></span>
+<span id="cb848-19"><a href="uchar.html#cb848-19"></a></span>
+<span id="cb848-20"><a href="uchar.html#cb848-20"></a>    printf<span class="op">(</span><span class="st">&quot;r == </span><span class="sc">%zd\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span>  <span class="co">// r == 3 on my system</span></span>
+<span id="cb848-21"><a href="uchar.html#cb848-21"></a></span>
+<span id="cb848-22"><a href="uchar.html#cb848-22"></a>    <span class="co">// And this should print a Euro symbol</span></span>
+<span id="cb848-23"><a href="uchar.html#cb848-23"></a>    printf<span class="op">(</span><span class="st">&quot;dest == </span><span class="sc">\&quot;%s\&quot;\n</span><span class="st">&quot;</span><span class="op">,</span> dest<span class="op">);</span></span>
+<span id="cb848-24"><a href="uchar.html#cb848-24"></a><span class="op">}</span></span></code></pre></div>
+<p>Output on my system:</p>
+<div class="sourceCode" id="cb849"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb849-1"><a href="uchar.html#cb849-1" aria-hidden="true" tabindex="-1"></a>r == 3</span>
+<span id="cb849-2"><a href="uchar.html#cb849-2" aria-hidden="true" tabindex="-1"></a>dest == &quot;€&quot;</span></code></pre></div>
+<p>This is a more complex example that converts a large-valued character in a multibyte string into a surrogate pair (as in the <code>mbrtoc16()</code> example, above) and then converts it back again into a multibyte string to print.</p>
+<div class="sourceCode" id="cb850"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb850-1"><a href="uchar.html#cb850-1"></a><span class="pp">#include </span><span class="im">&lt;uchar.h&gt;</span></span>
+<span id="cb850-2"><a href="uchar.html#cb850-2"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span><span class="pp">  </span><span class="co">// for MB_CUR_MAX</span></span>
+<span id="cb850-3"><a href="uchar.html#cb850-3"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span><span class="pp">   </span><span class="co">// for printf()</span></span>
+<span id="cb850-4"><a href="uchar.html#cb850-4"></a><span class="pp">#include </span><span class="im">&lt;string.h&gt;</span><span class="pp">  </span><span class="co">// for memset()</span></span>
+<span id="cb850-5"><a href="uchar.html#cb850-5"></a><span class="pp">#include </span><span class="im">&lt;locale.h&gt;</span><span class="pp">  </span><span class="co">// for setlocale()</span></span>
+<span id="cb850-6"><a href="uchar.html#cb850-6"></a></span>
+<span id="cb850-7"><a href="uchar.html#cb850-7"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb850-8"><a href="uchar.html#cb850-8"></a><span class="op">{</span></span>
+<span id="cb850-9"><a href="uchar.html#cb850-9"></a>    <span class="dt">char</span> <span class="op">*</span>src <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\U0001fbc5</span><span class="st">*&quot;</span><span class="op">;</span>   <span class="co">// Stick figure glyph, more than 16 bits</span></span>
+<span id="cb850-10"><a href="uchar.html#cb850-10"></a>    <span class="dt">char</span> dest<span class="op">[</span>MB_CUR_MAX<span class="op">];</span></span>
+<span id="cb850-11"><a href="uchar.html#cb850-11"></a>    <span class="dt">char16_t</span> surrogate0<span class="op">,</span> surrogate1<span class="op">;</span></span>
+<span id="cb850-12"><a href="uchar.html#cb850-12"></a>    mbstate_t mbs<span class="op">;</span></span>
+<span id="cb850-13"><a href="uchar.html#cb850-13"></a>    <span class="dt">size_t</span> r<span class="op">;</span></span>
+<span id="cb850-14"><a href="uchar.html#cb850-14"></a></span>
+<span id="cb850-15"><a href="uchar.html#cb850-15"></a>    setlocale<span class="op">(</span>LC_ALL<span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">);</span></span>
+<span id="cb850-16"><a href="uchar.html#cb850-16"></a>    memset<span class="op">(&amp;</span>mbs<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="kw">sizeof</span> mbs<span class="op">);</span>  <span class="co">// Reset conversion state</span></span>
+<span id="cb850-17"><a href="uchar.html#cb850-17"></a></span>
+<span id="cb850-18"><a href="uchar.html#cb850-18"></a>    <span class="co">// Get first surrogate character</span></span>
+<span id="cb850-19"><a href="uchar.html#cb850-19"></a>    r <span class="op">=</span> mbrtoc16<span class="op">(&amp;</span>surrogate0<span class="op">,</span> src<span class="op">,</span> <span class="dv">8</span><span class="op">,</span> <span class="op">&amp;</span>mbs<span class="op">);</span></span>
+<span id="cb850-20"><a href="uchar.html#cb850-20"></a></span>
+<span id="cb850-21"><a href="uchar.html#cb850-21"></a>    <span class="co">// Get next surrogate character</span></span>
+<span id="cb850-22"><a href="uchar.html#cb850-22"></a>    src <span class="op">+=</span> r<span class="op">;</span>  <span class="co">// Move to next character</span></span>
+<span id="cb850-23"><a href="uchar.html#cb850-23"></a>    r <span class="op">=</span> mbrtoc16<span class="op">(&amp;</span>surrogate1<span class="op">,</span> src<span class="op">,</span> <span class="dv">8</span><span class="op">,</span> <span class="op">&amp;</span>mbs<span class="op">);</span></span>
+<span id="cb850-24"><a href="uchar.html#cb850-24"></a></span>
+<span id="cb850-25"><a href="uchar.html#cb850-25"></a>    printf<span class="op">(</span><span class="st">&quot;Surrogate pair: </span><span class="sc">%#x</span><span class="st">, </span><span class="sc">%#x\n</span><span class="st">&quot;</span><span class="op">,</span> surrogate0<span class="op">,</span> surrogate1<span class="op">);</span></span>
+<span id="cb850-26"><a href="uchar.html#cb850-26"></a></span>
+<span id="cb850-27"><a href="uchar.html#cb850-27"></a>    <span class="co">// Now reverse it</span></span>
+<span id="cb850-28"><a href="uchar.html#cb850-28"></a>    memset<span class="op">(&amp;</span>mbs<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="kw">sizeof</span> mbs<span class="op">);</span>  <span class="co">// Reset conversion state</span></span>
+<span id="cb850-29"><a href="uchar.html#cb850-29"></a></span>
+<span id="cb850-30"><a href="uchar.html#cb850-30"></a>    <span class="co">// Process first surrogate character</span></span>
+<span id="cb850-31"><a href="uchar.html#cb850-31"></a>    r <span class="op">=</span> c16rtomb<span class="op">(</span>dest<span class="op">,</span> surrogate0<span class="op">,</span> <span class="op">&amp;</span>mbs<span class="op">);</span></span>
+<span id="cb850-32"><a href="uchar.html#cb850-32"></a></span>
+<span id="cb850-33"><a href="uchar.html#cb850-33"></a>    <span class="co">// r should be 0 at this point, because the character hasn&#39;t been</span></span>
+<span id="cb850-34"><a href="uchar.html#cb850-34"></a>    <span class="co">// processed yet. And dest won&#39;t have anything useful... yet!</span></span>
+<span id="cb850-35"><a href="uchar.html#cb850-35"></a>    printf<span class="op">(</span><span class="st">&quot;r == </span><span class="sc">%zd\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span>   <span class="co">// r == 0</span></span>
+<span id="cb850-36"><a href="uchar.html#cb850-36"></a></span>
+<span id="cb850-37"><a href="uchar.html#cb850-37"></a>    <span class="co">// Process second surrogate character</span></span>
+<span id="cb850-38"><a href="uchar.html#cb850-38"></a>    r <span class="op">=</span> c16rtomb<span class="op">(</span>dest<span class="op">,</span> surrogate1<span class="op">,</span> <span class="op">&amp;</span>mbs<span class="op">);</span></span>
+<span id="cb850-39"><a href="uchar.html#cb850-39"></a></span>
+<span id="cb850-40"><a href="uchar.html#cb850-40"></a>    <span class="co">// Now we should be in business. r should have the number of</span></span>
+<span id="cb850-41"><a href="uchar.html#cb850-41"></a>    <span class="co">// bytes, and dest should hold the character.</span></span>
+<span id="cb850-42"><a href="uchar.html#cb850-42"></a>    printf<span class="op">(</span><span class="st">&quot;r == </span><span class="sc">%zd\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span>  <span class="co">// r == 4 on my system</span></span>
+<span id="cb850-43"><a href="uchar.html#cb850-43"></a></span>
+<span id="cb850-44"><a href="uchar.html#cb850-44"></a>    <span class="co">// And this should print a stick figure, if your font supports it</span></span>
+<span id="cb850-45"><a href="uchar.html#cb850-45"></a>    printf<span class="op">(</span><span class="st">&quot;dest == </span><span class="sc">\&quot;%s\&quot;\n</span><span class="st">&quot;</span><span class="op">,</span> dest<span class="op">);</span></span>
+<span id="cb850-46"><a href="uchar.html#cb850-46"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-237">See Also</h3>
+<p><a href="uchar.html#man-mbrtoc16"><code>mbrtoc16()</code></a>, <a href="uchar.html#man-mbrtoc16"><code>mbrtoc32()</code></a></p>
+<!--
+***
+## `example()` `example()` `example()` {#man-example}
+
+### Synopsis {.unnumbered .unlisted}
+
+``` {.c}
+```
+
+### Description {.unnumbered .unlisted}
+
+### Return Value {.unnumbered .unlisted}
+
+### Example {.unnumbered .unlisted}
+
+``` {.c .numberLines}
+```
+
+### See Also {.unnumbered .unlisted}
+
+[`example()`](#man-example),
+-->
+<!-- BG_NEW_CHAPTER -->
+<!-- Beej's guide to C
+
+# vim: ts=4:sw=4:nosi:et:tw=72
+-->
+<hr><div style="text-align:center"><span><a href="time.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="wchar.html" rel="next">Next</a></span></div></body>
+</html>

@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to C Programming</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body>
+<div style="text-align:center"><span><a href="stdatomic.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="stdbool.html" rel="next">Next</a></span></div><hr>
+<h1 data-number="19" id="stdbit"><span class="header-section-number">19</span> <code>&lt;stdbit.h&gt;</code> Bit-Related Functions</h1>
+<p></p>
+<p>This header file and all the included functions are new in C23!</p>
+<p>Caveat: none of my compilers support this, so all the code is untested!</p>
+<table>
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 62%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="stdbit.html#man-stdc_bit_ceil"><code>stdc_bit_ceil()</code></a></td>
+<td>Return the smallest power of 2 not less than a number</td>
+</tr>
+<tr class="even">
+<td><a href="stdbit.html#man-stdc_bit_floor"><code>stdc_bit_floor()</code></a></td>
+<td>Return the largest power of 2 not greater than a number</td>
+</tr>
+<tr class="odd">
+<td><a href="stdbit.html#man-stdc_bit_width"><code>stdc_bit_width()</code></a></td>
+<td>Return the number of bits needed to store a value</td>
+</tr>
+<tr class="even">
+<td><a href="stdbit.html#man-stdc_count_ones"><code>stdc_count_ones()</code></a></td>
+<td>Count the ones in an unsigned number</td>
+</tr>
+<tr class="odd">
+<td><a href="stdbit.html#man-stdc_count_zeros"><code>stdc_count_zeros()</code></a></td>
+<td>Count the zeros in an unsigned number</td>
+</tr>
+<tr class="even">
+<td><a href="stdbit.html#man-stdc_first_leading_one"><code>stdc_first_leading_one()</code></a></td>
+<td>Find the first leading one in an unsigned number</td>
+</tr>
+<tr class="odd">
+<td><a href="stdbit.html#man-stdc_first_leading_zero"><code>stdc_first_leading_zero()</code></a></td>
+<td>Find the first leading zero in an unsigned number</td>
+</tr>
+<tr class="even">
+<td><a href="stdbit.html#man-stdc_first_trailing_one"><code>stdc_first_trailing_one()</code></a></td>
+<td>Find the first trailing one in an unsigned number</td>
+</tr>
+<tr class="odd">
+<td><a href="stdbit.html#man-stdc_first_trailing_zero"><code>stdc_first_trailing_zero()</code></a></td>
+<td>Find the first trailing zero in an unsigned number</td>
+</tr>
+<tr class="even">
+<td><a href="stdbit.html#man-stdc_has_single_bit"><code>stdc_has_single_bit()</code></a></td>
+<td>Test to see if an unsigned integer has only a single bit set</td>
+</tr>
+<tr class="odd">
+<td><a href="stdbit.html#man-stdc_leading_ones"><code>stdc_leading_ones()</code></a></td>
+<td>Count the leading ones in an unsigned number</td>
+</tr>
+<tr class="even">
+<td><a href="stdbit.html#man-stdc_leading_zeros"><code>stdc_leading_zeros()</code></a></td>
+<td>Count the leading zeros in an unsigned number</td>
+</tr>
+<tr class="odd">
+<td><a href="stdbit.html#man-stdc_trailing_ones"><code>stdc_trailing_ones()</code></a></td>
+<td>Count the trailing ones in an unsigned number</td>
+</tr>
+<tr class="even">
+<td><a href="stdbit.html#man-stdc_trailing_zeros"><code>stdc_trailing_zeros()</code></a></td>
+<td>Count the trailing zeros in an unsigned number</td>
+</tr>
+</tbody>
+</table>
+<h2 data-number="19.1" id="existence-macro"><span class="header-section-number">19.1</span> Existence Macro</h2>
+<p>Since this is a new feature, you can test for its existence by making sure the <code>__STDC_VERSION_STDBIT_H__</code> macro exists and is <code>202311L</code> or greater.</p>
+<h2 data-number="19.2" id="endianess-macros"><span class="header-section-number">19.2</span> Endianess Macros</h2>
+<p> </p>
+<p>This header file defines a number of macros that can be used to determine the <em>endianess</em> of the system. (That is, in a multibyte value, do the first byte represent the most significant part of the value, or least? Or neither?)</p>
+<p>There are two different values for the defined endianesses <code>__STDC_ENDIAN_BIG__</code> and <code>__STDC_ENDIAN_LITTLE__</code>.</p>
+<p>Additionally, there’s a macro <code>__STDC_ENDIAN_NATIVE__</code> that gives you the endianess of <em>this</em> system. You can compare that against the other two macros to see what you’ve got. If it doesn’t compare equal to either of them, you must be on some other mixed-endian system.</p>
+<p>Let’s see what this system is:</p>
+<div class="sourceCode" id="cb473"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb473-1"><a href="stdbit.html#cb473-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb473-2"><a href="stdbit.html#cb473-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb473-3"><a href="stdbit.html#cb473-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb473-4"><a href="stdbit.html#cb473-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb473-5"><a href="stdbit.html#cb473-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb473-6"><a href="stdbit.html#cb473-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">switch</span><span class="op">(</span>__STDC_ENDIAN_NATIVE__<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb473-7"><a href="stdbit.html#cb473-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> __STDC_ENDIAN_BIG__<span class="op">:</span></span>
+<span id="cb473-8"><a href="stdbit.html#cb473-8" aria-hidden="true" tabindex="-1"></a>            puts<span class="op">(</span><span class="st">&quot;Big-endian!&quot;</span><span class="op">);</span></span>
+<span id="cb473-9"><a href="stdbit.html#cb473-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb473-10"><a href="stdbit.html#cb473-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb473-11"><a href="stdbit.html#cb473-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> __STDC_ENDIAN_LITTLE__<span class="op">:</span></span>
+<span id="cb473-12"><a href="stdbit.html#cb473-12" aria-hidden="true" tabindex="-1"></a>            puts<span class="op">(</span><span class="st">&quot;Little-endian!&quot;</span><span class="op">);</span></span>
+<span id="cb473-13"><a href="stdbit.html#cb473-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb473-14"><a href="stdbit.html#cb473-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb473-15"><a href="stdbit.html#cb473-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb473-16"><a href="stdbit.html#cb473-16" aria-hidden="true" tabindex="-1"></a>            puts<span class="op">(</span><span class="st">&quot;Other-endian!&quot;</span><span class="op">);</span></span>
+<span id="cb473-17"><a href="stdbit.html#cb473-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb473-18"><a href="stdbit.html#cb473-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p> </p>
+<h2 data-number="19.3" id="general-structure-of-these-functions"><span class="header-section-number">19.3</span> General Structure of These Functions</h2>
+<p>All the functions in this header follow a standard pattern, so we might as well go over it once here up-front to save extraneous and excessive verbosity later.</p>
+<p>Each function comes in six amazing forms, depending on the types involved.</p>
+<p>First of all, they’re just going to operate on unsigned integer types, so we’ll get that out of the way.</p>
+<p>And they’re <em>mostly</em> going to return <code>unsigned int</code>.</p>
+<p>And they come in two subforms: the type-specific and type-generic forms.</p>
+<p>Let’s look at the type specific forms first. We’ll use the function that counts the leading zero bits in a value as an example. Here it is:</p>
+<div class="sourceCode" id="cb474"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb474-1"><a href="stdbit.html#cb474-1" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_zeros_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb474-2"><a href="stdbit.html#cb474-2" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_zeros_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb474-3"><a href="stdbit.html#cb474-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_zeros_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb474-4"><a href="stdbit.html#cb474-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_zeros_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb474-5"><a href="stdbit.html#cb474-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_zeros_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span></code></pre></div>
+<p>Yikes. OK, what do we have?</p>
+<p>Well, in order to prevent namespace pollution, they all start with <code>stdc_</code>.</p>
+<p>And what about this <code>uc</code>, <code>us</code>, <code>ull</code>, etc. stuff? Those correspond to the type of the argument, you’ll see with a little inspection.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Suffix</th>
+<th>Parameter Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>_uc</code></td>
+<td><code>unsigned char</code></td>
+</tr>
+<tr class="even">
+<td><code>_us</code></td>
+<td><code>unsigned short</code></td>
+</tr>
+<tr class="odd">
+<td><code>_ui</code></td>
+<td><code>unsigned int</code></td>
+</tr>
+<tr class="even">
+<td><code>_ul</code></td>
+<td><code>unsigned long</code></td>
+</tr>
+<tr class="odd">
+<td><code>_ull</code></td>
+<td><code>unsigned long long</code></td>
+</tr>
+</tbody>
+</table>
+<p>But wait! There’s more!</p>
+<p>Each of these function families in the header also has a <em>generic</em> variant.</p>
+<p>So, again with <code>count_leading_zeros</code> as an example, there’s a version that doesn’t need types to be specified, and it’s just the function without any suffix.</p>
+<div class="sourceCode" id="cb475"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb475-1"><a href="stdbit.html#cb475-1" aria-hidden="true" tabindex="-1"></a>generic_return_type stdc_leading_zeros<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<p>In that example, the words <code>generic_return_type</code> and <code>generic_value_type</code> are <strong>not</strong> C keywords. They’re just placeholders to let you know you need to put the right thing there.</p>
+<div class="sourceCode" id="cb476"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb476-1"><a href="stdbit.html#cb476-1" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">short</span> x <span class="op">=</span> <span class="dv">3490</span><span class="op">;</span></span>
+<span id="cb476-2"><a href="stdbit.html#cb476-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb476-3"><a href="stdbit.html#cb476-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> a <span class="op">=</span> stdc_leading_zeros<span class="op">(</span>x<span class="op">);</span></span>
+<span id="cb476-4"><a href="stdbit.html#cb476-4" aria-hidden="true" tabindex="-1"></a><span class="kw">auto</span> b <span class="op">=</span> stdc_leading_zeros<span class="op">(</span><span class="dv">1234</span><span class="op">);</span></span></code></pre></div>
+<p>The generic functions work with all unsigned types, not counting <code>bool</code>.</p>
+<hr />
+<h2 data-number="19.4" id="man-stdc_leading_zeros"><span class="header-section-number">19.4</span> <code>stdc_leading_zeros()</code></h2>
+<p></p>
+<p>Count the leading zeros in an unsigned number</p>
+<h3 class="unnumbered unlisted" id="synopsis-135">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb477"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb477-1"><a href="stdbit.html#cb477-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb477-2"><a href="stdbit.html#cb477-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb477-3"><a href="stdbit.html#cb477-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_zeros_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb477-4"><a href="stdbit.html#cb477-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_zeros_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb477-5"><a href="stdbit.html#cb477-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_zeros_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb477-6"><a href="stdbit.html#cb477-6" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_zeros_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb477-7"><a href="stdbit.html#cb477-7" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_zeros_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb477-8"><a href="stdbit.html#cb477-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb477-9"><a href="stdbit.html#cb477-9" aria-hidden="true" tabindex="-1"></a>generic_return_type stdc_leading_zeros<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-135">Description</h3>
+<p>This function returns the number of leading zero bits on a particular value, starting from the most-significant bit. The number will be influenced by the size of the argument.</p>
+<h3 class="unnumbered unlisted" id="return-value-133">Return Value</h3>
+<p>Returns the number of leading zero bits.</p>
+<h3 class="unnumbered unlisted" id="example-135">Example</h3>
+<div class="sourceCode" id="cb478"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb478-1"><a href="stdbit.html#cb478-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb478-2"><a href="stdbit.html#cb478-2"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb478-3"><a href="stdbit.html#cb478-3"></a></span>
+<span id="cb478-4"><a href="stdbit.html#cb478-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb478-5"><a href="stdbit.html#cb478-5"></a><span class="op">{</span></span>
+<span id="cb478-6"><a href="stdbit.html#cb478-6"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> <span class="dv">3490</span><span class="op">;</span></span>
+<span id="cb478-7"><a href="stdbit.html#cb478-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> count <span class="op">=</span> stdc_leading_zeros_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb478-8"><a href="stdbit.html#cb478-8"></a></span>
+<span id="cb478-9"><a href="stdbit.html#cb478-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> count<span class="op">);</span></span>
+<span id="cb478-10"><a href="stdbit.html#cb478-10"></a></span>
+<span id="cb478-11"><a href="stdbit.html#cb478-11"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> <span class="dv">3490</span><span class="op">;</span></span>
+<span id="cb478-12"><a href="stdbit.html#cb478-12"></a>    <span class="kw">auto</span> count2 <span class="op">=</span> stdc_leading_zeros<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb478-13"><a href="stdbit.html#cb478-13"></a></span>
+<span id="cb478-14"><a href="stdbit.html#cb478-14"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> count2<span class="op">);</span></span>
+<span id="cb478-15"><a href="stdbit.html#cb478-15"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-127">See Also</h3>
+<p><a href="stdbit.html#man-stdc_leading_ones"><code>stdc_leading_ones()</code></a>, <a href="stdbit.html#man-stdc_trailing_zeros"><code>stdc_trailing_zeros()</code></a></p>
+<hr />
+<h2 data-number="19.5" id="man-stdc_leading_ones"><span class="header-section-number">19.5</span> <code>stdc_leading_ones()</code></h2>
+<p></p>
+<p>Count the leading ones in an unsigned number</p>
+<h3 class="unnumbered unlisted" id="synopsis-136">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb479"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb479-1"><a href="stdbit.html#cb479-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb479-2"><a href="stdbit.html#cb479-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb479-3"><a href="stdbit.html#cb479-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_ones_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb479-4"><a href="stdbit.html#cb479-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_ones_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb479-5"><a href="stdbit.html#cb479-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_ones_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb479-6"><a href="stdbit.html#cb479-6" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_ones_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb479-7"><a href="stdbit.html#cb479-7" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_leading_ones_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb479-8"><a href="stdbit.html#cb479-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb479-9"><a href="stdbit.html#cb479-9" aria-hidden="true" tabindex="-1"></a>generic_return_type stdc_leading_ones<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-136">Description</h3>
+<p>This function returns the number of leading one bits on a particular value starting from the most-significant bit. The number will be influenced by the size of the argument.</p>
+<h3 class="unnumbered unlisted" id="return-value-134">Return Value</h3>
+<p>Returns the number of leading one bits.</p>
+<h3 class="unnumbered unlisted" id="example-136">Example</h3>
+<div class="sourceCode" id="cb480"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb480-1"><a href="stdbit.html#cb480-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb480-2"><a href="stdbit.html#cb480-2"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb480-3"><a href="stdbit.html#cb480-3"></a></span>
+<span id="cb480-4"><a href="stdbit.html#cb480-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb480-5"><a href="stdbit.html#cb480-5"></a><span class="op">{</span></span>
+<span id="cb480-6"><a href="stdbit.html#cb480-6"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> <span class="dv">3490</span><span class="op">;</span></span>
+<span id="cb480-7"><a href="stdbit.html#cb480-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> count <span class="op">=</span> stdc_leading_ones_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb480-8"><a href="stdbit.html#cb480-8"></a></span>
+<span id="cb480-9"><a href="stdbit.html#cb480-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> count<span class="op">);</span></span>
+<span id="cb480-10"><a href="stdbit.html#cb480-10"></a></span>
+<span id="cb480-11"><a href="stdbit.html#cb480-11"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> <span class="dv">3490</span><span class="op">;</span></span>
+<span id="cb480-12"><a href="stdbit.html#cb480-12"></a>    <span class="kw">auto</span> count2 <span class="op">=</span> stdc_leading_ones<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb480-13"><a href="stdbit.html#cb480-13"></a></span>
+<span id="cb480-14"><a href="stdbit.html#cb480-14"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> count2<span class="op">);</span></span>
+<span id="cb480-15"><a href="stdbit.html#cb480-15"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-128">See Also</h3>
+<p><a href="stdbit.html#man-stdc_leading_zeros"><code>stdc_leading_zeros()</code></a>, <a href="stdbit.html#man-stdc_trailing_ones"><code>stdc_trailing_ones()</code></a></p>
+<hr />
+<h2 data-number="19.6" id="man-stdc_trailing_zeros"><span class="header-section-number">19.6</span> <code>stdc_trailing_zeros()</code></h2>
+<p></p>
+<p>Count the trailing zeros in an unsigned number</p>
+<h3 class="unnumbered unlisted" id="synopsis-137">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb481"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb481-1"><a href="stdbit.html#cb481-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb481-2"><a href="stdbit.html#cb481-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb481-3"><a href="stdbit.html#cb481-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_trailing_zeros_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb481-4"><a href="stdbit.html#cb481-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_trailing_zeros_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb481-5"><a href="stdbit.html#cb481-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_trailing_zeros_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb481-6"><a href="stdbit.html#cb481-6" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_trailing_zeros_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb481-7"><a href="stdbit.html#cb481-7" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_trailing_zeros_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb481-8"><a href="stdbit.html#cb481-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb481-9"><a href="stdbit.html#cb481-9" aria-hidden="true" tabindex="-1"></a>generic_return_type stdc_trailing_zeros<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-137">Description</h3>
+<p>This function returns the number of trailing zero bits on a particular value, starting from the least-significant bit. The number will be influenced by the size of the argument.</p>
+<h3 class="unnumbered unlisted" id="return-value-135">Return Value</h3>
+<p>Returns the number of trailing zero bits.</p>
+<h3 class="unnumbered unlisted" id="example-137">Example</h3>
+<div class="sourceCode" id="cb482"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb482-1"><a href="stdbit.html#cb482-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb482-2"><a href="stdbit.html#cb482-2"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb482-3"><a href="stdbit.html#cb482-3"></a></span>
+<span id="cb482-4"><a href="stdbit.html#cb482-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb482-5"><a href="stdbit.html#cb482-5"></a><span class="op">{</span></span>
+<span id="cb482-6"><a href="stdbit.html#cb482-6"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> <span class="dv">3490</span><span class="op">;</span></span>
+<span id="cb482-7"><a href="stdbit.html#cb482-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> count <span class="op">=</span> stdc_trailing_zeros_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb482-8"><a href="stdbit.html#cb482-8"></a></span>
+<span id="cb482-9"><a href="stdbit.html#cb482-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> count<span class="op">);</span></span>
+<span id="cb482-10"><a href="stdbit.html#cb482-10"></a></span>
+<span id="cb482-11"><a href="stdbit.html#cb482-11"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> <span class="dv">3490</span><span class="op">;</span></span>
+<span id="cb482-12"><a href="stdbit.html#cb482-12"></a>    <span class="kw">auto</span> count2 <span class="op">=</span> stdc_trailing_zeros<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb482-13"><a href="stdbit.html#cb482-13"></a></span>
+<span id="cb482-14"><a href="stdbit.html#cb482-14"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> count2<span class="op">);</span></span>
+<span id="cb482-15"><a href="stdbit.html#cb482-15"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-129">See Also</h3>
+<p><a href="stdbit.html#man-stdc_trailing_ones"><code>stdc_trailing_ones()</code></a>, <a href="stdbit.html#man-stdc_leading_zeros"><code>stdc_leading_zeros()</code></a></p>
+<hr />
+<h2 data-number="19.7" id="man-stdc_trailing_ones"><span class="header-section-number">19.7</span> <code>stdc_trailing_ones()</code></h2>
+<p></p>
+<p>Count the trailing ones in an unsigned number</p>
+<h3 class="unnumbered unlisted" id="synopsis-138">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb483"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb483-1"><a href="stdbit.html#cb483-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb483-2"><a href="stdbit.html#cb483-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb483-3"><a href="stdbit.html#cb483-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_trailing_ones_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb483-4"><a href="stdbit.html#cb483-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_trailing_ones_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb483-5"><a href="stdbit.html#cb483-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_trailing_ones_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb483-6"><a href="stdbit.html#cb483-6" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_trailing_ones_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb483-7"><a href="stdbit.html#cb483-7" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_trailing_ones_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb483-8"><a href="stdbit.html#cb483-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb483-9"><a href="stdbit.html#cb483-9" aria-hidden="true" tabindex="-1"></a>generic_return_type stdc_trailing_ones<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-138">Description</h3>
+<p>This function returns the number of trailing one bits on a particular value, starting from the least-significant bit. The number will be influenced by the size of the argument.</p>
+<h3 class="unnumbered unlisted" id="return-value-136">Return Value</h3>
+<p>Returns the number of trailing one bits.</p>
+<h3 class="unnumbered unlisted" id="example-138">Example</h3>
+<div class="sourceCode" id="cb484"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb484-1"><a href="stdbit.html#cb484-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb484-2"><a href="stdbit.html#cb484-2"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb484-3"><a href="stdbit.html#cb484-3"></a></span>
+<span id="cb484-4"><a href="stdbit.html#cb484-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb484-5"><a href="stdbit.html#cb484-5"></a><span class="op">{</span></span>
+<span id="cb484-6"><a href="stdbit.html#cb484-6"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> <span class="dv">3490</span><span class="op">;</span></span>
+<span id="cb484-7"><a href="stdbit.html#cb484-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> count <span class="op">=</span> stdc_trailing_ones_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb484-8"><a href="stdbit.html#cb484-8"></a></span>
+<span id="cb484-9"><a href="stdbit.html#cb484-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> count<span class="op">);</span></span>
+<span id="cb484-10"><a href="stdbit.html#cb484-10"></a></span>
+<span id="cb484-11"><a href="stdbit.html#cb484-11"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> <span class="dv">3490</span><span class="op">;</span></span>
+<span id="cb484-12"><a href="stdbit.html#cb484-12"></a>    <span class="kw">auto</span> count2 <span class="op">=</span> stdc_trailing_ones<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb484-13"><a href="stdbit.html#cb484-13"></a></span>
+<span id="cb484-14"><a href="stdbit.html#cb484-14"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> count2<span class="op">);</span></span>
+<span id="cb484-15"><a href="stdbit.html#cb484-15"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-130">See Also</h3>
+<p><a href="stdbit.html#man-stdc_trailing_zeros"><code>stdc_trailing_zeros()</code></a>, <a href="stdbit.html#man-stdc_leading_ones"><code>stdc_leading_ones()</code></a></p>
+<hr />
+<h2 data-number="19.8" id="man-stdc_first_leading_zero"><span class="header-section-number">19.8</span> <code>stdc_first_leading_zero()</code></h2>
+<p></p>
+<p>Find the first leading zero in an unsigned number</p>
+<h3 class="unnumbered unlisted" id="synopsis-139">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb485"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb485-1"><a href="stdbit.html#cb485-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb485-2"><a href="stdbit.html#cb485-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb485-3"><a href="stdbit.html#cb485-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_leading_zero_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb485-4"><a href="stdbit.html#cb485-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_leading_zero_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb485-5"><a href="stdbit.html#cb485-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_leading_zero_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb485-6"><a href="stdbit.html#cb485-6" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_leading_zero_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb485-7"><a href="stdbit.html#cb485-7" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_leading_zero_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb485-8"><a href="stdbit.html#cb485-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb485-9"><a href="stdbit.html#cb485-9" aria-hidden="true" tabindex="-1"></a>generic_return_type stdc_first_leading_zero<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-139">Description</h3>
+<p>This finds the index of the first leading zero in a number. Indexes are numbered starting from <code>1</code> being the most significant (“leftmost”) bit position. (This might be in contrast to how you might be used to numbering bit indexes.)</p>
+<p>It’s one-based so that you can quickly use the return value as a Boolean expression for if it found a zero bit or not.</p>
+<h3 class="unnumbered unlisted" id="return-value-137">Return Value</h3>
+<p>Returns the 1-based index from the most significant bit of the first zero bit in the <code>value</code>, or <code>0</code> if there are no zero bits.</p>
+<h3 class="unnumbered unlisted" id="example-139">Example</h3>
+<div class="sourceCode" id="cb486"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb486-1"><a href="stdbit.html#cb486-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb486-2"><a href="stdbit.html#cb486-2"></a><span class="pp">#include </span><span class="im">&lt;limits.h&gt;</span></span>
+<span id="cb486-3"><a href="stdbit.html#cb486-3"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb486-4"><a href="stdbit.html#cb486-4"></a></span>
+<span id="cb486-5"><a href="stdbit.html#cb486-5"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb486-6"><a href="stdbit.html#cb486-6"></a><span class="op">{</span></span>
+<span id="cb486-7"><a href="stdbit.html#cb486-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> UINT_MAX<span class="op">;</span></span>
+<span id="cb486-8"><a href="stdbit.html#cb486-8"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> index <span class="op">=</span> stdc_first_leading_zero_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb486-9"><a href="stdbit.html#cb486-9"></a></span>
+<span id="cb486-10"><a href="stdbit.html#cb486-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> index<span class="op">);</span></span>
+<span id="cb486-11"><a href="stdbit.html#cb486-11"></a></span>
+<span id="cb486-12"><a href="stdbit.html#cb486-12"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> UINT_MAX <span class="op">&gt;&gt;</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb486-13"><a href="stdbit.html#cb486-13"></a>    <span class="kw">auto</span> index2 <span class="op">=</span> stdc_first_leading_zero<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb486-14"><a href="stdbit.html#cb486-14"></a></span>
+<span id="cb486-15"><a href="stdbit.html#cb486-15"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> index2<span class="op">);</span></span>
+<span id="cb486-16"><a href="stdbit.html#cb486-16"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-131">See Also</h3>
+<p><a href="stdbit.html#man-stdc_first_leading_one"><code>stdc_first_leading_one()</code></a>, <a href="stdbit.html#man-stdc_first_trailing_zero"><code>stdc_first_trailing_zero()</code></a></p>
+<hr />
+<h2 data-number="19.9" id="man-stdc_first_leading_one"><span class="header-section-number">19.9</span> <code>stdc_first_leading_one()</code></h2>
+<p></p>
+<p>Find the first leading one in an unsigned number</p>
+<h3 class="unnumbered unlisted" id="synopsis-140">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb487"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb487-1"><a href="stdbit.html#cb487-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb487-2"><a href="stdbit.html#cb487-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb487-3"><a href="stdbit.html#cb487-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_leading_one_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb487-4"><a href="stdbit.html#cb487-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_leading_one_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb487-5"><a href="stdbit.html#cb487-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_leading_one_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb487-6"><a href="stdbit.html#cb487-6" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_leading_one_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb487-7"><a href="stdbit.html#cb487-7" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_leading_one_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb487-8"><a href="stdbit.html#cb487-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb487-9"><a href="stdbit.html#cb487-9" aria-hidden="true" tabindex="-1"></a>generic_return_type stdc_first_leading_one<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-140">Description</h3>
+<p>This finds the index of the first leading one in a number. Indexes are numbered starting from <code>1</code> being the most significant (“leftmost”) bit position. (This might be in contrast to how you might be used to numbering bit indexes.)</p>
+<p>It’s one-based so that you can quickly use the return value as a Boolean expression for if it found a one bit or not.</p>
+<h3 class="unnumbered unlisted" id="return-value-138">Return Value</h3>
+<p>Returns the 1-based index from the most significant bit of the first one bit in the <code>value</code>, or <code>0</code> if there are no one bits.</p>
+<h3 class="unnumbered unlisted" id="example-140">Example</h3>
+<div class="sourceCode" id="cb488"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb488-1"><a href="stdbit.html#cb488-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb488-2"><a href="stdbit.html#cb488-2"></a><span class="pp">#include </span><span class="im">&lt;limits.h&gt;</span></span>
+<span id="cb488-3"><a href="stdbit.html#cb488-3"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb488-4"><a href="stdbit.html#cb488-4"></a></span>
+<span id="cb488-5"><a href="stdbit.html#cb488-5"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb488-6"><a href="stdbit.html#cb488-6"></a><span class="op">{</span></span>
+<span id="cb488-7"><a href="stdbit.html#cb488-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> UINT_MAX<span class="op">;</span></span>
+<span id="cb488-8"><a href="stdbit.html#cb488-8"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> index <span class="op">=</span> stdc_first_leading_one_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb488-9"><a href="stdbit.html#cb488-9"></a></span>
+<span id="cb488-10"><a href="stdbit.html#cb488-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> index<span class="op">);</span></span>
+<span id="cb488-11"><a href="stdbit.html#cb488-11"></a></span>
+<span id="cb488-12"><a href="stdbit.html#cb488-12"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> UINT_MAX <span class="op">&gt;&gt;</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb488-13"><a href="stdbit.html#cb488-13"></a>    <span class="kw">auto</span> index2 <span class="op">=</span> stdc_first_leading_one<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb488-14"><a href="stdbit.html#cb488-14"></a></span>
+<span id="cb488-15"><a href="stdbit.html#cb488-15"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> index2<span class="op">);</span></span>
+<span id="cb488-16"><a href="stdbit.html#cb488-16"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-132">See Also</h3>
+<p><a href="stdbit.html#man-stdc_first_leading_zero"><code>stdc_first_leading_zero()</code></a>, <a href="stdbit.html#man-stdc_first_trailing_one"><code>stdc_first_trailing_one()</code></a></p>
+<hr />
+<h2 data-number="19.10" id="man-stdc_first_trailing_zero"><span class="header-section-number">19.10</span> <code>stdc_first_trailing_zero()</code></h2>
+<p></p>
+<p>Find the first trailing zero in an unsigned number</p>
+<h3 class="unnumbered unlisted" id="synopsis-141">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb489"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb489-1"><a href="stdbit.html#cb489-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb489-2"><a href="stdbit.html#cb489-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb489-3"><a href="stdbit.html#cb489-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_trailing_zero_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb489-4"><a href="stdbit.html#cb489-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_trailing_zero_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb489-5"><a href="stdbit.html#cb489-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_trailing_zero_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb489-6"><a href="stdbit.html#cb489-6" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_trailing_zero_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb489-7"><a href="stdbit.html#cb489-7" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_trailing_zero_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb489-8"><a href="stdbit.html#cb489-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb489-9"><a href="stdbit.html#cb489-9" aria-hidden="true" tabindex="-1"></a>generic_return_type stdc_first_trailing_zero<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-141">Description</h3>
+<p>This finds the index of the first trailing zero in a number. Indexes are numbered starting from <code>1</code> being the most significant (“leftmost”) bit position. (This might be in contrast to how you might be used to numbering bit indexes.)</p>
+<p>It’s one-based so that you can quickly use the return value as a Boolean expression for if it found a zero bit or not.</p>
+<h3 class="unnumbered unlisted" id="return-value-139">Return Value</h3>
+<p>Returns the 1-based index from the most significant bit of the first zero bit in the <code>value</code>, or <code>0</code> if there are no zero bits.</p>
+<h3 class="unnumbered unlisted" id="example-141">Example</h3>
+<div class="sourceCode" id="cb490"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb490-1"><a href="stdbit.html#cb490-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb490-2"><a href="stdbit.html#cb490-2"></a><span class="pp">#include </span><span class="im">&lt;limits.h&gt;</span></span>
+<span id="cb490-3"><a href="stdbit.html#cb490-3"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb490-4"><a href="stdbit.html#cb490-4"></a></span>
+<span id="cb490-5"><a href="stdbit.html#cb490-5"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb490-6"><a href="stdbit.html#cb490-6"></a><span class="op">{</span></span>
+<span id="cb490-7"><a href="stdbit.html#cb490-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> UINT_MAX<span class="op">;</span></span>
+<span id="cb490-8"><a href="stdbit.html#cb490-8"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> index <span class="op">=</span> stdc_first_trailing_zero_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb490-9"><a href="stdbit.html#cb490-9"></a></span>
+<span id="cb490-10"><a href="stdbit.html#cb490-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> index<span class="op">);</span></span>
+<span id="cb490-11"><a href="stdbit.html#cb490-11"></a></span>
+<span id="cb490-12"><a href="stdbit.html#cb490-12"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> UINT_MAX <span class="op">&gt;&gt;</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb490-13"><a href="stdbit.html#cb490-13"></a>    <span class="kw">auto</span> index2 <span class="op">=</span> stdc_first_trailing_zero<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb490-14"><a href="stdbit.html#cb490-14"></a></span>
+<span id="cb490-15"><a href="stdbit.html#cb490-15"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> index2<span class="op">);</span></span>
+<span id="cb490-16"><a href="stdbit.html#cb490-16"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-133">See Also</h3>
+<p><a href="stdbit.html#man-stdc_first_leading_zero"><code>stdc_first_leading_zero()</code></a>, <a href="stdbit.html#man-stdc_first_trailing_one"><code>stdc_first_trailing_one()</code></a></p>
+<hr />
+<h2 data-number="19.11" id="man-stdc_first_trailing_one"><span class="header-section-number">19.11</span> <code>stdc_first_trailing_one()</code></h2>
+<p></p>
+<p>Find the first trailing one in an unsigned number</p>
+<h3 class="unnumbered unlisted" id="synopsis-142">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb491"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb491-1"><a href="stdbit.html#cb491-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb491-2"><a href="stdbit.html#cb491-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb491-3"><a href="stdbit.html#cb491-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_trailing_one_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb491-4"><a href="stdbit.html#cb491-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_trailing_one_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb491-5"><a href="stdbit.html#cb491-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_trailing_one_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb491-6"><a href="stdbit.html#cb491-6" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_trailing_one_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb491-7"><a href="stdbit.html#cb491-7" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_first_trailing_one_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb491-8"><a href="stdbit.html#cb491-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb491-9"><a href="stdbit.html#cb491-9" aria-hidden="true" tabindex="-1"></a>generic_return_type stdc_first_trailing_one<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-142">Description</h3>
+<p>This finds the index of the first trailing one in a number. Indexes are numbered starting from <code>1</code> being the most significant (“leftmost”) bit position. (This might be in contrast to how you might be used to numbering bit indexes.)</p>
+<p>It’s one-based so that you can quickly use the return value as a Boolean expression for if it found a one bit or not.</p>
+<h3 class="unnumbered unlisted" id="return-value-140">Return Value</h3>
+<p>Returns the 1-based index from the most significant bit of the first one bit in the <code>value</code>, or <code>0</code> if there are no one bits.</p>
+<h3 class="unnumbered unlisted" id="example-142">Example</h3>
+<div class="sourceCode" id="cb492"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb492-1"><a href="stdbit.html#cb492-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb492-2"><a href="stdbit.html#cb492-2"></a><span class="pp">#include </span><span class="im">&lt;limits.h&gt;</span></span>
+<span id="cb492-3"><a href="stdbit.html#cb492-3"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb492-4"><a href="stdbit.html#cb492-4"></a></span>
+<span id="cb492-5"><a href="stdbit.html#cb492-5"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb492-6"><a href="stdbit.html#cb492-6"></a><span class="op">{</span></span>
+<span id="cb492-7"><a href="stdbit.html#cb492-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> UINT_MAX<span class="op">;</span></span>
+<span id="cb492-8"><a href="stdbit.html#cb492-8"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> index <span class="op">=</span> stdc_first_trailing_one_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb492-9"><a href="stdbit.html#cb492-9"></a></span>
+<span id="cb492-10"><a href="stdbit.html#cb492-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> index<span class="op">);</span></span>
+<span id="cb492-11"><a href="stdbit.html#cb492-11"></a></span>
+<span id="cb492-12"><a href="stdbit.html#cb492-12"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> UINT_MAX <span class="op">&gt;&gt;</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb492-13"><a href="stdbit.html#cb492-13"></a>    <span class="kw">auto</span> index2 <span class="op">=</span> stdc_first_trailing_one<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb492-14"><a href="stdbit.html#cb492-14"></a></span>
+<span id="cb492-15"><a href="stdbit.html#cb492-15"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> index2<span class="op">);</span></span>
+<span id="cb492-16"><a href="stdbit.html#cb492-16"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-134">See Also</h3>
+<p><a href="stdbit.html#man-stdc_first_leading_one"><code>stdc_first_leading_one()</code></a>, <a href="stdbit.html#man-stdc_first_trailing_zero"><code>stdc_first_trailing_zero()</code></a></p>
+<hr />
+<h2 data-number="19.12" id="man-stdc_count_zeros"><span class="header-section-number">19.12</span> <code>stdc_count_zeros()</code></h2>
+<p></p>
+<p>Count the zeros in an unsigned number</p>
+<h3 class="unnumbered unlisted" id="synopsis-143">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb493"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb493-1"><a href="stdbit.html#cb493-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb493-2"><a href="stdbit.html#cb493-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb493-3"><a href="stdbit.html#cb493-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_count_zeros_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb493-4"><a href="stdbit.html#cb493-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_count_zeros_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb493-5"><a href="stdbit.html#cb493-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_count_zeros_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb493-6"><a href="stdbit.html#cb493-6" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_count_zeros_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb493-7"><a href="stdbit.html#cb493-7" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_count_zeros_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb493-8"><a href="stdbit.html#cb493-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb493-9"><a href="stdbit.html#cb493-9" aria-hidden="true" tabindex="-1"></a>generic_return_type stdc_count_zeros<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-143">Description</h3>
+<p>This function returns the number of zero bits in a particular value. The number will be influenced by the size of the argument.</p>
+<h3 class="unnumbered unlisted" id="return-value-141">Return Value</h3>
+<p>Returns the number of zero bits.</p>
+<h3 class="unnumbered unlisted" id="example-143">Example</h3>
+<div class="sourceCode" id="cb494"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb494-1"><a href="stdbit.html#cb494-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb494-2"><a href="stdbit.html#cb494-2"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb494-3"><a href="stdbit.html#cb494-3"></a></span>
+<span id="cb494-4"><a href="stdbit.html#cb494-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb494-5"><a href="stdbit.html#cb494-5"></a><span class="op">{</span></span>
+<span id="cb494-6"><a href="stdbit.html#cb494-6"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> <span class="dv">3490</span><span class="op">;</span></span>
+<span id="cb494-7"><a href="stdbit.html#cb494-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> count <span class="op">=</span> stdc_count_zeros_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb494-8"><a href="stdbit.html#cb494-8"></a></span>
+<span id="cb494-9"><a href="stdbit.html#cb494-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> count<span class="op">);</span></span>
+<span id="cb494-10"><a href="stdbit.html#cb494-10"></a></span>
+<span id="cb494-11"><a href="stdbit.html#cb494-11"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> <span class="dv">123456</span><span class="op">;</span></span>
+<span id="cb494-12"><a href="stdbit.html#cb494-12"></a>    <span class="kw">auto</span> count2 <span class="op">=</span> stdc_count_zeros<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb494-13"><a href="stdbit.html#cb494-13"></a></span>
+<span id="cb494-14"><a href="stdbit.html#cb494-14"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> count2<span class="op">);</span></span>
+<span id="cb494-15"><a href="stdbit.html#cb494-15"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-135">See Also</h3>
+<p><a href="stdbit.html#man-stdc_count_ones"><code>stdc_count_ones()()</code></a>, <a href="stdbit.html#man-stdc_leading_zeros"><code>stdc_leading_zeros()()</code></a>, <a href="stdbit.html#man-stdc_trailing_zeros"><code>stdc_trailing_zeros()()</code></a></p>
+<hr />
+<h2 data-number="19.13" id="man-stdc_count_ones"><span class="header-section-number">19.13</span> <code>stdc_count_ones()</code></h2>
+<p></p>
+<p>Count the ones in an unsigned number</p>
+<h3 class="unnumbered unlisted" id="synopsis-144">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb495"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb495-1"><a href="stdbit.html#cb495-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb495-2"><a href="stdbit.html#cb495-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb495-3"><a href="stdbit.html#cb495-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_count_ones_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb495-4"><a href="stdbit.html#cb495-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_count_ones_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb495-5"><a href="stdbit.html#cb495-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_count_ones_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb495-6"><a href="stdbit.html#cb495-6" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_count_ones_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb495-7"><a href="stdbit.html#cb495-7" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_count_ones_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb495-8"><a href="stdbit.html#cb495-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb495-9"><a href="stdbit.html#cb495-9" aria-hidden="true" tabindex="-1"></a>generic_return_type stdc_count_ones<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-144">Description</h3>
+<p>This function returns the number of one bits in a particular value. The number will be influenced by the size of the argument.</p>
+<h3 class="unnumbered unlisted" id="return-value-142">Return Value</h3>
+<p>Returns the number of one bits.</p>
+<h3 class="unnumbered unlisted" id="example-144">Example</h3>
+<div class="sourceCode" id="cb496"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb496-1"><a href="stdbit.html#cb496-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb496-2"><a href="stdbit.html#cb496-2"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb496-3"><a href="stdbit.html#cb496-3"></a></span>
+<span id="cb496-4"><a href="stdbit.html#cb496-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb496-5"><a href="stdbit.html#cb496-5"></a><span class="op">{</span></span>
+<span id="cb496-6"><a href="stdbit.html#cb496-6"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> <span class="dv">3490</span><span class="op">;</span></span>
+<span id="cb496-7"><a href="stdbit.html#cb496-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> count <span class="op">=</span> stdc_count_ones_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb496-8"><a href="stdbit.html#cb496-8"></a></span>
+<span id="cb496-9"><a href="stdbit.html#cb496-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> count<span class="op">);</span></span>
+<span id="cb496-10"><a href="stdbit.html#cb496-10"></a></span>
+<span id="cb496-11"><a href="stdbit.html#cb496-11"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> <span class="dv">123456</span><span class="op">;</span></span>
+<span id="cb496-12"><a href="stdbit.html#cb496-12"></a>    <span class="kw">auto</span> count2 <span class="op">=</span> stdc_count_ones<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb496-13"><a href="stdbit.html#cb496-13"></a></span>
+<span id="cb496-14"><a href="stdbit.html#cb496-14"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> count2<span class="op">);</span></span>
+<span id="cb496-15"><a href="stdbit.html#cb496-15"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-136">See Also</h3>
+<p><a href="stdbit.html#man-stdc_count_zeros"><code>stdc_count_zeros()()</code></a>, <a href="stdbit.html#man-stdc_leading_ones"><code>stdc_leading_ones()()</code></a>, <a href="stdbit.html#man-stdc_trailing_ones"><code>stdc_trailing_ones()()</code></a></p>
+<hr />
+<h2 data-number="19.14" id="man-stdc_has_single_bit"><span class="header-section-number">19.14</span> <code>stdc_has_single_bit()</code></h2>
+<p></p>
+<p>Test to see if an unsigned integer has only a single bit set</p>
+<h3 class="unnumbered unlisted" id="synopsis-145">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb497"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb497-1"><a href="stdbit.html#cb497-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb497-2"><a href="stdbit.html#cb497-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb497-3"><a href="stdbit.html#cb497-3" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> stdc_has_single_bit_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb497-4"><a href="stdbit.html#cb497-4" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> stdc_has_single_bit_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb497-5"><a href="stdbit.html#cb497-5" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> stdc_has_single_bit_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb497-6"><a href="stdbit.html#cb497-6" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> stdc_has_single_bit_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb497-7"><a href="stdbit.html#cb497-7" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> stdc_has_single_bit_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb497-8"><a href="stdbit.html#cb497-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb497-9"><a href="stdbit.html#cb497-9" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> stdc_has_single_bit<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-145">Description</h3>
+<p>These functions return true if exactly one bit is <code>1</code> in an unsigned <code>value</code>.</p>
+<p>If true, it also means the <code>value</code> is a power of 2.</p>
+<h3 class="unnumbered unlisted" id="return-value-143">Return Value</h3>
+<p>Return true if <code>value</code> has exactly a single bit set to <code>1</code>.</p>
+<h3 class="unnumbered unlisted" id="example-145">Example</h3>
+<div class="sourceCode" id="cb498"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb498-1"><a href="stdbit.html#cb498-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb498-2"><a href="stdbit.html#cb498-2"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb498-3"><a href="stdbit.html#cb498-3"></a></span>
+<span id="cb498-4"><a href="stdbit.html#cb498-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb498-5"><a href="stdbit.html#cb498-5"></a><span class="op">{</span></span>
+<span id="cb498-6"><a href="stdbit.html#cb498-6"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> <span class="bn">0b0001000</span><span class="op">;</span></span>
+<span id="cb498-7"><a href="stdbit.html#cb498-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> result <span class="op">=</span> stdc_has_single_bit_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb498-8"><a href="stdbit.html#cb498-8"></a></span>
+<span id="cb498-9"><a href="stdbit.html#cb498-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> result<span class="op">);</span>    <span class="co">// 1</span></span>
+<span id="cb498-10"><a href="stdbit.html#cb498-10"></a></span>
+<span id="cb498-11"><a href="stdbit.html#cb498-11"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> <span class="bn">0b000011000</span></span>
+<span id="cb498-12"><a href="stdbit.html#cb498-12"></a>    <span class="kw">auto</span> result2 <span class="op">=</span> stdc_has_single_bit<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb498-13"><a href="stdbit.html#cb498-13"></a></span>
+<span id="cb498-14"><a href="stdbit.html#cb498-14"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> result2<span class="op">);</span>   <span class="co">// 0</span></span>
+<span id="cb498-15"><a href="stdbit.html#cb498-15"></a><span class="op">}</span></span></code></pre></div>
+<!--
+### See Also {.unnumbered .unlisted}
+
+[`example()`](#man-example),
+-->
+<hr />
+<h2 data-number="19.15" id="man-stdc_bit_width"><span class="header-section-number">19.15</span> <code>stdc_bit_width()</code></h2>
+<p></p>
+<p>Return the number of bits needed to store a value</p>
+<h3 class="unnumbered unlisted" id="synopsis-146">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb499"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb499-1"><a href="stdbit.html#cb499-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb499-2"><a href="stdbit.html#cb499-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb499-3"><a href="stdbit.html#cb499-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_bit_width_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb499-4"><a href="stdbit.html#cb499-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_bit_width_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb499-5"><a href="stdbit.html#cb499-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_bit_width_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb499-6"><a href="stdbit.html#cb499-6" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_bit_width_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb499-7"><a href="stdbit.html#cb499-7" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_bit_width_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb499-8"><a href="stdbit.html#cb499-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb499-9"><a href="stdbit.html#cb499-9" aria-hidden="true" tabindex="-1"></a>generic_return_type stdc_bit_width<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-146">Description</h3>
+<p>Given an unsigned integer value, what’s the smallest number of bits needed to store it? That’s the question this function answers.</p>
+<h3 class="unnumbered unlisted" id="return-value-144">Return Value</h3>
+<p>Returns the number of bits needed to store a positive <code>value</code>. Returns <code>0</code> if the <code>value</code> passed in is <code>0</code>.</p>
+<h3 class="unnumbered unlisted" id="example-146">Example</h3>
+<div class="sourceCode" id="cb500"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb500-1"><a href="stdbit.html#cb500-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb500-2"><a href="stdbit.html#cb500-2"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb500-3"><a href="stdbit.html#cb500-3"></a></span>
+<span id="cb500-4"><a href="stdbit.html#cb500-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb500-5"><a href="stdbit.html#cb500-5"></a><span class="op">{</span></span>
+<span id="cb500-6"><a href="stdbit.html#cb500-6"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> <span class="bn">0b0001000</span><span class="op">;</span></span>
+<span id="cb500-7"><a href="stdbit.html#cb500-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> result <span class="op">=</span> stdc_bit_width_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb500-8"><a href="stdbit.html#cb500-8"></a></span>
+<span id="cb500-9"><a href="stdbit.html#cb500-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> result<span class="op">);</span>    <span class="co">// 4</span></span>
+<span id="cb500-10"><a href="stdbit.html#cb500-10"></a></span>
+<span id="cb500-11"><a href="stdbit.html#cb500-11"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> <span class="bn">0b000011010</span></span>
+<span id="cb500-12"><a href="stdbit.html#cb500-12"></a>    <span class="kw">auto</span> result2 <span class="op">=</span> stdc_bit_width<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb500-13"><a href="stdbit.html#cb500-13"></a></span>
+<span id="cb500-14"><a href="stdbit.html#cb500-14"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> result2<span class="op">);</span>   <span class="co">// 5</span></span>
+<span id="cb500-15"><a href="stdbit.html#cb500-15"></a><span class="op">}</span></span></code></pre></div>
+<!--
+### See Also {.unnumbered .unlisted}
+
+[`example()`](#man-example),
+-->
+<hr />
+<h2 data-number="19.16" id="man-stdc_bit_floor"><span class="header-section-number">19.16</span> <code>stdc_bit_floor()</code></h2>
+<p></p>
+<p>Return the largest power of 2 not greater than a number</p>
+<h3 class="unnumbered unlisted" id="synopsis-147">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb501"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb501-1"><a href="stdbit.html#cb501-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb501-2"><a href="stdbit.html#cb501-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb501-3"><a href="stdbit.html#cb501-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">char</span> stdc_bit_floor_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb501-4"><a href="stdbit.html#cb501-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">short</span> stdc_bit_floor_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb501-5"><a href="stdbit.html#cb501-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_bit_floor_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb501-6"><a href="stdbit.html#cb501-6" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">long</span> stdc_bit_floor_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb501-7"><a href="stdbit.html#cb501-7" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> stdc_bit_floor_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb501-8"><a href="stdbit.html#cb501-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb501-9"><a href="stdbit.html#cb501-9" aria-hidden="true" tabindex="-1"></a>generic_value_type stdc_bit_floor<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-147">Description</h3>
+<p>This function returns the largest power of 2 that is not greater than the <code>value</code>.</p>
+<p>In other words “is less than or equal to” the <code>value</code>.</p>
+<p>In other words, floor down to the nearest power of two.</p>
+<p>In other words, return the value of the highest set bit in a number</p>
+<p>For example: |<code>value</code>|Return| |-|-| |<code>0b101</code>|<code>0b100</code>| |<code>0b1000</code>|<code>0b1000</code>| |<code>0b100101</code>|<code>0b100000</code>|</p>
+<h3 class="unnumbered unlisted" id="return-value-145">Return Value</h3>
+<p>Returns the largest power of 2 not greater than <code>value</code>. Returns <code>0</code> if the <code>value</code> is <code>0</code>.</p>
+<h3 class="unnumbered unlisted" id="example-147">Example</h3>
+<div class="sourceCode" id="cb502"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb502-1"><a href="stdbit.html#cb502-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb502-2"><a href="stdbit.html#cb502-2"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb502-3"><a href="stdbit.html#cb502-3"></a></span>
+<span id="cb502-4"><a href="stdbit.html#cb502-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb502-5"><a href="stdbit.html#cb502-5"></a><span class="op">{</span></span>
+<span id="cb502-6"><a href="stdbit.html#cb502-6"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> <span class="bn">0b0001000</span><span class="op">;</span></span>
+<span id="cb502-7"><a href="stdbit.html#cb502-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> result <span class="op">=</span> stdc_bit_floor_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb502-8"><a href="stdbit.html#cb502-8"></a></span>
+<span id="cb502-9"><a href="stdbit.html#cb502-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%b\n</span><span class="st">&quot;</span><span class="op">,</span> result<span class="op">);</span>    <span class="co">// 1000</span></span>
+<span id="cb502-10"><a href="stdbit.html#cb502-10"></a></span>
+<span id="cb502-11"><a href="stdbit.html#cb502-11"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> <span class="bn">0b000011010</span></span>
+<span id="cb502-12"><a href="stdbit.html#cb502-12"></a>    <span class="kw">auto</span> result2 <span class="op">=</span> stdc_bit_floor<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb502-13"><a href="stdbit.html#cb502-13"></a></span>
+<span id="cb502-14"><a href="stdbit.html#cb502-14"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%b\n</span><span class="st">&quot;</span><span class="op">,</span> result2<span class="op">);</span>   <span class="co">// 10000</span></span>
+<span id="cb502-15"><a href="stdbit.html#cb502-15"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-137">See Also</h3>
+<p><a href="stdbit.html#man-stdc_bit_ceil"><code>stdc_bit_ceil()</code></a></p>
+<hr />
+<h2 data-number="19.17" id="man-stdc_bit_ceil"><span class="header-section-number">19.17</span> <code>stdc_bit_ceil()</code></h2>
+<p></p>
+<p>Return the smallest power of 2 not less than a number</p>
+<h3 class="unnumbered unlisted" id="synopsis-148">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb503"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb503-1"><a href="stdbit.html#cb503-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb503-2"><a href="stdbit.html#cb503-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb503-3"><a href="stdbit.html#cb503-3" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">char</span> stdc_bit_ceil_uc<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">char</span> value<span class="op">);</span></span>
+<span id="cb503-4"><a href="stdbit.html#cb503-4" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">short</span> stdc_bit_ceil_us<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">short</span> value<span class="op">);</span></span>
+<span id="cb503-5"><a href="stdbit.html#cb503-5" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">int</span> stdc_bit_ceil_ui<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">int</span> value<span class="op">);</span></span>
+<span id="cb503-6"><a href="stdbit.html#cb503-6" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">long</span> stdc_bit_ceil_ul<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb503-7"><a href="stdbit.html#cb503-7" aria-hidden="true" tabindex="-1"></a><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> stdc_bit_ceil_ull<span class="op">(</span><span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value<span class="op">);</span></span>
+<span id="cb503-8"><a href="stdbit.html#cb503-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb503-9"><a href="stdbit.html#cb503-9" aria-hidden="true" tabindex="-1"></a>generic_value_type stdc_bit_ceil<span class="op">(</span>generic_value_type value<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-148">Description</h3>
+<p>This function returns the smallest power of 2 that is not less than the <code>value</code>.</p>
+<p>In other words “is greater than or equal to” the <code>value</code>.</p>
+<p>In other words, ceil up to the nearest power of two.</p>
+<p>For example: |<code>value</code>|Return| |-|-| |<code>0b101</code>|<code>0b1000</code>| |<code>0b1000</code>|<code>0b1000</code>| |<code>0b100101</code>|<code>0b1000000</code>|</p>
+<p>If the result doesn’t fit in the return type, the behavior is undefined.</p>
+<h3 class="unnumbered unlisted" id="return-value-146">Return Value</h3>
+<p>Returns the smallest power of 2 not less than <code>value</code>.</p>
+<h3 class="unnumbered unlisted" id="example-148">Example</h3>
+<div class="sourceCode" id="cb504"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb504-1"><a href="stdbit.html#cb504-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb504-2"><a href="stdbit.html#cb504-2"></a><span class="pp">#include </span><span class="im">&lt;stdbit.h&gt;</span></span>
+<span id="cb504-3"><a href="stdbit.html#cb504-3"></a></span>
+<span id="cb504-4"><a href="stdbit.html#cb504-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb504-5"><a href="stdbit.html#cb504-5"></a><span class="op">{</span></span>
+<span id="cb504-6"><a href="stdbit.html#cb504-6"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> value <span class="op">=</span> <span class="bn">0b0001000</span><span class="op">;</span></span>
+<span id="cb504-7"><a href="stdbit.html#cb504-7"></a>    <span class="dt">unsigned</span> <span class="dt">int</span> result <span class="op">=</span> stdc_bit_ceil_ui<span class="op">(</span>value<span class="op">);</span></span>
+<span id="cb504-8"><a href="stdbit.html#cb504-8"></a></span>
+<span id="cb504-9"><a href="stdbit.html#cb504-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%b\n</span><span class="st">&quot;</span><span class="op">,</span> result<span class="op">);</span>    <span class="co">// 1000</span></span>
+<span id="cb504-10"><a href="stdbit.html#cb504-10"></a></span>
+<span id="cb504-11"><a href="stdbit.html#cb504-11"></a>    <span class="dt">unsigned</span> <span class="dt">long</span> <span class="dt">long</span> value2 <span class="op">=</span> <span class="bn">0b000011010</span></span>
+<span id="cb504-12"><a href="stdbit.html#cb504-12"></a>    <span class="kw">auto</span> result2 <span class="op">=</span> stdc_bit_ceil<span class="op">(</span>value2<span class="op">);</span></span>
+<span id="cb504-13"><a href="stdbit.html#cb504-13"></a></span>
+<span id="cb504-14"><a href="stdbit.html#cb504-14"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%b\n</span><span class="st">&quot;</span><span class="op">,</span> result2<span class="op">);</span>   <span class="co">// 100000</span></span>
+<span id="cb504-15"><a href="stdbit.html#cb504-15"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-138">See Also</h3>
+<p><a href="stdbit.html#man-stdc_bit_floor"><code>stdc_bit_floor()</code></a></p>
+<!--
+***
+## `example()` {#man-example}
+
+\index{example() function@\texttt{example()} function|textit}
+
+### Synopsis {.unnumbered .unlisted}
+
+New in C23!
+
+``` {.c}
+```
+
+### Description {.unnumbered .unlisted}
+
+### Return Value {.unnumbered .unlisted}
+
+### Example {.unnumbered .unlisted}
+
+``` {.c .numberLines}
+```
+
+### See Also {.unnumbered .unlisted}
+
+[`example()`](#man-example),
+-->
+<!-- BG_NEW_CHAPTER -->
+<!-- Beej's guide to C
+
+# vim: ts=4:sw=4:nosi:et:tw=72
+-->
+<hr><div style="text-align:center"><span><a href="stdatomic.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="stdbool.html" rel="next">Next</a></span></div></body>
+</html>

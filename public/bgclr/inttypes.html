@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to C Programming</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body>
+<div style="text-align:center"><span><a href="float.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="iso646.html" rel="next">Next</a></span></div><hr>
+<h1 data-number="9" id="inttypes"><span class="header-section-number">9</span> <code>&lt;inttypes.h&gt;</code> More Integer Conversions</h1>
+<p></p>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="inttypes.html#man-imaxabs"><code>imaxabs()</code></a></td>
+<td>Compute the absolute value of an <code>intmax_t</code></td>
+</tr>
+<tr class="even">
+<td><a href="inttypes.html#man-imaxdiv"><code>imaxdiv()</code></a></td>
+<td>Compute the quotient and remainder of <code>intmax_t</code>s</td>
+</tr>
+<tr class="odd">
+<td><a href="inttypes.html#man-strtoimax"><code>strtoimax()</code></a></td>
+<td>Convert strings to type <code>intmax_t</code></td>
+</tr>
+<tr class="even">
+<td><a href="inttypes.html#man-strtoimax"><code>strtoumax()</code></a></td>
+<td>Convert strings to type <code>uintmax_t</code></td>
+</tr>
+<tr class="odd">
+<td><a href="inttypes.html#man-wcstoimax"><code>wcstoimax()</code></a></td>
+<td>Convert wide strings to type <code>intmax_t</code></td>
+</tr>
+<tr class="even">
+<td><a href="inttypes.html#man-wcstoimax"><code>wcstoumax()</code></a></td>
+<td>Convert wide strings to type <code>uintmax_t</code></td>
+</tr>
+</tbody>
+</table>
+<p>This header does conversions to maximum sized integers, division with maximum sized integers, and also provides format specifiers for <a href="stdio.html#man-printf"><code>printf()</code></a> and <a href="stdio.html#man-scanf"><code>scanf()</code></a> for a variety of types defined in <a href="stdint.html#stdint"><code>&lt;stdint.h&gt;</code></a>.</p>
+<p>The header <a href="stdint.html#stdint"><code>&lt;stdint.h&gt;</code></a> is included by this one.</p>
+<h2 data-number="9.1" id="macros-1"><span class="header-section-number">9.1</span> Macros</h2>
+<p>These are to help with <a href="stdio.html#man-printf"><code>printf()</code></a> and <a href="stdio.html#man-scanf"><code>scanf()</code></a> when you use a type such as <code>int_least16_t</code>… what format specifiers do you use?</p>
+<p>Let’s start with <code>printf()</code>—all these macros start with <code>PRI</code> and then are followed by the format specifier you’d typically use for that type. Lastly, the number of bits is added on.</p>
+<p>For example, the format specifier for a 64-bit integer is <code>PRId64</code>—the <code>d</code> is because you usually print integers with <code>"%d"</code>.</p>
+<p>An unsigned 16-bit integer could be printed with <code>PRIu16</code>.</p>
+<p>These macros expand to string literals. We can take advantage of the fact that C automatically concatenates neighboring string literals and use these specifiers like this:</p>
+<div class="sourceCode" id="cb216"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb216-1"><a href="inttypes.html#cb216-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span><span class="pp">     </span><span class="co">// for printf()</span></span>
+<span id="cb216-2"><a href="inttypes.html#cb216-2"></a><span class="pp">#include </span><span class="im">&lt;inttypes.h&gt;</span></span>
+<span id="cb216-3"><a href="inttypes.html#cb216-3"></a></span>
+<span id="cb216-4"><a href="inttypes.html#cb216-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb216-5"><a href="inttypes.html#cb216-5"></a><span class="op">{</span></span>
+<span id="cb216-6"><a href="inttypes.html#cb216-6"></a>    <span class="dt">int16_t</span> x <span class="op">=</span> <span class="dv">32</span><span class="op">;</span></span>
+<span id="cb216-7"><a href="inttypes.html#cb216-7"></a></span>
+<span id="cb216-8"><a href="inttypes.html#cb216-8"></a>    printf<span class="op">(</span><span class="st">&quot;The value is %&quot;</span> PRId16 <span class="st">&quot;!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">);</span></span>
+<span id="cb216-9"><a href="inttypes.html#cb216-9"></a><span class="op">}</span></span></code></pre></div>
+<p>There’s nothing magical happening on line 8, above. Indeed, if I print out the value of the macro:</p>
+<div class="sourceCode" id="cb217"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb217-1"><a href="inttypes.html#cb217-1" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> PRId16<span class="op">);</span></span></code></pre></div>
+<p>we get this on my system:</p>
+<div class="sourceCode" id="cb218"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb218-1"><a href="inttypes.html#cb218-1" aria-hidden="true" tabindex="-1"></a>hd</span></code></pre></div>
+<p>which is a <code>printf()</code> format specifier meaning “short signed integer” .</p>
+<p>So back to line 8, after string literal concatenation, it’s just as if I’d typed:</p>
+<div class="sourceCode" id="cb219" data-startfrom="8"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c" style="counter-reset: source-line 7;"><span id="cb219-8"><a href="inttypes.html#cb219-8"></a>    printf<span class="op">(</span><span class="st">&quot;The value is </span><span class="sc">%hd</span><span class="st">!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">);</span></span></code></pre></div>
+<p>Here’s a table of all the macros you can use for <code>printf()</code> format specifiers… substitute the number of bits for <em>N</em>, usually 8, 16, 32, or 64.</p>
+<p> </p>
+<table>
+<tbody>
+<tr class="odd">
+<td><code>PRId</code><em>N</em></td>
+<td><code>PRIdLEAST</code><em>N</em></td>
+<td><code>PRIdFAST</code><em>N</em></td>
+<td><code>PRIdMAX</code></td>
+<td><code>PRIdPTR</code></td>
+</tr>
+<tr class="even">
+<td><code>PRIi</code><em>N</em></td>
+<td><code>PRIiLEAST</code><em>N</em></td>
+<td><code>PRIiFAST</code><em>N</em></td>
+<td><code>PRIiMAX</code></td>
+<td><code>PRIiPTR</code></td>
+</tr>
+<tr class="odd">
+<td><code>PRIo</code><em>N</em></td>
+<td><code>PRIoLEAST</code><em>N</em></td>
+<td><code>PRIoFAST</code><em>N</em></td>
+<td><code>PRIoMAX</code></td>
+<td><code>PRIoPTR</code></td>
+</tr>
+<tr class="even">
+<td><code>PRIu</code><em>N</em></td>
+<td><code>PRIuLEAST</code><em>N</em></td>
+<td><code>PRIuFAST</code><em>N</em></td>
+<td><code>PRIuMAX</code></td>
+<td><code>PRIuPTR</code></td>
+</tr>
+<tr class="odd">
+<td><code>PRIx</code><em>N</em></td>
+<td><code>PRIxLEAST</code><em>N</em></td>
+<td><code>PRIxFAST</code><em>N</em></td>
+<td><code>PRIxMAX</code></td>
+<td><code>PRIxPTR</code></td>
+</tr>
+<tr class="even">
+<td><code>PRIX</code><em>N</em></td>
+<td><code>PRIXLEAST</code><em>N</em></td>
+<td><code>PRIXFAST</code><em>N</em></td>
+<td><code>PRIXMAX</code></td>
+<td><code>PRIXPTR</code></td>
+</tr>
+</tbody>
+</table>
+<p>Note again how the lowercase center letter represents the usual format specifiers you’d pass to <code>printf()</code>: <code>d</code>, <code>i</code>, <code>o</code>, <code>u</code>, <code>x</code>, and <code>X</code>.</p>
+<p>And we have a similar set of macros for <code>scanf()</code> for reading in these various types:</p>
+<p> </p>
+<table>
+<tbody>
+<tr class="odd">
+<td><code>SCNd</code><em>N</em></td>
+<td><code>SCNdLEAST</code><em>N</em></td>
+<td><code>SCNdFAST</code><em>N</em></td>
+<td><code>SCNdMAX</code></td>
+<td><code>SCNdPTR</code></td>
+</tr>
+<tr class="even">
+<td><code>SCNi</code><em>N</em></td>
+<td><code>SCNiLEAST</code><em>N</em></td>
+<td><code>SCNiFAST</code><em>N</em></td>
+<td><code>SCNiMAX</code></td>
+<td><code>SCNiPTR</code></td>
+</tr>
+<tr class="odd">
+<td><code>SCNo</code><em>N</em></td>
+<td><code>SCNoLEAST</code><em>N</em></td>
+<td><code>SCNoFAST</code><em>N</em></td>
+<td><code>SCNoMAX</code></td>
+<td><code>SCNoPTR</code></td>
+</tr>
+<tr class="even">
+<td><code>SCNu</code><em>N</em></td>
+<td><code>SCNuLEAST</code><em>N</em></td>
+<td><code>SCNuFAST</code><em>N</em></td>
+<td><code>SCNuMAX</code></td>
+<td><code>SCNuPTR</code></td>
+</tr>
+<tr class="odd">
+<td><code>SCNx</code><em>N</em></td>
+<td><code>SCNxLEAST</code><em>N</em></td>
+<td><code>SCNxFAST</code><em>N</em></td>
+<td><code>SCNxMAX</code></td>
+<td><code>SCNxPTR</code></td>
+</tr>
+</tbody>
+</table>
+<p>The rule is that for each type defined in <code>&lt;stdint.h&gt;</code> there will be corresponding <code>printf()</code> and <code>scanf()</code> macros defined here.</p>
+<hr />
+<h2 data-number="9.2" id="man-imaxabs"><span class="header-section-number">9.2</span> <code>imaxabs()</code></h2>
+<p></p>
+<p>Compute the absolute value of an <code>intmax_t</code></p>
+<h3 class="unnumbered unlisted" id="synopsis-48">Synopsis</h3>
+<div class="sourceCode" id="cb220"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb220-1"><a href="inttypes.html#cb220-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;inttypes.h&gt;</span></span>
+<span id="cb220-2"><a href="inttypes.html#cb220-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb220-3"><a href="inttypes.html#cb220-3" aria-hidden="true" tabindex="-1"></a><span class="dt">intmax_t</span> imaxabs<span class="op">(</span><span class="dt">intmax_t</span> j<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-48">Description</h3>
+<p>When you need the absolute value of the biggest integer type on the system, this is the function for you.</p>
+<p>The spec notes that if the absolute value of the number cannot be represented, the behavior is undefined. This would happen if you tried to take the absolute value of the smallest possible negative number in a two’s-complement system.</p>
+<h3 class="unnumbered unlisted" id="return-value-47">Return Value</h3>
+<p>Returns the absolute value of the input, <span class="math inline">\(|j|\)</span>.</p>
+<h3 class="unnumbered unlisted" id="example-48">Example</h3>
+<div class="sourceCode" id="cb221"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb221-1"><a href="inttypes.html#cb221-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb221-2"><a href="inttypes.html#cb221-2"></a><span class="pp">#include </span><span class="im">&lt;inttypes.h&gt;</span></span>
+<span id="cb221-3"><a href="inttypes.html#cb221-3"></a></span>
+<span id="cb221-4"><a href="inttypes.html#cb221-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb221-5"><a href="inttypes.html#cb221-5"></a><span class="op">{</span></span>
+<span id="cb221-6"><a href="inttypes.html#cb221-6"></a>    <span class="dt">intmax_t</span> j <span class="op">=</span> <span class="op">-</span><span class="dv">3490</span><span class="op">;</span></span>
+<span id="cb221-7"><a href="inttypes.html#cb221-7"></a></span>
+<span id="cb221-8"><a href="inttypes.html#cb221-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%jd\n</span><span class="st">&quot;</span><span class="op">,</span> imaxabs<span class="op">(</span>j<span class="op">));</span>    <span class="co">// 3490</span></span>
+<span id="cb221-9"><a href="inttypes.html#cb221-9"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-44">See Also</h3>
+<p><a href="math.html#man-fabs"><code>fabs()</code></a></p>
+<hr />
+<h2 data-number="9.3" id="man-imaxdiv"><span class="header-section-number">9.3</span> <code>imaxdiv()</code></h2>
+<p></p>
+<p>Compute the quotient and remainder of <code>intmax_t</code>s</p>
+<h3 class="unnumbered unlisted" id="synopsis-49">Synopsis</h3>
+<div class="sourceCode" id="cb222"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb222-1"><a href="inttypes.html#cb222-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;inttypes.h&gt;</span></span>
+<span id="cb222-2"><a href="inttypes.html#cb222-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb222-3"><a href="inttypes.html#cb222-3" aria-hidden="true" tabindex="-1"></a>imaxdiv_t imaxdiv<span class="op">(</span><span class="dt">intmax_t</span> numer<span class="op">,</span> <span class="dt">intmax_t</span> denom<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-49">Description</h3>
+<p>When you want to do integer division and remainder in a single operation, this function will do it for you.</p>
+<p>It computes <code>numer/denom</code> and <code>numer%denom</code> and returns the result in a structure of type <code>imaxdiv_t</code>.</p>
+<p>This structure has two <code>imaxdiv_t</code> fields, <code>quot</code> and <code>rem</code>, that you use to retrieve the sought-after values.</p>
+<h3 class="unnumbered unlisted" id="return-value-48">Return Value</h3>
+<p>Returns an <code>imaxdiv_t</code> containing the quotient and remainder of the operation.</p>
+<h3 class="unnumbered unlisted" id="example-49">Example</h3>
+<div class="sourceCode" id="cb223"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb223-1"><a href="inttypes.html#cb223-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb223-2"><a href="inttypes.html#cb223-2"></a><span class="pp">#include </span><span class="im">&lt;inttypes.h&gt;</span></span>
+<span id="cb223-3"><a href="inttypes.html#cb223-3"></a></span>
+<span id="cb223-4"><a href="inttypes.html#cb223-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb223-5"><a href="inttypes.html#cb223-5"></a><span class="op">{</span></span>
+<span id="cb223-6"><a href="inttypes.html#cb223-6"></a>    <span class="dt">intmax_t</span> numer <span class="op">=</span> INTMAX_C<span class="op">(</span><span class="dv">3490</span><span class="op">);</span></span>
+<span id="cb223-7"><a href="inttypes.html#cb223-7"></a>    <span class="dt">intmax_t</span> denom <span class="op">=</span> INTMAX_C<span class="op">(</span><span class="dv">17</span><span class="op">);</span></span>
+<span id="cb223-8"><a href="inttypes.html#cb223-8"></a></span>
+<span id="cb223-9"><a href="inttypes.html#cb223-9"></a>    imaxdiv_t r <span class="op">=</span> imaxdiv<span class="op">(</span>numer<span class="op">,</span> denom<span class="op">);</span></span>
+<span id="cb223-10"><a href="inttypes.html#cb223-10"></a></span>
+<span id="cb223-11"><a href="inttypes.html#cb223-11"></a>    printf<span class="op">(</span><span class="st">&quot;Quotient: </span><span class="sc">%jd</span><span class="st">, remainder: </span><span class="sc">%jd\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">.</span>quot<span class="op">,</span> r<span class="op">.</span>rem<span class="op">);</span></span>
+<span id="cb223-12"><a href="inttypes.html#cb223-12"></a><span class="op">}</span></span></code></pre></div>
+<p>Output:</p>
+<div class="sourceCode" id="cb224"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb224-1"><a href="inttypes.html#cb224-1" aria-hidden="true" tabindex="-1"></a>Quotient: 205, remainder: 5</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-45">See Also</h3>
+<p><a href="math.html#man-remquo"><code>remquo()</code></a></p>
+<hr />
+<h2 data-number="9.4" id="man-strtoimax"><span class="header-section-number">9.4</span> <code>strtoimax()</code> <code>strtoumax()</code></h2>
+<p> </p>
+<p>Convert strings to types <code>intmax_t</code> and <code>uintmax_t</code></p>
+<h3 class="unnumbered unlisted" id="synopsis-50">Synopsis</h3>
+<div class="sourceCode" id="cb225"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb225-1"><a href="inttypes.html#cb225-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;inttypes.h&gt;</span></span>
+<span id="cb225-2"><a href="inttypes.html#cb225-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb225-3"><a href="inttypes.html#cb225-3" aria-hidden="true" tabindex="-1"></a><span class="dt">intmax_t</span> strtoimax<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span> <span class="dt">restrict</span> nptr<span class="op">,</span> <span class="dt">char</span> <span class="op">**</span> <span class="dt">restrict</span> endptr<span class="op">,</span></span>
+<span id="cb225-4"><a href="inttypes.html#cb225-4" aria-hidden="true" tabindex="-1"></a>                   <span class="dt">int</span> base<span class="op">);</span></span>
+<span id="cb225-5"><a href="inttypes.html#cb225-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb225-6"><a href="inttypes.html#cb225-6" aria-hidden="true" tabindex="-1"></a><span class="dt">uintmax_t</span> strtoumax<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span> <span class="dt">restrict</span> nptr<span class="op">,</span> <span class="dt">char</span> <span class="op">**</span> <span class="dt">restrict</span> endptr<span class="op">,</span></span>
+<span id="cb225-7"><a href="inttypes.html#cb225-7" aria-hidden="true" tabindex="-1"></a>                   <span class="dt">int</span> base<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-50">Description</h3>
+<p>These work just like the <a href="stdlib.html#man-strtol"><code>strtol()</code></a> family of functions, except they return an <code>intmax_t</code> or <code>uintmax_t</code>.</p>
+<p>See the <a href="stdlib.html#man-strtol"><code>strtol()</code></a> reference page for details.</p>
+<h3 class="unnumbered unlisted" id="return-value-49">Return Value</h3>
+<p>Returns the converted string as an <code>intmax_t</code> or <code>uintmax_t</code>.</p>
+<p>If the result is out of range, the returned value will be <code>INTMAX_MAX</code>, <code>INTMAX_MIN</code>, or <code>UINTMAX_MAX</code>, as appropriate. And the <code>errno</code> variable will be set to <code>ERANGE</code>.</p>
+<h3 class="unnumbered unlisted" id="example-50">Example</h3>
+<p>The following example converts a base-10 number to an <code>intmax_t</code>. Then it attempts to convert an invalid base-2 number, catching the error.</p>
+<div class="sourceCode" id="cb226"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb226-1"><a href="inttypes.html#cb226-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb226-2"><a href="inttypes.html#cb226-2"></a><span class="pp">#include </span><span class="im">&lt;inttypes.h&gt;</span></span>
+<span id="cb226-3"><a href="inttypes.html#cb226-3"></a></span>
+<span id="cb226-4"><a href="inttypes.html#cb226-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb226-5"><a href="inttypes.html#cb226-5"></a><span class="op">{</span></span>
+<span id="cb226-6"><a href="inttypes.html#cb226-6"></a>    <span class="dt">intmax_t</span> r<span class="op">;</span></span>
+<span id="cb226-7"><a href="inttypes.html#cb226-7"></a>    <span class="dt">char</span> <span class="op">*</span>endptr<span class="op">;</span></span>
+<span id="cb226-8"><a href="inttypes.html#cb226-8"></a></span>
+<span id="cb226-9"><a href="inttypes.html#cb226-9"></a>    <span class="co">// Valid base-10 number</span></span>
+<span id="cb226-10"><a href="inttypes.html#cb226-10"></a>    r <span class="op">=</span> strtoimax<span class="op">(</span><span class="st">&quot;123456789012345&quot;</span><span class="op">,</span> <span class="op">&amp;</span>endptr<span class="op">,</span> <span class="dv">10</span><span class="op">);</span></span>
+<span id="cb226-11"><a href="inttypes.html#cb226-11"></a></span>
+<span id="cb226-12"><a href="inttypes.html#cb226-12"></a>    <span class="cf">if</span> <span class="op">(*</span>endptr <span class="op">!=</span> <span class="ch">&#39;</span><span class="sc">\0</span><span class="ch">&#39;</span><span class="op">)</span></span>
+<span id="cb226-13"><a href="inttypes.html#cb226-13"></a>        printf<span class="op">(</span><span class="st">&quot;Invalid digit: </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">*</span>endptr<span class="op">);</span></span>
+<span id="cb226-14"><a href="inttypes.html#cb226-14"></a>    <span class="cf">else</span></span>
+<span id="cb226-15"><a href="inttypes.html#cb226-15"></a>        printf<span class="op">(</span><span class="st">&quot;Value is </span><span class="sc">%jd\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span></span>
+<span id="cb226-16"><a href="inttypes.html#cb226-16"></a>    </span>
+<span id="cb226-17"><a href="inttypes.html#cb226-17"></a>    <span class="co">// The following binary number contains an invalid digit</span></span>
+<span id="cb226-18"><a href="inttypes.html#cb226-18"></a>    r <span class="op">=</span> strtoimax<span class="op">(</span><span class="st">&quot;0100102010101101&quot;</span><span class="op">,</span> <span class="op">&amp;</span>endptr<span class="op">,</span> <span class="dv">2</span><span class="op">);</span></span>
+<span id="cb226-19"><a href="inttypes.html#cb226-19"></a></span>
+<span id="cb226-20"><a href="inttypes.html#cb226-20"></a>    <span class="cf">if</span> <span class="op">(*</span>endptr <span class="op">!=</span> <span class="ch">&#39;</span><span class="sc">\0</span><span class="ch">&#39;</span><span class="op">)</span></span>
+<span id="cb226-21"><a href="inttypes.html#cb226-21"></a>        printf<span class="op">(</span><span class="st">&quot;Invalid digit: </span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">*</span>endptr<span class="op">);</span></span>
+<span id="cb226-22"><a href="inttypes.html#cb226-22"></a>    <span class="cf">else</span></span>
+<span id="cb226-23"><a href="inttypes.html#cb226-23"></a>        printf<span class="op">(</span><span class="st">&quot;Value is </span><span class="sc">%jd\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span></span>
+<span id="cb226-24"><a href="inttypes.html#cb226-24"></a><span class="op">}</span></span></code></pre></div>
+<p>Output:</p>
+<div class="sourceCode" id="cb227"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb227-1"><a href="inttypes.html#cb227-1" aria-hidden="true" tabindex="-1"></a>Value is 123456789012345</span>
+<span id="cb227-2"><a href="inttypes.html#cb227-2" aria-hidden="true" tabindex="-1"></a>Invalid digit: 2</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-46">See Also</h3>
+<p><a href="stdlib.html#man-strtol"><code>strtol()</code></a>, <a href="errno.html#errno"><code>errno</code></a></p>
+<hr />
+<h2 data-number="9.5" id="man-wcstoimax"><span class="header-section-number">9.5</span> <code>wcstoimax()</code> <code>wcstoumax()</code></h2>
+<p> </p>
+<p>Convert wide strings to types <code>intmax_t</code> and <code>uintmax_t</code></p>
+<h3 class="unnumbered unlisted" id="synopsis-51">Synopsis</h3>
+<div class="sourceCode" id="cb228"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb228-1"><a href="inttypes.html#cb228-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stddef.h&gt;</span><span class="pp"> </span><span class="co">// for wchar_t</span></span>
+<span id="cb228-2"><a href="inttypes.html#cb228-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;inttypes.h&gt;</span></span>
+<span id="cb228-3"><a href="inttypes.html#cb228-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb228-4"><a href="inttypes.html#cb228-4" aria-hidden="true" tabindex="-1"></a><span class="dt">intmax_t</span> wcstoimax<span class="op">(</span><span class="dt">const</span> <span class="dt">wchar_t</span> <span class="op">*</span> <span class="dt">restrict</span> nptr<span class="op">,</span></span>
+<span id="cb228-5"><a href="inttypes.html#cb228-5" aria-hidden="true" tabindex="-1"></a>                   <span class="dt">wchar_t</span> <span class="op">**</span> <span class="dt">restrict</span> endptr<span class="op">,</span> <span class="dt">int</span> base<span class="op">);</span></span>
+<span id="cb228-6"><a href="inttypes.html#cb228-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb228-7"><a href="inttypes.html#cb228-7" aria-hidden="true" tabindex="-1"></a><span class="dt">uintmax_t</span> wcstoumax<span class="op">(</span><span class="dt">const</span> <span class="dt">wchar_t</span> <span class="op">*</span> <span class="dt">restrict</span> nptr<span class="op">,</span></span>
+<span id="cb228-8"><a href="inttypes.html#cb228-8" aria-hidden="true" tabindex="-1"></a>                    <span class="dt">wchar_t</span> <span class="op">**</span> <span class="dt">restrict</span> endptr<span class="op">,</span> <span class="dt">int</span> base<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-51">Description</h3>
+<p>These work just like the <a href="wchar.html#man-wcstol"><code>wcstol()</code></a> family of functions, except they return an <code>intmax_t</code> or <code>uintmax_t</code>.</p>
+<p>See the <a href="wchar.html#man-wcstol"><code>wcstol()</code></a> reference page for details.</p>
+<h3 class="unnumbered unlisted" id="return-value-50">Return Value</h3>
+<p>Returns the converted wide string as an <code>intmax_t</code> or <code>uintmax_t</code>.</p>
+<p>If the result is out of range, the returned value will be <code>INTMAX_MAX</code>, <code>INTMAX_MIN</code>, or <code>UINTMAX_MAX</code>, as appropriate. And the <code>errno</code> variable will be set to <code>ERANGE</code>.</p>
+<h3 class="unnumbered unlisted" id="example-51">Example</h3>
+<p>The following example converts a base-10 number to an <code>intmax_t</code>. Then it attempts to convert an invalid base-2 number, catching the error.</p>
+<div class="sourceCode" id="cb229"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb229-1"><a href="inttypes.html#cb229-1"></a><span class="pp">#include </span><span class="im">&lt;wchar.h&gt;</span></span>
+<span id="cb229-2"><a href="inttypes.html#cb229-2"></a><span class="pp">#include </span><span class="im">&lt;inttypes.h&gt;</span></span>
+<span id="cb229-3"><a href="inttypes.html#cb229-3"></a></span>
+<span id="cb229-4"><a href="inttypes.html#cb229-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb229-5"><a href="inttypes.html#cb229-5"></a><span class="op">{</span></span>
+<span id="cb229-6"><a href="inttypes.html#cb229-6"></a>    <span class="dt">intmax_t</span> r<span class="op">;</span></span>
+<span id="cb229-7"><a href="inttypes.html#cb229-7"></a>    <span class="dt">wchar_t</span> <span class="op">*</span>endptr<span class="op">;</span></span>
+<span id="cb229-8"><a href="inttypes.html#cb229-8"></a></span>
+<span id="cb229-9"><a href="inttypes.html#cb229-9"></a>    <span class="co">// Valid base-10 number</span></span>
+<span id="cb229-10"><a href="inttypes.html#cb229-10"></a>    r <span class="op">=</span> wcstoimax<span class="op">(</span><span class="st">L&quot;123456789012345&quot;</span><span class="op">,</span> <span class="op">&amp;</span>endptr<span class="op">,</span> <span class="dv">10</span><span class="op">);</span></span>
+<span id="cb229-11"><a href="inttypes.html#cb229-11"></a></span>
+<span id="cb229-12"><a href="inttypes.html#cb229-12"></a>    <span class="cf">if</span> <span class="op">(*</span>endptr <span class="op">!=</span> <span class="ch">&#39;</span><span class="sc">\0</span><span class="ch">&#39;</span><span class="op">)</span></span>
+<span id="cb229-13"><a href="inttypes.html#cb229-13"></a>        wprintf<span class="op">(</span><span class="st">L&quot;Invalid digit: </span><span class="sc">%lc\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">*</span>endptr<span class="op">);</span></span>
+<span id="cb229-14"><a href="inttypes.html#cb229-14"></a>    <span class="cf">else</span></span>
+<span id="cb229-15"><a href="inttypes.html#cb229-15"></a>        wprintf<span class="op">(</span><span class="st">L&quot;Value is </span><span class="sc">%jd\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span></span>
+<span id="cb229-16"><a href="inttypes.html#cb229-16"></a>    </span>
+<span id="cb229-17"><a href="inttypes.html#cb229-17"></a>    <span class="co">// The following binary number contains an invalid digit</span></span>
+<span id="cb229-18"><a href="inttypes.html#cb229-18"></a>    r <span class="op">=</span> wcstoimax<span class="op">(</span><span class="st">L&quot;0100102010101101&quot;</span><span class="op">,</span> <span class="op">&amp;</span>endptr<span class="op">,</span> <span class="dv">2</span><span class="op">);</span></span>
+<span id="cb229-19"><a href="inttypes.html#cb229-19"></a></span>
+<span id="cb229-20"><a href="inttypes.html#cb229-20"></a>    <span class="cf">if</span> <span class="op">(*</span>endptr <span class="op">!=</span> <span class="ch">&#39;</span><span class="sc">\0</span><span class="ch">&#39;</span><span class="op">)</span></span>
+<span id="cb229-21"><a href="inttypes.html#cb229-21"></a>        wprintf<span class="op">(</span><span class="st">L&quot;Invalid digit: </span><span class="sc">%lc\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">*</span>endptr<span class="op">);</span></span>
+<span id="cb229-22"><a href="inttypes.html#cb229-22"></a>    <span class="cf">else</span></span>
+<span id="cb229-23"><a href="inttypes.html#cb229-23"></a>        wprintf<span class="op">(</span><span class="st">L&quot;Value is </span><span class="sc">%jd\n</span><span class="st">&quot;</span><span class="op">,</span> r<span class="op">);</span></span>
+<span id="cb229-24"><a href="inttypes.html#cb229-24"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb230"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb230-1"><a href="inttypes.html#cb230-1" aria-hidden="true" tabindex="-1"></a>Value is 123456789012345</span>
+<span id="cb230-2"><a href="inttypes.html#cb230-2" aria-hidden="true" tabindex="-1"></a>Invalid digit: 2</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-47">See Also</h3>
+<p><a href="wchar.html#man-wcstol"><code>wcstol()</code></a>, <a href="errno.html#errno"><code>errno</code></a></p>
+<!--
+***
+## `example()` `example()` `example()` {#man-example}
+
+### Synopsis {.unnumbered .unlisted}
+
+``` {.c}
+```
+
+### Description {.unnumbered .unlisted}
+
+### Return Value {.unnumbered .unlisted}
+
+### Example {.unnumbered .unlisted}
+
+``` {.c .numberLines}
+```
+
+### See Also {.unnumbered .unlisted}
+
+[`example()`](#man-example),
+-->
+<!-- BG_NEW_CHAPTER -->
+<!-- Beej's guide to C
+
+# vim: ts=4:sw=4:nosi:et:tw=72
+-->
+<hr><div style="text-align:center"><span><a href="float.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="iso646.html" rel="next">Next</a></span></div></body>
+</html>

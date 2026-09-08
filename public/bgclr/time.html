@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to C Programming</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body>
+<div style="text-align:center"><span><a href="threads.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="uchar.html" rel="next">Next</a></span></div><hr>
+<h1 data-number="29" id="time"><span class="header-section-number">29</span> <code>&lt;time.h&gt;</code> Date and Time Functions</h1>
+<p></p>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="time.html#man-clock"><code>clock()</code></a></td>
+<td>How much processor time has been used by this process</td>
+</tr>
+<tr class="even">
+<td><a href="time.html#man-difftime"><code>difftime()</code></a></td>
+<td>Compute the difference between two times</td>
+</tr>
+<tr class="odd">
+<td><a href="man-mktime"><code>mktime()</code></a></td>
+<td>Convert a <code>struct tm</code> into a <code>time_t</code></td>
+</tr>
+<tr class="even">
+<td><a href="time.html#man-time"><code>time()</code></a></td>
+<td>Get the current calendar time</td>
+</tr>
+<tr class="odd">
+<td><a href="time.html#man-timespec_get"><code>timespec_get()</code></a></td>
+<td>Get a higher resolution time, probably now</td>
+</tr>
+<tr class="even">
+<td><a href="time.html#man-asctime"><code>asctime()</code></a></td>
+<td>Return a human-readable version of a <code>struct tm</code></td>
+</tr>
+<tr class="odd">
+<td><a href="time.html#man-ctime"><code>ctime()</code></a></td>
+<td>Return a human-readable version of a <code>time_t</code></td>
+</tr>
+<tr class="even">
+<td><a href="time.html#man-gmtime"><code>gmtime()</code></a></td>
+<td>Convert a calendar time into a UTC broken-down time</td>
+</tr>
+<tr class="odd">
+<td><a href="time.html#man-localtime"><code>localtime()</code></a></td>
+<td>Convert a calendar time into a broken-down local time</td>
+</tr>
+<tr class="even">
+<td><a href="time.html#man-strftime"><code>strftime()</code></a></td>
+<td>Formatted date and time output</td>
+</tr>
+</tbody>
+</table>
+<p>When it comes to time and C, there are two main types to look for:</p>
+<ul>
+<li><p> <strong><code>time_t</code></strong> holds a <em>calendar time</em>. This is an potentially opaque numeric type that represents an absolute time that can be converted to UTC<a href="wctype.html#fn69" class="footnote-ref" id="fnref69" role="doc-noteref"><sup>69</sup></a> or local time.</p></li>
+<li><p> <strong><code>struct tm</code></strong> holds a <em>broken-down time</em>. This has things like the day of the week, the day of the month, the hour, the minute, the second, etc.</p></li>
+</ul>
+<p>On POSIX systems and Windows, <code>time_t</code> is an integer and represents the number of seconds that have elapsed since January 1, 1970 at 00:00 UTC.</p>
+<p>A <code>struct tm</code> contains the following fields:</p>
+<div class="sourceCode" id="cb798"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb798-1"><a href="time.html#cb798-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> tm <span class="op">{</span></span>
+<span id="cb798-2"><a href="time.html#cb798-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> tm_sec<span class="op">;</span>    <span class="co">// seconds after the minute -- [0, 60]</span></span>
+<span id="cb798-3"><a href="time.html#cb798-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> tm_min<span class="op">;</span>    <span class="co">// minutes after the hour -- [0, 59]</span></span>
+<span id="cb798-4"><a href="time.html#cb798-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> tm_hour<span class="op">;</span>   <span class="co">// hours since midnight -- [0, 23]</span></span>
+<span id="cb798-5"><a href="time.html#cb798-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> tm_mday<span class="op">;</span>   <span class="co">// day of the month -- [1, 31]</span></span>
+<span id="cb798-6"><a href="time.html#cb798-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> tm_mon<span class="op">;</span>    <span class="co">// months since January -- [0, 11]</span></span>
+<span id="cb798-7"><a href="time.html#cb798-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> tm_year<span class="op">;</span>   <span class="co">// years since 1900</span></span>
+<span id="cb798-8"><a href="time.html#cb798-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> tm_wday<span class="op">;</span>   <span class="co">// days since Sunday -- [0, 6]</span></span>
+<span id="cb798-9"><a href="time.html#cb798-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> tm_yday<span class="op">;</span>   <span class="co">// days since January 1 -- [0, 365]</span></span>
+<span id="cb798-10"><a href="time.html#cb798-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> tm_isdst<span class="op">;</span>  <span class="co">// Daylight Saving Time flag</span></span>
+<span id="cb798-11"><a href="time.html#cb798-11" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>You can convert between the two with <code>mktime()</code>, <code>gmtime()</code>, and <code>localtime()</code>.</p>
+<p>You can print time information to strings with <code>ctime()</code>, <code>asctime()</code>, and <code>strftime()</code>.</p>
+<h2 data-number="29.1" id="thread-safety-warning"><span class="header-section-number">29.1</span> Thread Safety Warning</h2>
+<p><code>asctime()</code>, <code>ctime()</code>: These two functions return a pointer to a <code>static</code> memory region. They both might return the same pointer. If you need thread safety, you’ll need a mutex across them. If you need both results at once, <code>strcpy()</code> one of them out.</p>
+<p>All these problems with <code>asctime()</code> and <code>ctime()</code> can be avoided by using the more flexible and thread-safe <code>strftime()</code> function instead.</p>
+<p><code>localtime()</code>, <code>gmtime()</code>: These other two functions also return a pointer to a <code>static</code> memory region. They both might return the same pointer. If you need thread safety, you’ll need a mutex across them. If you need both results at once, copy the <code>struct</code> to another.</p>
+<hr />
+<h2 data-number="29.2" id="man-clock"><span class="header-section-number">29.2</span> <code>clock()</code></h2>
+<p></p>
+<p>How much processor time has been used by this process</p>
+<h3 class="unnumbered unlisted" id="synopsis-239">Synopsis</h3>
+<div class="sourceCode" id="cb799"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb799-1"><a href="time.html#cb799-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb799-2"><a href="time.html#cb799-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb799-3"><a href="time.html#cb799-3" aria-hidden="true" tabindex="-1"></a>clock_t clock<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-239">Description</h3>
+<p>Your processor is juggling a lot of things right now. Just because a process has been alive for 20 minutes doesn’t mean that it used 20 minutes of “CPU time”.</p>
+<p>Most of the time your average process spends asleep, and that doesn’t count toward the CPU time spent.</p>
+<p>This function returns an opaque type representing the number of “clock ticks”<a href="wctype.html#fn70" class="footnote-ref" id="fnref70" role="doc-noteref"><sup>70</sup></a> the process has spent in operation.</p>
+<p>You can get the number of seconds out of that by dividing by the macro <code>CLOCKS_PER_SEC</code>. This is an integer, so you will have to cast part of the expression to a floating type to get a fractional time.</p>
+<p>Note that this is not the “wall clock time” of the program. If you want to get that loosely use <code>time()</code> and <code>difftime()</code> (which might only offer 1-second resolution) or <code>timespec_get()</code> (which might only also offer low resolution, but at least it <em>might</em> go to nanosecond level).</p>
+<h3 class="unnumbered unlisted" id="return-value-237">Return Value</h3>
+<p>Returns the amount of CPU time spent by this process. This comes back in a form that can be divided by <code>CLOCKS_PER_SEC</code> to determine the time in seconds.</p>
+<h3 class="unnumbered unlisted" id="example-241">Example</h3>
+<div class="sourceCode" id="cb800"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb800-1"><a href="time.html#cb800-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb800-2"><a href="time.html#cb800-2"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb800-3"><a href="time.html#cb800-3"></a></span>
+<span id="cb800-4"><a href="time.html#cb800-4"></a><span class="co">// Deliberately naive Fibonacci</span></span>
+<span id="cb800-5"><a href="time.html#cb800-5"></a><span class="dt">long</span> <span class="dt">long</span> <span class="dt">int</span> fib<span class="op">(</span><span class="dt">long</span> <span class="dt">long</span> <span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb800-6"><a href="time.html#cb800-6"></a>    <span class="cf">if</span> <span class="op">(</span>n <span class="op">&lt;=</span> <span class="dv">1</span><span class="op">)</span> <span class="cf">return</span> n<span class="op">;</span></span>
+<span id="cb800-7"><a href="time.html#cb800-7"></a></span>
+<span id="cb800-8"><a href="time.html#cb800-8"></a>    <span class="cf">return</span> fib<span class="op">(</span>n<span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">+</span> fib<span class="op">(</span>n<span class="op">-</span><span class="dv">2</span><span class="op">);</span></span>
+<span id="cb800-9"><a href="time.html#cb800-9"></a><span class="op">}</span></span>
+<span id="cb800-10"><a href="time.html#cb800-10"></a></span>
+<span id="cb800-11"><a href="time.html#cb800-11"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb800-12"><a href="time.html#cb800-12"></a><span class="op">{</span></span>
+<span id="cb800-13"><a href="time.html#cb800-13"></a>    printf<span class="op">(</span><span class="st">&quot;The 42nd Fibonacci Number is </span><span class="sc">%lld\n</span><span class="st">&quot;</span><span class="op">,</span> fib<span class="op">(</span><span class="dv">42</span><span class="op">));</span></span>
+<span id="cb800-14"><a href="time.html#cb800-14"></a></span>
+<span id="cb800-15"><a href="time.html#cb800-15"></a>    printf<span class="op">(</span><span class="st">&quot;CPU time: </span><span class="sc">%f\n</span><span class="st">&quot;</span><span class="op">,</span> clock<span class="op">()</span> <span class="op">/</span> <span class="op">(</span><span class="dt">double</span><span class="op">)</span>CLOCKS_PER_SEC<span class="op">);</span></span>
+<span id="cb800-16"><a href="time.html#cb800-16"></a><span class="op">}</span></span></code></pre></div>
+<p>Output on my system:</p>
+<div class="sourceCode" id="cb801"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb801-1"><a href="time.html#cb801-1" aria-hidden="true" tabindex="-1"></a>The 42nd Fibonacci Number is 267914296</span>
+<span id="cb801-2"><a href="time.html#cb801-2" aria-hidden="true" tabindex="-1"></a>CPU time: 1.863078</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-225">See Also</h3>
+<p><a href="time.html#man-time"><code>time()</code></a>, <a href="time.html#man-difftime"><code>difftime()</code></a>, <a href="time.html#man-timespec_get"><code>timespec_get()</code></a></p>
+<hr />
+<h2 data-number="29.3" id="man-difftime"><span class="header-section-number">29.3</span> <code>difftime()</code></h2>
+<p></p>
+<p>Compute the difference between two times</p>
+<h3 class="unnumbered unlisted" id="synopsis-240">Synopsis</h3>
+<div class="sourceCode" id="cb802"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb802-1"><a href="time.html#cb802-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb802-2"><a href="time.html#cb802-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb802-3"><a href="time.html#cb802-3" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> difftime<span class="op">(</span><span class="dt">time_t</span> time1<span class="op">,</span> <span class="dt">time_t</span> time0<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-240">Description</h3>
+<p>Since the <code>time_t</code> type is technically opaque, you can’t just straight-up subtract to get the difference between two of them<a href="wctype.html#fn71" class="footnote-ref" id="fnref71" role="doc-noteref"><sup>71</sup></a>. Use this function to do it.</p>
+<p>There is no guarantee as to the resolution of this difference, but it’s probably to the second.</p>
+<h3 class="unnumbered unlisted" id="return-value-238">Return Value</h3>
+<p>Returns the difference between two <code>time_t</code>s in seconds.</p>
+<h3 class="unnumbered unlisted" id="example-242">Example</h3>
+<div class="sourceCode" id="cb803"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb803-1"><a href="time.html#cb803-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb803-2"><a href="time.html#cb803-2"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb803-3"><a href="time.html#cb803-3"></a></span>
+<span id="cb803-4"><a href="time.html#cb803-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb803-5"><a href="time.html#cb803-5"></a><span class="op">{</span></span>
+<span id="cb803-6"><a href="time.html#cb803-6"></a>    <span class="co">// April 12, 1982 and change</span></span>
+<span id="cb803-7"><a href="time.html#cb803-7"></a>    <span class="kw">struct</span> tm time_a <span class="op">=</span> <span class="op">{</span> <span class="op">.</span>tm_year<span class="op">=</span><span class="dv">82</span><span class="op">,</span> <span class="op">.</span>tm_mon<span class="op">=</span><span class="dv">3</span><span class="op">,</span> <span class="op">.</span>tm_mday<span class="op">=</span><span class="dv">12</span><span class="op">,</span></span>
+<span id="cb803-8"><a href="time.html#cb803-8"></a>        <span class="op">.</span>tm_hour<span class="op">=</span><span class="dv">4</span><span class="op">,</span> <span class="op">.</span>tm_min<span class="op">=</span><span class="bn">00</span><span class="op">,</span> <span class="op">.</span>tm_sec<span class="op">=</span><span class="bn">04</span><span class="op">,</span> <span class="op">.</span>tm_isdst<span class="op">=-</span><span class="dv">1</span><span class="op">,</span></span>
+<span id="cb803-9"><a href="time.html#cb803-9"></a>    <span class="op">};</span></span>
+<span id="cb803-10"><a href="time.html#cb803-10"></a></span>
+<span id="cb803-11"><a href="time.html#cb803-11"></a>    <span class="co">// November 15, 2020 and change</span></span>
+<span id="cb803-12"><a href="time.html#cb803-12"></a>    <span class="kw">struct</span> tm time_b <span class="op">=</span> <span class="op">{</span> <span class="op">.</span>tm_year<span class="op">=</span><span class="dv">120</span><span class="op">,</span> <span class="op">.</span>tm_mon<span class="op">=</span><span class="dv">10</span><span class="op">,</span> <span class="op">.</span>tm_mday<span class="op">=</span><span class="dv">15</span><span class="op">,</span></span>
+<span id="cb803-13"><a href="time.html#cb803-13"></a>        <span class="op">.</span>tm_hour<span class="op">=</span><span class="dv">16</span><span class="op">,</span> <span class="op">.</span>tm_min<span class="op">=</span><span class="dv">27</span><span class="op">,</span> <span class="op">.</span>tm_sec<span class="op">=</span><span class="bn">00</span><span class="op">,</span> <span class="op">.</span>tm_isdst<span class="op">=-</span><span class="dv">1</span><span class="op">,</span></span>
+<span id="cb803-14"><a href="time.html#cb803-14"></a>    <span class="op">};</span></span>
+<span id="cb803-15"><a href="time.html#cb803-15"></a></span>
+<span id="cb803-16"><a href="time.html#cb803-16"></a>    <span class="dt">time_t</span> cal_a <span class="op">=</span> mktime<span class="op">(&amp;</span>time_a<span class="op">);</span></span>
+<span id="cb803-17"><a href="time.html#cb803-17"></a>    <span class="dt">time_t</span> cal_b <span class="op">=</span> mktime<span class="op">(&amp;</span>time_b<span class="op">);</span></span>
+<span id="cb803-18"><a href="time.html#cb803-18"></a></span>
+<span id="cb803-19"><a href="time.html#cb803-19"></a>    <span class="dt">double</span> diff <span class="op">=</span> difftime<span class="op">(</span>cal_b<span class="op">,</span> cal_a<span class="op">);</span></span>
+<span id="cb803-20"><a href="time.html#cb803-20"></a></span>
+<span id="cb803-21"><a href="time.html#cb803-21"></a>    <span class="dt">double</span> years <span class="op">=</span> diff <span class="op">/</span> <span class="dv">60</span> <span class="op">/</span> <span class="dv">60</span> <span class="op">/</span> <span class="dv">24</span> <span class="op">/</span> <span class="fl">365.2425</span><span class="op">;</span>  <span class="co">// close enough</span></span>
+<span id="cb803-22"><a href="time.html#cb803-22"></a></span>
+<span id="cb803-23"><a href="time.html#cb803-23"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%f</span><span class="st"> seconds (</span><span class="sc">%f</span><span class="st"> years) between events</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> diff<span class="op">,</span> years<span class="op">);</span></span>
+<span id="cb803-24"><a href="time.html#cb803-24"></a><span class="op">}</span></span></code></pre></div>
+<p>Output:</p>
+<div class="sourceCode" id="cb804"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb804-1"><a href="time.html#cb804-1" aria-hidden="true" tabindex="-1"></a>1217996816.000000 seconds (38.596783 years) between events</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-226">See Also</h3>
+<p><a href="time.html#man-time"><code>time()</code></a>, <a href="time.html#man-mktime"><code>mktime()</code></a></p>
+<hr />
+<h2 data-number="29.4" id="man-mktime"><span class="header-section-number">29.4</span> <code>mktime()</code></h2>
+<p></p>
+<p>Convert a <code>struct tm</code> with local time into a <code>time_t</code></p>
+<h3 class="unnumbered unlisted" id="synopsis-241">Synopsis</h3>
+<div class="sourceCode" id="cb805"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb805-1"><a href="time.html#cb805-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb805-2"><a href="time.html#cb805-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb805-3"><a href="time.html#cb805-3" aria-hidden="true" tabindex="-1"></a><span class="dt">time_t</span> mktime<span class="op">(</span><span class="kw">struct</span> tm <span class="op">*</span>timeptr<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-241">Description</h3>
+<p>If you have a local date and time and want it converted to a <code>time_t</code> (so that you can <code>difftime()</code> it or whatever), you can convert it with this function.</p>
+<p>Basically you fill out the fields in your <code>struct tm</code> in local time and <code>mktime()</code> will convert those to the UTC <code>time_t</code> equivalent.</p>
+<p>A couple notes:</p>
+<ul>
+<li><p>Don’t bother filling out <code>tm_wday</code> or <code>tm_yday</code>. <code>mktime()</code> will fill these out for you.</p></li>
+<li><p>You can set <code>tm_isdst</code> to <code>0</code> to indicate your time isn’t Daylight Saving Time (DST), <code>1</code> to indicate it is, and <code>-1</code> to have <code>mktime()</code> fill it in according to your locale’s preference.</p></li>
+</ul>
+<p>If you don’t have a C23 compiler and you need input in UTC, see the non-standard functions <a href="https://man.archlinux.org/man/timegm.3.en"><code>timegm()</code></a><a href="wctype.html#fn72" class="footnote-ref" id="fnref72" role="doc-noteref"><sup>72</sup></a> for Unix-likes and <a href="https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/mkgmtime-mkgmtime32-mkgmtime64?view=msvc-160"><code>_mkgmtime()</code></a><a href="wctype.html#fn73" class="footnote-ref" id="fnref73" role="doc-noteref"><sup>73</sup></a> for Windows.</p>
+<h3 class="unnumbered unlisted" id="return-value-239">Return Value</h3>
+<p>Returns the local time in the <code>struct tm</code> as a <code>time_t</code> calendar time.</p>
+<p>Returns <code>(time_t)(-1)</code> on error.</p>
+<h3 class="unnumbered unlisted" id="example-243">Example</h3>
+<p>In the following example, we have <code>mktime()</code> tell us if that time was DST or not.</p>
+<div class="sourceCode" id="cb806"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb806-1"><a href="time.html#cb806-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb806-2"><a href="time.html#cb806-2"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb806-3"><a href="time.html#cb806-3"></a></span>
+<span id="cb806-4"><a href="time.html#cb806-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb806-5"><a href="time.html#cb806-5"></a><span class="op">{</span></span>
+<span id="cb806-6"><a href="time.html#cb806-6"></a>    <span class="kw">struct</span> tm broken_down_time <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb806-7"><a href="time.html#cb806-7"></a>        <span class="op">.</span>tm_year<span class="op">=</span><span class="dv">82</span><span class="op">,</span>   <span class="co">// years since 1900</span></span>
+<span id="cb806-8"><a href="time.html#cb806-8"></a>        <span class="op">.</span>tm_mon<span class="op">=</span><span class="dv">3</span><span class="op">,</span>     <span class="co">// months since January -- [0, 11]</span></span>
+<span id="cb806-9"><a href="time.html#cb806-9"></a>        <span class="op">.</span>tm_mday<span class="op">=</span><span class="dv">12</span><span class="op">,</span>   <span class="co">// day of the month -- [1, 31]</span></span>
+<span id="cb806-10"><a href="time.html#cb806-10"></a>        <span class="op">.</span>tm_hour<span class="op">=</span><span class="dv">4</span><span class="op">,</span>    <span class="co">// hours since midnight -- [0, 23]</span></span>
+<span id="cb806-11"><a href="time.html#cb806-11"></a>        <span class="op">.</span>tm_min<span class="op">=</span><span class="bn">00</span><span class="op">,</span>    <span class="co">// minutes after the hour -- [0, 59]</span></span>
+<span id="cb806-12"><a href="time.html#cb806-12"></a>        <span class="op">.</span>tm_sec<span class="op">=</span><span class="bn">04</span><span class="op">,</span>    <span class="co">// seconds after the minute -- [0, 60]</span></span>
+<span id="cb806-13"><a href="time.html#cb806-13"></a>        <span class="op">.</span>tm_isdst<span class="op">=-</span><span class="dv">1</span><span class="op">,</span>  <span class="co">// Daylight Saving Time flag</span></span>
+<span id="cb806-14"><a href="time.html#cb806-14"></a>    <span class="op">};</span></span>
+<span id="cb806-15"><a href="time.html#cb806-15"></a></span>
+<span id="cb806-16"><a href="time.html#cb806-16"></a>    <span class="dt">time_t</span> calendar_time <span class="op">=</span> mktime<span class="op">(&amp;</span>broken_down_time<span class="op">);</span></span>
+<span id="cb806-17"><a href="time.html#cb806-17"></a></span>
+<span id="cb806-18"><a href="time.html#cb806-18"></a>    <span class="dt">char</span> <span class="op">*</span>days<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="st">&quot;Sunday&quot;</span><span class="op">,</span> <span class="st">&quot;Monday&quot;</span><span class="op">,</span> <span class="st">&quot;Tuesday&quot;</span><span class="op">,</span></span>
+<span id="cb806-19"><a href="time.html#cb806-19"></a>        <span class="st">&quot;Wednesday&quot;</span><span class="op">,</span> <span class="st">&quot;Furzeday&quot;</span><span class="op">,</span> <span class="st">&quot;Friday&quot;</span><span class="op">,</span> <span class="st">&quot;Saturday&quot;</span><span class="op">};</span></span>
+<span id="cb806-20"><a href="time.html#cb806-20"></a></span>
+<span id="cb806-21"><a href="time.html#cb806-21"></a>    <span class="co">// This will print what was in broken_down_time</span></span>
+<span id="cb806-22"><a href="time.html#cb806-22"></a>    printf<span class="op">(</span><span class="st">&quot;Local time : </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> asctime<span class="op">(</span>localtime<span class="op">(&amp;</span>calendar_time<span class="op">)));</span></span>
+<span id="cb806-23"><a href="time.html#cb806-23"></a>    printf<span class="op">(</span><span class="st">&quot;Is DST     : </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> broken_down_time<span class="op">.</span>tm_isdst<span class="op">);</span></span>
+<span id="cb806-24"><a href="time.html#cb806-24"></a>    printf<span class="op">(</span><span class="st">&quot;Day of week: </span><span class="sc">%s\n\n</span><span class="st">&quot;</span><span class="op">,</span> days<span class="op">[</span>broken_down_time<span class="op">.</span>tm_wday<span class="op">]);</span></span>
+<span id="cb806-25"><a href="time.html#cb806-25"></a></span>
+<span id="cb806-26"><a href="time.html#cb806-26"></a>    <span class="co">// This will print UTC for the local time, above</span></span>
+<span id="cb806-27"><a href="time.html#cb806-27"></a>    printf<span class="op">(</span><span class="st">&quot;UTC        : </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> asctime<span class="op">(</span>gmtime<span class="op">(&amp;</span>calendar_time<span class="op">)));</span></span>
+<span id="cb806-28"><a href="time.html#cb806-28"></a><span class="op">}</span></span></code></pre></div>
+<p>Output (for me in Pacific Time—UTC is 8 hours ahead):</p>
+<div class="sourceCode" id="cb807"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb807-1"><a href="time.html#cb807-1" aria-hidden="true" tabindex="-1"></a>Local time : Mon Apr 12 04:00:04 1982</span>
+<span id="cb807-2"><a href="time.html#cb807-2" aria-hidden="true" tabindex="-1"></a>Is DST     : 0</span>
+<span id="cb807-3"><a href="time.html#cb807-3" aria-hidden="true" tabindex="-1"></a>Day of week: Monday</span>
+<span id="cb807-4"><a href="time.html#cb807-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb807-5"><a href="time.html#cb807-5" aria-hidden="true" tabindex="-1"></a>UTC        : Mon Apr 12 12:00:04 1982</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-227">See Also</h3>
+<p><a href="time.html#man-timegm"><code>timegm()</code></a>, <a href="time.html#man-localtime"><code>localtime()</code></a>, <a href="time.html#man-gmtime"><code>gmtime()</code></a></p>
+<hr />
+<h2 data-number="29.5" id="man-timegm"><span class="header-section-number">29.5</span> <code>timegm()</code></h2>
+<p></p>
+<p>Convert a <code>struct tm</code> with UTC time into a <code>time_t</code></p>
+<h3 class="unnumbered unlisted" id="synopsis-242">Synopsis</h3>
+<p>New in C23!</p>
+<div class="sourceCode" id="cb808"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb808-1"><a href="time.html#cb808-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb808-2"><a href="time.html#cb808-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb808-3"><a href="time.html#cb808-3" aria-hidden="true" tabindex="-1"></a><span class="dt">time_t</span> timegm<span class="op">(</span><span class="kw">struct</span> tm <span class="op">*</span>timeptr<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-242">Description</h3>
+<p>If you have a UTC date and time and want it converted to a <code>time_t</code> (so that you can <code>difftime()</code> it or whatever), you can convert it with this function.</p>
+<p>Basically you fill out the fields in your <code>struct tm</code> in local time and <code>mktime()</code> will convert those to the UTC <code>time_t</code> equivalent.</p>
+<p>A couple notes:</p>
+<ul>
+<li><p>Don’t bother filling out <code>tm_wday</code> or <code>tm_yday</code>. <code>mktime()</code> will fill these out for you.</p></li>
+<li><p>The spec doesn’t say anything about the <code>tm_isdst</code> Daylight Saving flag, but since UTC is immune to DST, I’m assuming it is ignored or set to <code>0</code> for us.</p></li>
+</ul>
+<p>If you don’t have a C23 compiler and you need input in UTC, see the non-standard functions <a href="https://man.archlinux.org/man/timegm.3.en"><code>timegm()</code></a><a href="wctype.html#fn74" class="footnote-ref" id="fnref74" role="doc-noteref"><sup>74</sup></a> for Unix-likes and <a href="https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/mkgmtime-mkgmtime32-mkgmtime64?view=msvc-160"><code>_mkgmtime()</code></a><a href="wctype.html#fn75" class="footnote-ref" id="fnref75" role="doc-noteref"><sup>75</sup></a> for Windows.</p>
+<h3 class="unnumbered unlisted" id="return-value-240">Return Value</h3>
+<p>Returns the UTC time in the <code>struct tm</code> as a <code>time_t</code> calendar time.</p>
+<p>Returns <code>(time_t)(-1)</code> on error.</p>
+<h3 class="unnumbered unlisted" id="example-244">Example</h3>
+<div class="sourceCode" id="cb809"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb809-1"><a href="time.html#cb809-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb809-2"><a href="time.html#cb809-2"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb809-3"><a href="time.html#cb809-3"></a></span>
+<span id="cb809-4"><a href="time.html#cb809-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb809-5"><a href="time.html#cb809-5"></a><span class="op">{</span></span>
+<span id="cb809-6"><a href="time.html#cb809-6"></a>    <span class="kw">struct</span> tm broken_down_time <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb809-7"><a href="time.html#cb809-7"></a>        <span class="op">.</span>tm_year<span class="op">=</span><span class="dv">82</span><span class="op">,</span>   <span class="co">// years since 1900</span></span>
+<span id="cb809-8"><a href="time.html#cb809-8"></a>        <span class="op">.</span>tm_mon<span class="op">=</span><span class="dv">3</span><span class="op">,</span>     <span class="co">// months since January -- [0, 11]</span></span>
+<span id="cb809-9"><a href="time.html#cb809-9"></a>        <span class="op">.</span>tm_mday<span class="op">=</span><span class="dv">12</span><span class="op">,</span>   <span class="co">// day of the month -- [1, 31]</span></span>
+<span id="cb809-10"><a href="time.html#cb809-10"></a>        <span class="op">.</span>tm_hour<span class="op">=</span><span class="dv">4</span><span class="op">,</span>    <span class="co">// hours since midnight -- [0, 23]</span></span>
+<span id="cb809-11"><a href="time.html#cb809-11"></a>        <span class="op">.</span>tm_min<span class="op">=</span><span class="bn">00</span><span class="op">,</span>    <span class="co">// minutes after the hour -- [0, 59]</span></span>
+<span id="cb809-12"><a href="time.html#cb809-12"></a>        <span class="op">.</span>tm_sec<span class="op">=</span><span class="bn">04</span><span class="op">,</span>    <span class="co">// seconds after the minute -- [0, 60]</span></span>
+<span id="cb809-13"><a href="time.html#cb809-13"></a>        <span class="op">.</span>tm_isdst<span class="op">=-</span><span class="dv">1</span><span class="op">,</span>  <span class="co">// Daylight Saving Time flag</span></span>
+<span id="cb809-14"><a href="time.html#cb809-14"></a>    <span class="op">};</span></span>
+<span id="cb809-15"><a href="time.html#cb809-15"></a></span>
+<span id="cb809-16"><a href="time.html#cb809-16"></a>    <span class="dt">time_t</span> calendar_time <span class="op">=</span> timegm<span class="op">(&amp;</span>broken_down_time<span class="op">);</span></span>
+<span id="cb809-17"><a href="time.html#cb809-17"></a></span>
+<span id="cb809-18"><a href="time.html#cb809-18"></a>    <span class="dt">char</span> <span class="op">*</span>days<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="st">&quot;Sunday&quot;</span><span class="op">,</span> <span class="st">&quot;Monday&quot;</span><span class="op">,</span> <span class="st">&quot;Tuesday&quot;</span><span class="op">,</span></span>
+<span id="cb809-19"><a href="time.html#cb809-19"></a>        <span class="st">&quot;Wednesday&quot;</span><span class="op">,</span> <span class="st">&quot;Furzeday&quot;</span><span class="op">,</span> <span class="st">&quot;Friday&quot;</span><span class="op">,</span> <span class="st">&quot;Saturday&quot;</span><span class="op">};</span></span>
+<span id="cb809-20"><a href="time.html#cb809-20"></a></span>
+<span id="cb809-21"><a href="time.html#cb809-21"></a>    <span class="co">// This will print what was in broken_down_time</span></span>
+<span id="cb809-22"><a href="time.html#cb809-22"></a>    printf<span class="op">(</span><span class="st">&quot;UTC        : </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> asctime<span class="op">(</span>gmtime<span class="op">(&amp;</span>calendar_time<span class="op">)));</span></span>
+<span id="cb809-23"><a href="time.html#cb809-23"></a>    printf<span class="op">(</span><span class="st">&quot;Day of week: </span><span class="sc">%s\n\n</span><span class="st">&quot;</span><span class="op">,</span> days<span class="op">[</span>broken_down_time<span class="op">.</span>tm_wday<span class="op">]);</span></span>
+<span id="cb809-24"><a href="time.html#cb809-24"></a></span>
+<span id="cb809-25"><a href="time.html#cb809-25"></a>    <span class="co">// This will print UTC for the local time, above</span></span>
+<span id="cb809-26"><a href="time.html#cb809-26"></a>    printf<span class="op">(</span><span class="st">&quot;Local time : </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> asctime<span class="op">(</span>localtime<span class="op">(&amp;</span>calendar_time<span class="op">)));</span></span>
+<span id="cb809-27"><a href="time.html#cb809-27"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-228">See Also</h3>
+<p><a href="time.html#man-mktime"><code>mktime()</code></a>, <a href="time.html#man-timegm"><code>timegm()</code></a>, <a href="time.html#man-localtime"><code>localtime()</code></a>, <a href="time.html#man-gmtime"><code>gmtime()</code></a></p>
+<hr />
+<h2 data-number="29.6" id="man-time"><span class="header-section-number">29.6</span> <code>time()</code></h2>
+<p></p>
+<p>Get the current calendar time</p>
+<h3 class="unnumbered unlisted" id="synopsis-243">Synopsis</h3>
+<div class="sourceCode" id="cb810"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb810-1"><a href="time.html#cb810-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb810-2"><a href="time.html#cb810-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb810-3"><a href="time.html#cb810-3" aria-hidden="true" tabindex="-1"></a><span class="dt">time_t</span> time<span class="op">(</span><span class="dt">time_t</span> <span class="op">*</span>timer<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-243">Description</h3>
+<p>Returns the current calendar time right now. I mean, now. No, now!</p>
+<p>If <code>timer</code> is not <code>NULL</code>, it gets loaded with the current time, as well.</p>
+<p>This can be converted into a <code>struct tm</code> with <code>localtime()</code> or <code>gmtime()</code>, or printed directly with <code>ctime()</code>.</p>
+<h3 class="unnumbered unlisted" id="return-value-241">Return Value</h3>
+<p>Returns the current calendar time. Also loads <code>timer</code> with the current time if it’s not <code>NULL</code>.</p>
+<p>Or returns <code>(time_t)(-1)</code> if the time isn’t available because you’ve fallen out of the space-time continuum and/or the system doesn’t support times.</p>
+<h3 class="unnumbered unlisted" id="example-245">Example</h3>
+<div class="sourceCode" id="cb811"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb811-1"><a href="time.html#cb811-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb811-2"><a href="time.html#cb811-2"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb811-3"><a href="time.html#cb811-3"></a></span>
+<span id="cb811-4"><a href="time.html#cb811-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb811-5"><a href="time.html#cb811-5"></a><span class="op">{</span></span>
+<span id="cb811-6"><a href="time.html#cb811-6"></a>    <span class="dt">time_t</span> now <span class="op">=</span> time<span class="op">(</span>NULL<span class="op">);</span></span>
+<span id="cb811-7"><a href="time.html#cb811-7"></a></span>
+<span id="cb811-8"><a href="time.html#cb811-8"></a>    printf<span class="op">(</span><span class="st">&quot;The local time is </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> ctime<span class="op">(&amp;</span>now<span class="op">));</span></span>
+<span id="cb811-9"><a href="time.html#cb811-9"></a><span class="op">}</span></span></code></pre></div>
+<p>Example output:</p>
+<div class="sourceCode" id="cb812"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb812-1"><a href="time.html#cb812-1" aria-hidden="true" tabindex="-1"></a>The local time is Mon Mar  1 18:45:14 2021</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-229">See Also</h3>
+<p><a href="time.html#man-localtime"><code>localtime()</code></a>, <a href="time.html#man-gmtime"><code>gmtime()</code></a>, <a href="time.html#man-ctime"><code>ctime()</code></a></p>
+<hr />
+<h2 data-number="29.7" id="man-timespec_get"><span class="header-section-number">29.7</span> <code>timespec_get()</code></h2>
+<p></p>
+<p>Get a higher resolution time, probably now</p>
+<h3 class="unnumbered unlisted" id="synopsis-244">Synopsis</h3>
+<div class="sourceCode" id="cb813"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb813-1"><a href="time.html#cb813-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb813-2"><a href="time.html#cb813-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb813-3"><a href="time.html#cb813-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> timespec_get<span class="op">(</span><span class="kw">struct</span> timespec <span class="op">*</span>ts<span class="op">,</span> <span class="dt">int</span> base<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-244">Description</h3>
+<p>This function loads the current time UTC (unless directed otherwise) into the given <code>struct timespec</code>, <code>ts</code>.</p>
+<p>That structure has two fields:</p>
+<div class="sourceCode" id="cb814"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb814-1"><a href="time.html#cb814-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> timespec <span class="op">{</span></span>
+<span id="cb814-2"><a href="time.html#cb814-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">time_t</span> tv_sec<span class="op">;</span>   <span class="co">// Whole seconds</span></span>
+<span id="cb814-3"><a href="time.html#cb814-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">long</span>   tv_nsec<span class="op">;</span>  <span class="co">// Nanoseconds, 0-999999999</span></span>
+<span id="cb814-4"><a href="time.html#cb814-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Nanoseconds are billionths of a second. You can divide by 1000000000.0 to convert to seconds.</p>
+<p>The <code>base</code> parameter has only one defined value, by the spec: <code>TIME_UTC</code>. So portably make it that. This will load <code>ts</code> with the current time in seconds since a system-defined <a href="https://en.wikipedia.org/wiki/Unix_time">Epoch</a><a href="wctype.html#fn76" class="footnote-ref" id="fnref76" role="doc-noteref"><sup>76</sup></a>, often January 1, 1970 at 00:00 UTC.</p>
+<p>Your implementation might define other values for <code>base</code>.</p>
+<h3 class="unnumbered unlisted" id="return-value-242">Return Value</h3>
+<p>When <code>base</code> is <code>TIME_UTC</code>, loads <code>ts</code> with the current UTC time.</p>
+<p>On success, returns <code>base</code>, valid values for which will always be non-zero. On error, returns <code>0</code>.</p>
+<h3 class="unnumbered unlisted" id="example-246">Example</h3>
+<div class="sourceCode" id="cb815"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb815-1"><a href="time.html#cb815-1"></a><span class="kw">struct</span> timespec ts<span class="op">;</span></span>
+<span id="cb815-2"><a href="time.html#cb815-2"></a></span>
+<span id="cb815-3"><a href="time.html#cb815-3"></a>timespec_get<span class="op">(&amp;</span>ts<span class="op">,</span> TIME_UTC<span class="op">);</span></span>
+<span id="cb815-4"><a href="time.html#cb815-4"></a></span>
+<span id="cb815-5"><a href="time.html#cb815-5"></a>printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%ld</span><span class="st"> s, </span><span class="sc">%ld</span><span class="st"> ns</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> ts<span class="op">.</span>tv_sec<span class="op">,</span> ts<span class="op">.</span>tv_nsec<span class="op">);</span></span>
+<span id="cb815-6"><a href="time.html#cb815-6"></a></span>
+<span id="cb815-7"><a href="time.html#cb815-7"></a><span class="dt">double</span> float_time <span class="op">=</span> ts<span class="op">.</span>tv_sec <span class="op">+</span> ts<span class="op">.</span>tv_nsec<span class="op">/</span><span class="fl">1000000000.0</span><span class="op">;</span></span>
+<span id="cb815-8"><a href="time.html#cb815-8"></a>printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%f</span><span class="st"> seconds since epoch</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> float_time<span class="op">);</span></span></code></pre></div>
+<p>Example output:</p>
+<div class="sourceCode" id="cb816"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb816-1"><a href="time.html#cb816-1" aria-hidden="true" tabindex="-1"></a>1614654187 s, 825540756 ns</span>
+<span id="cb816-2"><a href="time.html#cb816-2" aria-hidden="true" tabindex="-1"></a>1614654187.825541 seconds since epoch</span></code></pre></div>
+<p>Here’s a helper function to add values to a <code>struct timespec</code> that handles negative values and nanosecond overflow.</p>
+<div class="sourceCode" id="cb817"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb817-1"><a href="time.html#cb817-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb817-2"><a href="time.html#cb817-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb817-3"><a href="time.html#cb817-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Add delta seconds and delta nanoseconds to ts.</span></span>
+<span id="cb817-4"><a href="time.html#cb817-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Negative values are allowed. Each component is added individually.</span></span>
+<span id="cb817-5"><a href="time.html#cb817-5" aria-hidden="true" tabindex="-1"></a><span class="co">//</span></span>
+<span id="cb817-6"><a href="time.html#cb817-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Subtract 1.5 seconds from the current value:</span></span>
+<span id="cb817-7"><a href="time.html#cb817-7" aria-hidden="true" tabindex="-1"></a><span class="co">//</span></span>
+<span id="cb817-8"><a href="time.html#cb817-8" aria-hidden="true" tabindex="-1"></a><span class="co">// timespec_add(&amp;ts, -1, -500000000L);</span></span>
+<span id="cb817-9"><a href="time.html#cb817-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb817-10"><a href="time.html#cb817-10" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> timespec <span class="op">*</span>timespec_add<span class="op">(</span><span class="kw">struct</span> timespec <span class="op">*</span>ts<span class="op">,</span> <span class="dt">long</span> dsec<span class="op">,</span> <span class="dt">long</span> dnsec<span class="op">)</span></span>
+<span id="cb817-11"><a href="time.html#cb817-11" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb817-12"><a href="time.html#cb817-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">long</span> sec <span class="op">=</span> <span class="op">(</span><span class="dt">long</span><span class="op">)</span>ts<span class="op">-&gt;</span>tv_sec <span class="op">+</span> dsec<span class="op">;</span></span>
+<span id="cb817-13"><a href="time.html#cb817-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">long</span> nsec <span class="op">=</span> ts<span class="op">-&gt;</span>tv_nsec <span class="op">+</span> dnsec<span class="op">;</span></span>
+<span id="cb817-14"><a href="time.html#cb817-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb817-15"><a href="time.html#cb817-15" aria-hidden="true" tabindex="-1"></a>    ldiv_t qr <span class="op">=</span> ldiv<span class="op">(</span>nsec<span class="op">,</span> <span class="dv">1000000000</span><span class="bu">L</span><span class="op">);</span></span>
+<span id="cb817-16"><a href="time.html#cb817-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb817-17"><a href="time.html#cb817-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>qr<span class="op">.</span>rem <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb817-18"><a href="time.html#cb817-18" aria-hidden="true" tabindex="-1"></a>        nsec <span class="op">=</span> <span class="dv">1000000000</span><span class="bu">L</span> <span class="op">+</span> qr<span class="op">.</span>rem<span class="op">;</span></span>
+<span id="cb817-19"><a href="time.html#cb817-19" aria-hidden="true" tabindex="-1"></a>        sec <span class="op">+=</span> qr<span class="op">.</span>quot <span class="op">-</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb817-20"><a href="time.html#cb817-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb817-21"><a href="time.html#cb817-21" aria-hidden="true" tabindex="-1"></a>        nsec <span class="op">=</span> qr<span class="op">.</span>rem<span class="op">;</span></span>
+<span id="cb817-22"><a href="time.html#cb817-22" aria-hidden="true" tabindex="-1"></a>        sec <span class="op">+=</span> qr<span class="op">.</span>quot<span class="op">;</span></span>
+<span id="cb817-23"><a href="time.html#cb817-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb817-24"><a href="time.html#cb817-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb817-25"><a href="time.html#cb817-25" aria-hidden="true" tabindex="-1"></a>    ts<span class="op">-&gt;</span>tv_sec <span class="op">=</span> sec<span class="op">;</span></span>
+<span id="cb817-26"><a href="time.html#cb817-26" aria-hidden="true" tabindex="-1"></a>    ts<span class="op">-&gt;</span>tv_nsec <span class="op">=</span> nsec<span class="op">;</span></span>
+<span id="cb817-27"><a href="time.html#cb817-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb817-28"><a href="time.html#cb817-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ts<span class="op">;</span></span>
+<span id="cb817-29"><a href="time.html#cb817-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>And here are some functions to convert from <code>long double</code> to <code>struct timespec</code> and back, just in case you like thinking in decimals. This is more limited in significant figures than using the integer values.</p>
+<div class="sourceCode" id="cb818"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb818-1"><a href="time.html#cb818-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></span>
+<span id="cb818-2"><a href="time.html#cb818-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb818-3"><a href="time.html#cb818-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Convert a struct timespec into a long double</span></span>
+<span id="cb818-4"><a href="time.html#cb818-4" aria-hidden="true" tabindex="-1"></a><span class="dt">long</span> <span class="dt">double</span> timespec_to_ld<span class="op">(</span><span class="kw">struct</span> timespec <span class="op">*</span>ts<span class="op">)</span></span>
+<span id="cb818-5"><a href="time.html#cb818-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb818-6"><a href="time.html#cb818-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ts<span class="op">-&gt;</span>tv_sec <span class="op">+</span> ts<span class="op">-&gt;</span>tv_nsec <span class="op">/</span> <span class="fl">1000000000.0</span><span class="op">;</span></span>
+<span id="cb818-7"><a href="time.html#cb818-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb818-8"><a href="time.html#cb818-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb818-9"><a href="time.html#cb818-9" aria-hidden="true" tabindex="-1"></a><span class="co">// Convert a long double to a struct timespec</span></span>
+<span id="cb818-10"><a href="time.html#cb818-10" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> timespec ld_to_timespec<span class="op">(</span><span class="dt">long</span> <span class="dt">double</span> t<span class="op">)</span></span>
+<span id="cb818-11"><a href="time.html#cb818-11" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb818-12"><a href="time.html#cb818-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">long</span> <span class="dt">double</span> f<span class="op">;</span></span>
+<span id="cb818-13"><a href="time.html#cb818-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> timespec ts<span class="op">;</span></span>
+<span id="cb818-14"><a href="time.html#cb818-14" aria-hidden="true" tabindex="-1"></a>    ts<span class="op">.</span>tv_nsec <span class="op">=</span> modfl<span class="op">(</span>t<span class="op">,</span> <span class="op">&amp;</span>f<span class="op">)</span> <span class="op">*</span> <span class="dv">1000000000</span><span class="bu">L</span><span class="op">;</span></span>
+<span id="cb818-15"><a href="time.html#cb818-15" aria-hidden="true" tabindex="-1"></a>    ts<span class="op">.</span>tv_sec <span class="op">=</span> f<span class="op">;</span></span>
+<span id="cb818-16"><a href="time.html#cb818-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb818-17"><a href="time.html#cb818-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ts<span class="op">;</span></span>
+<span id="cb818-18"><a href="time.html#cb818-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-230">See Also</h3>
+<p><a href="time.html#man-time"><code>time()</code></a>, <a href="threads.html#man-mtx_timedlock"><code>mtx_timedlock()</code></a>, <a href="threads.html#man-cnd_timedwait"><code>cnd_timedwait()</code></a></p>
+<hr />
+<h2 data-number="29.8" id="man-asctime"><span class="header-section-number">29.8</span> <code>asctime()</code></h2>
+<p></p>
+<p>Return a human-readable version of a <code>struct tm</code></p>
+<h3 class="unnumbered unlisted" id="synopsis-245">Synopsis</h3>
+<div class="sourceCode" id="cb819"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb819-1"><a href="time.html#cb819-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb819-2"><a href="time.html#cb819-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb819-3"><a href="time.html#cb819-3" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>asctime<span class="op">(</span><span class="dt">const</span> <span class="kw">struct</span> tm <span class="op">*</span>timeptr<span class="op">)</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-245">Description</h3>
+<p>This takes a time in a <code>struct tm</code> and returns a string with that date in the form:</p>
+<div class="sourceCode" id="cb820"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb820-1"><a href="time.html#cb820-1" aria-hidden="true" tabindex="-1"></a>Sun Sep 16 01:03:52 1973</span></code></pre></div>
+<p>with a newline included at the end, rather unhelpfully. (<a href="time.html#man-strftime"><code>strftime()</code></a> will give you more flexibility.)</p>
+<p>It’s just like <code>ctime()</code>, except it takes a <code>struct tm</code> instead of a <code>time_t</code>.</p>
+<p><strong>WARNING</strong>: This function returns a pointer to a <code>static char*</code> region that isn’t thread-safe and might be shared with the <code>ctime()</code> function. If you need thread safety, use <code>strftime()</code> or use a mutex that covers <code>ctime()</code> and <code>asctime()</code>.</p>
+<p>Behavior is undefined for:</p>
+<ul>
+<li>Years less than 1000</li>
+<li>Years greater than 9999</li>
+<li>Any members of <code>timeptr</code> are out of range</li>
+</ul>
+<h3 class="unnumbered unlisted" id="return-value-243">Return Value</h3>
+<p>Returns a pointer to the human-readable date string.</p>
+<h3 class="unnumbered unlisted" id="example-247">Example</h3>
+<div class="sourceCode" id="cb821"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb821-1"><a href="time.html#cb821-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb821-2"><a href="time.html#cb821-2"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb821-3"><a href="time.html#cb821-3"></a></span>
+<span id="cb821-4"><a href="time.html#cb821-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb821-5"><a href="time.html#cb821-5"></a><span class="op">{</span></span>
+<span id="cb821-6"><a href="time.html#cb821-6"></a>    <span class="dt">time_t</span> now <span class="op">=</span> time<span class="op">(</span>NULL<span class="op">);</span></span>
+<span id="cb821-7"><a href="time.html#cb821-7"></a></span>
+<span id="cb821-8"><a href="time.html#cb821-8"></a>    printf<span class="op">(</span><span class="st">&quot;Local: </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> asctime<span class="op">(</span>localtime<span class="op">(&amp;</span>now<span class="op">)));</span></span>
+<span id="cb821-9"><a href="time.html#cb821-9"></a>    printf<span class="op">(</span><span class="st">&quot;UTC  : </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> asctime<span class="op">(</span>gmtime<span class="op">(&amp;</span>now<span class="op">)));</span></span>
+<span id="cb821-10"><a href="time.html#cb821-10"></a><span class="op">}</span></span></code></pre></div>
+<p>Sample output:</p>
+<div class="sourceCode" id="cb822"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb822-1"><a href="time.html#cb822-1" aria-hidden="true" tabindex="-1"></a>Local: Mon Mar  1 21:17:34 2021</span>
+<span id="cb822-2"><a href="time.html#cb822-2" aria-hidden="true" tabindex="-1"></a>UTC  : Tue Mar  2 05:17:34 2021</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-231">See Also</h3>
+<p><a href="time.html#man-ctime"><code>ctime()</code></a>, <a href="time.html#man-localtime"><code>localtime()</code></a>, <a href="time.html#man-gmtime"><code>gmtime()</code></a></p>
+<hr />
+<h2 data-number="29.9" id="man-ctime"><span class="header-section-number">29.9</span> <code>ctime()</code></h2>
+<p></p>
+<p>Return a human-readable version of a <code>time_t</code></p>
+<h3 class="unnumbered unlisted" id="synopsis-246">Synopsis</h3>
+<div class="sourceCode" id="cb823"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb823-1"><a href="time.html#cb823-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb823-2"><a href="time.html#cb823-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb823-3"><a href="time.html#cb823-3" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>ctime<span class="op">(</span><span class="dt">const</span> <span class="dt">time_t</span> <span class="op">*</span>timer<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-246">Description</h3>
+<p>This takes a time in a <code>time_t</code> and returns a string with the local time and date in the form:</p>
+<div class="sourceCode" id="cb824"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb824-1"><a href="time.html#cb824-1" aria-hidden="true" tabindex="-1"></a>Sun Sep 16 01:03:52 1973</span></code></pre></div>
+<p>with a newline included at the end, rather unhelpfully. (<a href="time.html#man-strftime"><code>strftime()</code></a> will give you more flexibility.)</p>
+<p>It’s just like <code>asctime()</code>, except it takes a <code>time_t</code> instead of a <code>struct tm</code>.</p>
+<p><strong>WARNING</strong>: This function returns a pointer to a <code>static char*</code> region that isn’t thread-safe and might be shared with the <code>asctime()</code> function. If you need thread safety, use <code>strftime()</code> or use a mutex that covers <code>ctime()</code> and <code>asctime()</code>.</p>
+<p>Behavior is undefined for:</p>
+<ul>
+<li>Years less than 1000</li>
+<li>Years greater than 9999</li>
+<li>Any members of <code>timeptr</code> are out of range</li>
+</ul>
+<h3 class="unnumbered unlisted" id="return-value-244">Return Value</h3>
+<p>A pointer to the human-readable local time and data string.</p>
+<h3 class="unnumbered unlisted" id="example-248">Example</h3>
+<div class="sourceCode" id="cb825"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb825-1"><a href="time.html#cb825-1"></a><span class="dt">time_t</span> now <span class="op">=</span> time<span class="op">(</span>NULL<span class="op">);</span></span>
+<span id="cb825-2"><a href="time.html#cb825-2"></a></span>
+<span id="cb825-3"><a href="time.html#cb825-3"></a>printf<span class="op">(</span><span class="st">&quot;Local: </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> ctime<span class="op">(&amp;</span>now<span class="op">));</span></span></code></pre></div>
+<p>Sample output:</p>
+<div class="sourceCode" id="cb826"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb826-1"><a href="time.html#cb826-1" aria-hidden="true" tabindex="-1"></a>Local: Mon Mar  1 21:32:23 2021</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-232">See Also</h3>
+<p><a href="time.html#man-asctime"><code>asctime()</code></a></p>
+<hr />
+<h2 data-number="29.10" id="man-gmtime"><span class="header-section-number">29.10</span> <code>gmtime()</code></h2>
+<p></p>
+<p>Convert a calendar time into a UTC broken-down time</p>
+<h3 class="unnumbered unlisted" id="synopsis-247">Synopsis</h3>
+<div class="sourceCode" id="cb827"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb827-1"><a href="time.html#cb827-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb827-2"><a href="time.html#cb827-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb827-3"><a href="time.html#cb827-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> tm <span class="op">*</span>gmtime<span class="op">(</span><span class="dt">const</span> <span class="dt">time_t</span> <span class="op">*</span>timer<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-247">Description</h3>
+<p>If you have a <code>time_t</code>, you can run it through this function to get a <code>struct tm</code> back full of the corresponding broken-down UTC time information.</p>
+<p>This is just like <code>localtime()</code>, except it does UTC instead of local time.</p>
+<p>Once you have that <code>struct tm</code>, you can feed it to <code>strftime()</code> to print it out.</p>
+<p><strong>WARNING</strong>: This function returns a pointer to a <code>static struct tm*</code> region that isn’t thread-safe and might be shared with the <code>localtime()</code> function. If you need thread safety use a mutex that covers <code>gmtime()</code> and <code>localtime()</code>.</p>
+<h3 class="unnumbered unlisted" id="return-value-245">Return Value</h3>
+<p>Returns a pointer to the broken-down UTC time, or <code>NULL</code> if it can’t be obtained.</p>
+<h3 class="unnumbered unlisted" id="example-249">Example</h3>
+<div class="sourceCode" id="cb828"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb828-1"><a href="time.html#cb828-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb828-2"><a href="time.html#cb828-2"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb828-3"><a href="time.html#cb828-3"></a></span>
+<span id="cb828-4"><a href="time.html#cb828-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb828-5"><a href="time.html#cb828-5"></a><span class="op">{</span></span>
+<span id="cb828-6"><a href="time.html#cb828-6"></a>    <span class="dt">time_t</span> now <span class="op">=</span> time<span class="op">(</span>NULL<span class="op">);</span></span>
+<span id="cb828-7"><a href="time.html#cb828-7"></a></span>
+<span id="cb828-8"><a href="time.html#cb828-8"></a>    printf<span class="op">(</span><span class="st">&quot;UTC  : </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> asctime<span class="op">(</span>gmtime<span class="op">(&amp;</span>now<span class="op">)));</span></span>
+<span id="cb828-9"><a href="time.html#cb828-9"></a>    printf<span class="op">(</span><span class="st">&quot;Local: </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> asctime<span class="op">(</span>localtime<span class="op">(&amp;</span>now<span class="op">)));</span></span>
+<span id="cb828-10"><a href="time.html#cb828-10"></a><span class="op">}</span></span></code></pre></div>
+<p>Sample output:</p>
+<div class="sourceCode" id="cb829"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb829-1"><a href="time.html#cb829-1" aria-hidden="true" tabindex="-1"></a>UTC  : Tue Mar  2 05:40:05 2021</span>
+<span id="cb829-2"><a href="time.html#cb829-2" aria-hidden="true" tabindex="-1"></a>Local: Mon Mar  1 21:40:05 2021</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-233">See Also</h3>
+<p><a href="time.html#man-localtime"><code>localtime()</code></a>, <a href="time.html#man-asctime"><code>asctime()</code></a>, <a href="time.html#man-strftime"><code>strftime()</code></a></p>
+<hr />
+<h2 data-number="29.11" id="man-localtime"><span class="header-section-number">29.11</span> <code>localtime()</code></h2>
+<p></p>
+<p>Convert a calendar time into a broken-down local time</p>
+<h3 class="unnumbered unlisted" id="synopsis-248">Synopsis</h3>
+<div class="sourceCode" id="cb830"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb830-1"><a href="time.html#cb830-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb830-2"><a href="time.html#cb830-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb830-3"><a href="time.html#cb830-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> tm <span class="op">*</span>localtime<span class="op">(</span><span class="dt">const</span> <span class="dt">time_t</span> <span class="op">*</span>timer<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-248">Description</h3>
+<p>If you have a <code>time_t</code>, you can run it through this function to get a <code>struct tm</code> back full of the corresponding broken-down local time information.</p>
+<p>This is just like <code>gmtime()</code>, except it does local time instead of UTC.</p>
+<p>Once you have that <code>struct tm</code>, you can feed it to <code>strftime()</code> to print it out.</p>
+<p><strong>WARNING</strong>: This function returns a pointer to a <code>static struct tm*</code> region that isn’t thread-safe and might be shared with the <code>gmtime()</code> function. If you need thread safety use a mutex that covers <code>gmtime()</code> and <code>localtime()</code>.</p>
+<h3 class="unnumbered unlisted" id="return-value-246">Return Value</h3>
+<p>Returns a pointer to the broken-down local time, or <code>NULL</code> if it can’t be obtained.</p>
+<h3 class="unnumbered unlisted" id="example-250">Example</h3>
+<div class="sourceCode" id="cb831"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb831-1"><a href="time.html#cb831-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb831-2"><a href="time.html#cb831-2"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb831-3"><a href="time.html#cb831-3"></a></span>
+<span id="cb831-4"><a href="time.html#cb831-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb831-5"><a href="time.html#cb831-5"></a><span class="op">{</span></span>
+<span id="cb831-6"><a href="time.html#cb831-6"></a>    <span class="dt">time_t</span> now <span class="op">=</span> time<span class="op">(</span>NULL<span class="op">);</span></span>
+<span id="cb831-7"><a href="time.html#cb831-7"></a></span>
+<span id="cb831-8"><a href="time.html#cb831-8"></a>    printf<span class="op">(</span><span class="st">&quot;Local: </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> asctime<span class="op">(</span>localtime<span class="op">(&amp;</span>now<span class="op">)));</span></span>
+<span id="cb831-9"><a href="time.html#cb831-9"></a>    printf<span class="op">(</span><span class="st">&quot;UTC  : </span><span class="sc">%s</span><span class="st">&quot;</span><span class="op">,</span> asctime<span class="op">(</span>gmtime<span class="op">(&amp;</span>now<span class="op">)));</span></span>
+<span id="cb831-10"><a href="time.html#cb831-10"></a><span class="op">}</span></span></code></pre></div>
+<p>Sample output:</p>
+<div class="sourceCode" id="cb832"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb832-1"><a href="time.html#cb832-1" aria-hidden="true" tabindex="-1"></a>Local: Mon Mar  1 21:40:05 2021</span>
+<span id="cb832-2"><a href="time.html#cb832-2" aria-hidden="true" tabindex="-1"></a>UTC  : Tue Mar  2 05:40:05 2021</span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-234">See Also</h3>
+<p><a href="time.html#man-gmtime"><code>gmtime()</code></a>, <a href="time.html#man-asctime"><code>asctime()</code></a>, <a href="time.html#man-strftime"><code>strftime()</code></a></p>
+<hr />
+<h2 data-number="29.12" id="man-strftime"><span class="header-section-number">29.12</span> <code>strftime()</code></h2>
+<p></p>
+<p>Formatted date and time output</p>
+<h3 class="unnumbered unlisted" id="synopsis-249">Synopsis</h3>
+<div class="sourceCode" id="cb833"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb833-1"><a href="time.html#cb833-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb833-2"><a href="time.html#cb833-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb833-3"><a href="time.html#cb833-3" aria-hidden="true" tabindex="-1"></a><span class="dt">size_t</span> strftime<span class="op">(</span><span class="dt">char</span> <span class="op">*</span> <span class="dt">restrict</span> s<span class="op">,</span> <span class="dt">size_t</span> maxsize<span class="op">,</span></span>
+<span id="cb833-4"><a href="time.html#cb833-4" aria-hidden="true" tabindex="-1"></a>                <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span> <span class="dt">restrict</span> format<span class="op">,</span></span>
+<span id="cb833-5"><a href="time.html#cb833-5" aria-hidden="true" tabindex="-1"></a>                <span class="dt">const</span> <span class="kw">struct</span> tm <span class="op">*</span> <span class="dt">restrict</span> timeptr<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-249">Description</h3>
+<p>This is the <a href="stdio.html#man-printf"><code>sprintf()</code></a> of date and time functions. It’ll take a <code>struct tm</code> and produce a string in just about whatever form you desire, for example:</p>
+<div class="sourceCode" id="cb834"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb834-1"><a href="time.html#cb834-1" aria-hidden="true" tabindex="-1"></a>2021-03-01</span>
+<span id="cb834-2"><a href="time.html#cb834-2" aria-hidden="true" tabindex="-1"></a>Monday, March 1 at 9:54 PM</span>
+<span id="cb834-3"><a href="time.html#cb834-3" aria-hidden="true" tabindex="-1"></a>It&#39;s Monday!</span></code></pre></div>
+<p>It’s a super flexible version of <code>asctime()</code>. And thread-safe, besides, since it doesn’t rely on a static buffer to hold the results.</p>
+<p>Basically what you do is give it a destination, <code>s</code>, and its max size in bytes in <code>maxsize</code>. Also, provide a <code>format</code> string that’s analogous to <code>printf()</code>’s format string, but with different format specifiers. And lastly, a <code>struct tm</code> with the broken-down time information to use for printing.</p>
+<p>The <code>format</code> string works like this, for example:</p>
+<div class="sourceCode" id="cb835"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb835-1"><a href="time.html#cb835-1" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;It&#39;s </span><span class="sc">%A</span><span class="st">, %B </span><span class="sc">%d</span><span class="st">!&quot;</span></span></code></pre></div>
+<p>Which produces:</p>
+<div class="sourceCode" id="cb836"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb836-1"><a href="time.html#cb836-1" aria-hidden="true" tabindex="-1"></a>It&#39;s Monday, March 1!</span></code></pre></div>
+<p>The <code>%A</code> is the full day-of-week name, the <code>%B</code> is the full month name, and the <code>%d</code> is the day of the month. <code>strftime()</code> substitutes the right thing to produce the result. Brilliant!</p>
+<p>So what are all the format specifiers? Glad you asked!</p>
+<p>I’m going to be lazy and just drop this table in right from the spec.</p>
+<table>
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Specifier</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>%a</code></td>
+<td>Locale’s abbreviated weekday name. [<code>tm_wday</code>]</td>
+</tr>
+<tr class="even">
+<td><code>%A</code></td>
+<td>Locale’s full weekday name. [<code>tm_wday</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%b</code></td>
+<td>Locale’s abbreviated month name. [<code>tm_mon</code>]</td>
+</tr>
+<tr class="even">
+<td><code>%B</code></td>
+<td>Locale’s full month name. [<code>tm_mon</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%c</code></td>
+<td>Locale’s appropriate date and time representation.</td>
+</tr>
+<tr class="even">
+<td><code>%C</code></td>
+<td>Year divided by 100 and truncated to an integer, as a decimal number (00–99). [<code>tm_year</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%d</code></td>
+<td>Day of the month as a decimal number (01–31). [<code>tm_mday</code>]</td>
+</tr>
+<tr class="even">
+<td><code>%D</code></td>
+<td>Equivalent to <code>"%m/%d/%y"</code>. [<code>tm_mon</code>, <code>tm_mday</code>, <code>tm_year</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%e</code></td>
+<td>Day of the month as a decimal number (1–31); a single digit is preceded by a space. [<code>tm_mday</code>]</td>
+</tr>
+<tr class="even">
+<td><code>%F</code></td>
+<td>Equivalent to “%Y-%m-%d” (the ISO 8601 date format). [<code>tm_year</code>, <code>tm_mon</code>, <code>tm_mday</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%g</code></td>
+<td>Last 2 digits of the week-based year (see below) as a decimal number (00–99). [<code>tm_year</code>, <code>tm_wday</code>, <code>tm_yday</code>]</td>
+</tr>
+<tr class="even">
+<td><code>%G</code></td>
+<td>Week-based year (see below) as a decimal number (e.g., 1997). [<code>tm_year</code>, <code>tm_wday</code>, <code>tm_yday</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%h</code></td>
+<td>Equivalent to “%b”. [<code>tm_mon</code>]</td>
+</tr>
+<tr class="even">
+<td><code>%H</code></td>
+<td>Hour (24-hour clock) as a decimal number (00–23). [<code>tm_hour</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%I</code></td>
+<td>Hour (12-hour clock) as a decimal number (01–12). [<code>tm_hour</code>]</td>
+</tr>
+<tr class="even">
+<td><code>%j</code></td>
+<td>Day of the year as a decimal number (001–366). [<code>tm_yday</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%m</code></td>
+<td>Month as a decimal number (01–12).</td>
+</tr>
+<tr class="even">
+<td><code>%M</code></td>
+<td>Minute as a decimal number (00–59). [<code>tm_min</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%n</code></td>
+<td>A new-line character.</td>
+</tr>
+<tr class="even">
+<td><code>%p</code></td>
+<td>Locale’s equivalent of the AM/PM designations associated with a 12-hour clock. [<code>tm_hour</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%r</code></td>
+<td>Locale’s 12-hour clock time. [<code>tm_hour</code>, <code>tm_min</code>, <code>tm_sec</code>]</td>
+</tr>
+<tr class="even">
+<td><code>%R</code></td>
+<td>Equivalent to <code>"%H:%M"</code>. [<code>tm_hour</code>, <code>tm_min</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%S</code></td>
+<td>Second as a decimal number (00–60). [<code>tm_sec</code>]</td>
+</tr>
+<tr class="even">
+<td><code>%t</code></td>
+<td>A horizontal-tab character.</td>
+</tr>
+<tr class="odd">
+<td><code>%T</code></td>
+<td>Equivalent to <code>"%H:%M:%S"</code> (the ISO 8601 time format). [<code>tm_hour</code>, <code>tm_min</code>, <code>tm_sec</code>]</td>
+</tr>
+<tr class="even">
+<td><code>%u</code></td>
+<td>ISO 8601 weekday as a decimal number (1–7), where Monday is 1. [<code>tm_wday</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%U</code></td>
+<td>Week number of the year (the first Sunday as the first day of week 1) as a decimal number (00–53). [<code>tm_year</code>, <code>tm_wday</code>, <code>tm_yday</code>]</td>
+</tr>
+<tr class="even">
+<td><code>%V</code></td>
+<td>ISO 8601 week number (see below) as a decimal number (01–53). [<code>tm_year</code>, <code>tm_wday</code>, <code>tm_yday</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%w</code></td>
+<td>Weekday as a decimal number (0–6), where Sunday is 0.</td>
+</tr>
+<tr class="even">
+<td><code>%W</code></td>
+<td>Week number of the year (the first Monday as the first day of week 1) as a decimal number (00–53). [<code>tm_year</code>, <code>tm_wday</code>, <code>tm_yday</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%x</code></td>
+<td>Locale’s appropriate date representation.</td>
+</tr>
+<tr class="even">
+<td><code>%X</code></td>
+<td>Locale’s appropriate time representation.</td>
+</tr>
+<tr class="odd">
+<td><code>%y</code></td>
+<td>Last 2 digits of the year as a decimal number (00–99). [<code>tm_year</code>]</td>
+</tr>
+<tr class="even">
+<td><code>%Y</code></td>
+<td>Year as a decimal number (e.g., 1997). [<code>tm_year</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%z</code></td>
+<td>Offset from UTC in the ISO 8601 format <code>"-0430"</code> (meaning 4 hours 30 minutes behind UTC, west of Greenwich), or by no characters if no time zone is determinable. [<code>tm_isdst</code>]</td>
+</tr>
+<tr class="even">
+<td><code>%Z</code></td>
+<td>Locale’s time zone name or abbreviation, or by no characters if no time zone is determinable. [<code>tm_isdst</code>]</td>
+</tr>
+<tr class="odd">
+<td><code>%%</code></td>
+<td>A plain ol’ %</td>
+</tr>
+</tbody>
+</table>
+<p>Phew. That’s love.</p>
+<p><code>%G</code>, <code>%g</code>, and <code>%v</code> are a little funky in that they use something called the ISO 8601 week-based year. I’d never heard of it. But, again stealing from the spec, these are the rules:</p>
+<blockquote>
+<p><code>%g</code>, <code>%G</code>, and <code>%V</code> give values according to the ISO 8601 week-based year. In this system, weeks begin on a Monday and week 1 of the year is the week that includes January 4th, which is also the week that includes the first Thursday of the year, and is also the first week that contains at least four days in the year. If the first Monday of January is the 2nd, 3rd, or 4th, the preceding days are part of the last week of the preceding year; thus, for Saturday 2nd January 1999, <code>%G</code> is replaced by <code>1998</code> and <code>%V</code> is replaced by <code>53</code>. If December 29th, 30th, or 31st is a Monday, it and any following days are part of week 1 of the following year. Thus, for Tuesday 30th December 1997, <code>%G</code> is replaced by <code>1998</code> and <code>%V</code> is replaced by <code>01</code>.</p>
+</blockquote>
+<p>Learn something new every day! If you want to know more, <a href="https://en.wikipedia.org/wiki/ISO_week_date">Wikipedia has a page on it</a><a href="wctype.html#fn77" class="footnote-ref" id="fnref77" role="doc-noteref"><sup>77</sup></a>.</p>
+<p>If you’re in the “C” locale, the specifiers produce the following (again, stolen from the spec):</p>
+<table>
+<thead>
+<tr class="header">
+<th>Specifier</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>%a</code></td>
+<td>The first three characters of <code>%A</code>.</td>
+</tr>
+<tr class="even">
+<td><code>%A</code></td>
+<td>One of <code>Sunday</code>, <code>Monday</code>, … , <code>Saturday</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>%b</code></td>
+<td>The first three characters of <code>%B</code>.</td>
+</tr>
+<tr class="even">
+<td><code>%B</code></td>
+<td>One of <code>January</code>, <code>February</code>, … , <code>December</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>%c</code></td>
+<td>Equivalent to <code>%a %b %e %T %Y</code>.</td>
+</tr>
+<tr class="even">
+<td><code>%p</code></td>
+<td>One of <code>AM</code> or <code>PM</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>%r</code></td>
+<td>Equivalent to <code>%I:%M:%S %p</code>.</td>
+</tr>
+<tr class="even">
+<td><code>%x</code></td>
+<td>Equivalent to <code>%m/%d/%y</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>%X</code></td>
+<td>Equivalent to <code>%T</code>.</td>
+</tr>
+<tr class="even">
+<td><code>%Z</code></td>
+<td>Implementation-defined.</td>
+</tr>
+</tbody>
+</table>
+<p>There are additional variants of the format specifiers that indicate you want to use a locale’s alternative format. These don’t exist for all locales. It’s one of the format specifies above, with either an <code>E</code> or <code>O</code> prefix:</p>
+<div class="sourceCode" id="cb837"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb837-1"><a href="time.html#cb837-1" aria-hidden="true" tabindex="-1"></a>%Ec %EC %Ex %EX %Ey %EY %Od %Oe %OH %OI</span>
+<span id="cb837-2"><a href="time.html#cb837-2" aria-hidden="true" tabindex="-1"></a>%Om %OM %OS %Ou %OU %OV %Ow %OW %Oy</span></code></pre></div>
+<p>The <code>E</code> and <code>O</code> prefixes are ignored in the “C” locale.</p>
+<h3 class="unnumbered unlisted" id="return-value-247">Return Value</h3>
+<p>Returns the total number of bytes put into the result string, not including the NUL terminator.</p>
+<p>If the result doesn’t fit in the string, zero is returned and the value in <code>s</code> is indeterminate.</p>
+<h3 class="unnumbered unlisted" id="example-251">Example</h3>
+<div class="sourceCode" id="cb838"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb838-1"><a href="time.html#cb838-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb838-2"><a href="time.html#cb838-2"></a><span class="pp">#include </span><span class="im">&lt;time.h&gt;</span></span>
+<span id="cb838-3"><a href="time.html#cb838-3"></a></span>
+<span id="cb838-4"><a href="time.html#cb838-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb838-5"><a href="time.html#cb838-5"></a><span class="op">{</span></span>
+<span id="cb838-6"><a href="time.html#cb838-6"></a>    <span class="dt">char</span> s<span class="op">[</span><span class="dv">128</span><span class="op">];</span></span>
+<span id="cb838-7"><a href="time.html#cb838-7"></a>    <span class="dt">time_t</span> now <span class="op">=</span> time<span class="op">(</span>NULL<span class="op">);</span></span>
+<span id="cb838-8"><a href="time.html#cb838-8"></a></span>
+<span id="cb838-9"><a href="time.html#cb838-9"></a>    <span class="co">// %c: print date as per current locale</span></span>
+<span id="cb838-10"><a href="time.html#cb838-10"></a>    strftime<span class="op">(</span>s<span class="op">,</span> <span class="kw">sizeof</span> s<span class="op">,</span> <span class="st">&quot;</span><span class="sc">%c</span><span class="st">&quot;</span><span class="op">,</span> localtime<span class="op">(&amp;</span>now<span class="op">));</span></span>
+<span id="cb838-11"><a href="time.html#cb838-11"></a>    puts<span class="op">(</span>s<span class="op">);</span>   <span class="co">// Sun Feb 28 22:29:00 2021</span></span>
+<span id="cb838-12"><a href="time.html#cb838-12"></a></span>
+<span id="cb838-13"><a href="time.html#cb838-13"></a>    <span class="co">// %A: full weekday name</span></span>
+<span id="cb838-14"><a href="time.html#cb838-14"></a>    <span class="co">// %B: full month name</span></span>
+<span id="cb838-15"><a href="time.html#cb838-15"></a>    <span class="co">// %d: day of the month</span></span>
+<span id="cb838-16"><a href="time.html#cb838-16"></a>    strftime<span class="op">(</span>s<span class="op">,</span> <span class="kw">sizeof</span> s<span class="op">,</span> <span class="st">&quot;</span><span class="sc">%A</span><span class="st">, %B </span><span class="sc">%d</span><span class="st">&quot;</span><span class="op">,</span> localtime<span class="op">(&amp;</span>now<span class="op">));</span></span>
+<span id="cb838-17"><a href="time.html#cb838-17"></a>    puts<span class="op">(</span>s<span class="op">);</span>   <span class="co">// Sunday, February 28</span></span>
+<span id="cb838-18"><a href="time.html#cb838-18"></a></span>
+<span id="cb838-19"><a href="time.html#cb838-19"></a>    <span class="co">// %I: hour (12 hour clock)</span></span>
+<span id="cb838-20"><a href="time.html#cb838-20"></a>    <span class="co">// %M: minute</span></span>
+<span id="cb838-21"><a href="time.html#cb838-21"></a>    <span class="co">// %S: second</span></span>
+<span id="cb838-22"><a href="time.html#cb838-22"></a>    <span class="co">// %p: AM or PM</span></span>
+<span id="cb838-23"><a href="time.html#cb838-23"></a>    strftime<span class="op">(</span>s<span class="op">,</span> <span class="kw">sizeof</span> s<span class="op">,</span> <span class="st">&quot;It&#39;s %I:%M:%S </span><span class="sc">%p</span><span class="st">&quot;</span><span class="op">,</span> localtime<span class="op">(&amp;</span>now<span class="op">));</span></span>
+<span id="cb838-24"><a href="time.html#cb838-24"></a>    puts<span class="op">(</span>s<span class="op">);</span>   <span class="co">// It&#39;s 10:29:00 PM</span></span>
+<span id="cb838-25"><a href="time.html#cb838-25"></a></span>
+<span id="cb838-26"><a href="time.html#cb838-26"></a>    <span class="co">// %F: ISO 8601 yyyy-mm-dd</span></span>
+<span id="cb838-27"><a href="time.html#cb838-27"></a>    <span class="co">// %T: ISO 8601 hh:mm:ss</span></span>
+<span id="cb838-28"><a href="time.html#cb838-28"></a>    <span class="co">// %z: ISO 8601 time zone offset</span></span>
+<span id="cb838-29"><a href="time.html#cb838-29"></a>    strftime<span class="op">(</span>s<span class="op">,</span> <span class="kw">sizeof</span> s<span class="op">,</span> <span class="st">&quot;ISO 8601: </span><span class="sc">%F</span><span class="st">T%T%z&quot;</span><span class="op">,</span> localtime<span class="op">(&amp;</span>now<span class="op">));</span></span>
+<span id="cb838-30"><a href="time.html#cb838-30"></a>    puts<span class="op">(</span>s<span class="op">);</span>   <span class="co">// ISO 8601: 2021-02-28T22:29:00-0800</span></span>
+<span id="cb838-31"><a href="time.html#cb838-31"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-235">See Also</h3>
+<p><a href="time.html#man-ctime"><code>ctime()</code></a>, <a href="time.html#man-asctime"><code>asctime()</code></a></p>
+<!--
+***
+## `example()`, `example()`, `example()` {#man-example}
+
+### Synopsis {.unnumbered .unlisted}
+
+``` {.c}
+```
+
+### Description {.unnumbered .unlisted}
+
+### Return Value {.unnumbered .unlisted}
+
+### Example {.unnumbered .unlisted}
+
+``` {.c .numberLines}
+```
+
+### See Also {.unnumbered .unlisted}
+
+[`example()`](#man-example),
+-->
+<!-- BG_NEW_CHAPTER -->
+<!-- Beej's guide to C
+
+# vim: ts=4:sw=4:nosi:et:tw=72
+-->
+<hr><div style="text-align:center"><span><a href="threads.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="uchar.html" rel="next">Next</a></span></div></body>
+</html>

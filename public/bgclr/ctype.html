@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to C Programming</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body>
+<div style="text-align:center"><span><a href="complex.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="errno.html" rel="next">Next</a></span></div><hr>
+<h1 data-number="5" id="ctype"><span class="header-section-number">5</span> <code>&lt;ctype.h&gt;</code> Character Classification and Conversion</h1>
+<p></p>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="ctype.html#man-isalnum"><code>isalnum()</code></a></td>
+<td>Tests if a character is alphabetic or is a digit</td>
+</tr>
+<tr class="even">
+<td><a href="ctype.html#man-isalpha"><code>isalpha()</code></a></td>
+<td>Returns true if a character is alphabetic</td>
+</tr>
+<tr class="odd">
+<td><a href="ctype.html#man-isblank"><code>isblank()</code></a></td>
+<td>Tests if a character is word-separating whitespace</td>
+</tr>
+<tr class="even">
+<td><a href="ctype.html#man-iscntrl"><code>iscntrl()</code></a></td>
+<td>Test if a character is a control character</td>
+</tr>
+<tr class="odd">
+<td><a href="ctype.html#man-isdigit"><code>isdigit()</code></a></td>
+<td>Tests if a character is a digit</td>
+</tr>
+<tr class="even">
+<td><a href="ctype.html#man-isgraph"><code>isgraph()</code></a></td>
+<td>Tests if the character is printable and not a space</td>
+</tr>
+<tr class="odd">
+<td><a href="ctype.html#man-islower"><code>islower()</code></a></td>
+<td>Tests if a character is lowercase</td>
+</tr>
+<tr class="even">
+<td><a href="ctype.html#man-isprint"><code>isprint()</code></a></td>
+<td>Tests if a character is printable</td>
+</tr>
+<tr class="odd">
+<td><a href="ctype.html#man-ispunct"><code>ispunct()</code></a></td>
+<td>Test if a character is punctuation</td>
+</tr>
+<tr class="even">
+<td><a href="ctype.html#man-isspace"><code>isspace()</code></a></td>
+<td>Test if a character is whitespace</td>
+</tr>
+<tr class="odd">
+<td><a href="ctype.html#man-isupper"><code>isupper()</code></a></td>
+<td>Tests if a character is uppercase</td>
+</tr>
+<tr class="even">
+<td><a href="ctype.html#man-isxdigit"><code>isxdigit()</code></a></td>
+<td>Tests if a character is a hexadecimal digit</td>
+</tr>
+<tr class="odd">
+<td><a href="ctype.html#man-tolower"><code>tolower()</code></a></td>
+<td>Convert a letter to lowercase</td>
+</tr>
+<tr class="even">
+<td><a href="ctype.html#man-toupper"><code>toupper()</code></a></td>
+<td>Convert a letter to uppercase</td>
+</tr>
+</tbody>
+</table>
+<p>This collection of macros is good for testing characters to see if they’re of a certain class, such as alphabetic, numeric, control characters, etc.</p>
+<p>Surprisingly, they take <code>int</code> arguments instead of some kind of <code>char</code>. This is so you can feed <code>EOF</code> in for convenience if you have an integer representation of that. If not <code>EOF</code>, the value passed in has to be representable in an <code>unsigned char</code>. Otherwise it’s (dun dun DUUNNNN) undefined behavior. So you can forget about passing in your UTF-8 multibyte characters.</p>
+<p>You can portably avoid this undefined behavior by casting the arguments to these functions to <code>(unsigned char)</code>. This is irksome and ugly, admittedly. The values in the basic character set are all safe to use since they’re positive values that fit into an <code>unsigned char</code>.</p>
+<p>Also, the behavior of these functions varies based on locale.</p>
+<p>In many of the pages in this section, I give some examples. These are from the “C” locale, and might vary if you’ve set a different locale.</p>
+<p>Note that wide characters have their own set of classification functions, so don’t try to use these on <code>wchar_t</code>s. Or <em>else</em>!</p>
+<hr />
+<h2 data-number="5.1" id="man-isalnum"><span class="header-section-number">5.1</span> <code>isalnum()</code></h2>
+<p></p>
+<p>Tests if a character is alphabetic or is a digit</p>
+<h3 class="unnumbered unlisted" id="synopsis-25">Synopsis</h3>
+<div class="sourceCode" id="cb148"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb148-1"><a href="ctype.html#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb148-2"><a href="ctype.html#cb148-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb148-3"><a href="ctype.html#cb148-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> isalnum<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-25">Description</h3>
+<p>Tests if a character is alphabetic (<code>A</code>-<code>Z</code> or <code>a</code>-<code>z</code>) or a digit (<code>0</code>-<code>9</code>).</p>
+<p>Is equivalent to:</p>
+<div class="sourceCode" id="cb149"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb149-1"><a href="ctype.html#cb149-1" aria-hidden="true" tabindex="-1"></a>isalpha<span class="op">(</span>c<span class="op">)</span> <span class="op">||</span> isdigit<span class="op">(</span>c<span class="op">)</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="return-value-25">Return Value</h3>
+<p>Returns true if a character is alphabetic (<code>A</code>-<code>Z</code> or <code>a</code>-<code>z</code>) or a digit (<code>0</code>-<code>9</code>).</p>
+<h3 class="unnumbered unlisted" id="example-25">Example</h3>
+<div class="sourceCode" id="cb150"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb150-1"><a href="ctype.html#cb150-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb150-2"><a href="ctype.html#cb150-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb150-3"><a href="ctype.html#cb150-3"></a></span>
+<span id="cb150-4"><a href="ctype.html#cb150-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb150-5"><a href="ctype.html#cb150-5"></a><span class="op">{</span></span>
+<span id="cb150-6"><a href="ctype.html#cb150-6"></a>    <span class="co">//             testing this char</span></span>
+<span id="cb150-7"><a href="ctype.html#cb150-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb150-8"><a href="ctype.html#cb150-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isalnum<span class="op">(</span><span class="ch">&#39;a&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb150-9"><a href="ctype.html#cb150-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isalnum<span class="op">(</span><span class="ch">&#39;B&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb150-10"><a href="ctype.html#cb150-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isalnum<span class="op">(</span><span class="ch">&#39;5&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb150-11"><a href="ctype.html#cb150-11"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isalnum<span class="op">(</span><span class="ch">&#39;?&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb150-12"><a href="ctype.html#cb150-12"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-22">See Also</h3>
+<p><a href="ctype.html#man-isalpha"><code>isalpha()</code></a>, <a href="ctype.html#man-isdigit"><code>isdigit()</code></a></p>
+<hr />
+<h2 data-number="5.2" id="man-isalpha"><span class="header-section-number">5.2</span> <code>isalpha()</code></h2>
+<p></p>
+<p>Returns true if a character is alphabetic</p>
+<h3 class="unnumbered unlisted" id="synopsis-26">Synopsis</h3>
+<div class="sourceCode" id="cb151"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb151-1"><a href="ctype.html#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb151-2"><a href="ctype.html#cb151-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb151-3"><a href="ctype.html#cb151-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> isalpha<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-26">Description</h3>
+<p>Returns true for alphabetic characters (<code>A</code>-<code>Z</code> or <code>a</code>-<code>z</code>).</p>
+<p>Technically (and in the “C” locale) equivalent to:</p>
+<div class="sourceCode" id="cb152"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb152-1"><a href="ctype.html#cb152-1" aria-hidden="true" tabindex="-1"></a>isupper<span class="op">(</span>c<span class="op">)</span> <span class="op">||</span> islower<span class="op">(</span>c<span class="op">)</span></span></code></pre></div>
+<p>Extra super technically, because I know you’re dying for this to be extra unnecessarily complex, it can also include some locale-specific characters for which this is true:</p>
+<div class="sourceCode" id="cb153"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb153-1"><a href="ctype.html#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>iscntrl<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>isdigit<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>ispunct<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>isspace<span class="op">(</span>c<span class="op">)</span></span></code></pre></div>
+<p>and this is true:</p>
+<div class="sourceCode" id="cb154"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb154-1"><a href="ctype.html#cb154-1" aria-hidden="true" tabindex="-1"></a>isupper<span class="op">(</span>c<span class="op">)</span> <span class="op">||</span> islower<span class="op">(</span>c<span class="op">)</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="return-value-26">Return Value</h3>
+<p>Returns true for alphabetic characters (<code>A</code>-<code>Z</code> or <code>a</code>-<code>z</code>).</p>
+<p>Or for any of the other crazy stuff in the description, above.</p>
+<h3 class="unnumbered unlisted" id="example-26">Example</h3>
+<div class="sourceCode" id="cb155"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb155-1"><a href="ctype.html#cb155-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb155-2"><a href="ctype.html#cb155-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb155-3"><a href="ctype.html#cb155-3"></a></span>
+<span id="cb155-4"><a href="ctype.html#cb155-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb155-5"><a href="ctype.html#cb155-5"></a><span class="op">{</span></span>
+<span id="cb155-6"><a href="ctype.html#cb155-6"></a>    <span class="co">//             testing this char</span></span>
+<span id="cb155-7"><a href="ctype.html#cb155-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb155-8"><a href="ctype.html#cb155-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isalpha<span class="op">(</span><span class="ch">&#39;a&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb155-9"><a href="ctype.html#cb155-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isalpha<span class="op">(</span><span class="ch">&#39;B&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb155-10"><a href="ctype.html#cb155-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isalpha<span class="op">(</span><span class="ch">&#39;5&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb155-11"><a href="ctype.html#cb155-11"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isalpha<span class="op">(</span><span class="ch">&#39;?&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb155-12"><a href="ctype.html#cb155-12"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-23">See Also</h3>
+<p><a href="ctype.html#man-isalnum"><code>isalnum()</code></a></p>
+<hr />
+<h2 data-number="5.3" id="man-isblank"><span class="header-section-number">5.3</span> <code>isblank()</code></h2>
+<p></p>
+<p>Tests if a character is word-separating whitespace</p>
+<h3 class="unnumbered unlisted" id="synopsis-27">Synopsis</h3>
+<div class="sourceCode" id="cb156"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb156-1"><a href="ctype.html#cb156-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb156-2"><a href="ctype.html#cb156-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb156-3"><a href="ctype.html#cb156-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> isblank<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-27">Description</h3>
+<p>True if the character is a whitespace character used to separate words in a single line.</p>
+<p>For example, space (<code>' '</code>) or horizontal tab (<code>'\t'</code>). Other locales might define other blank characters.</p>
+<h3 class="unnumbered unlisted" id="return-value-27">Return Value</h3>
+<p>Returns true if the character is a whitespace character used to separate words in a single line.</p>
+<h3 class="unnumbered unlisted" id="example-27">Example</h3>
+<div class="sourceCode" id="cb157"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb157-1"><a href="ctype.html#cb157-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb157-2"><a href="ctype.html#cb157-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb157-3"><a href="ctype.html#cb157-3"></a></span>
+<span id="cb157-4"><a href="ctype.html#cb157-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb157-5"><a href="ctype.html#cb157-5"></a><span class="op">{</span></span>
+<span id="cb157-6"><a href="ctype.html#cb157-6"></a>    <span class="co">//             testing this char</span></span>
+<span id="cb157-7"><a href="ctype.html#cb157-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb157-8"><a href="ctype.html#cb157-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isblank<span class="op">(</span><span class="ch">&#39; &#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb157-9"><a href="ctype.html#cb157-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isblank<span class="op">(</span><span class="ch">&#39;</span><span class="sc">\t</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb157-10"><a href="ctype.html#cb157-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isblank<span class="op">(</span><span class="ch">&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb157-11"><a href="ctype.html#cb157-11"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isblank<span class="op">(</span><span class="ch">&#39;a&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb157-12"><a href="ctype.html#cb157-12"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isblank<span class="op">(</span><span class="ch">&#39;?&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb157-13"><a href="ctype.html#cb157-13"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-24">See Also</h3>
+<p><a href="ctype.html#man-isspace"><code>isspace()</code></a></p>
+<hr />
+<h2 data-number="5.4" id="man-iscntrl"><span class="header-section-number">5.4</span> <code>iscntrl()</code></h2>
+<p></p>
+<p>Test if a character is a control character</p>
+<h3 class="unnumbered unlisted" id="synopsis-28">Synopsis</h3>
+<div class="sourceCode" id="cb158"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb158-1"><a href="ctype.html#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb158-2"><a href="ctype.html#cb158-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb158-3"><a href="ctype.html#cb158-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> iscntrl<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-28">Description</h3>
+<p>A <em>control character</em> is a locale-specific non-printing character.</p>
+<p>For the “C” locale, this means control characters are in the range 0x00 to 0x1F (the character right before SPACE) and 0x7F (the DEL character).</p>
+<p>Basically if it’s not an ASCII (or Unicode less than 128) printable character, it’s a control character in the “C” locale.</p>
+<h3 class="unnumbered unlisted" id="return-value-28">Return Value</h3>
+<p>Returns true if <code>c</code> is a control character.</p>
+<h3 class="unnumbered unlisted" id="example-28">Example</h3>
+<div class="sourceCode" id="cb159"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb159-1"><a href="ctype.html#cb159-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb159-2"><a href="ctype.html#cb159-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb159-3"><a href="ctype.html#cb159-3"></a></span>
+<span id="cb159-4"><a href="ctype.html#cb159-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb159-5"><a href="ctype.html#cb159-5"></a><span class="op">{</span></span>
+<span id="cb159-6"><a href="ctype.html#cb159-6"></a>    <span class="co">//             testing this char</span></span>
+<span id="cb159-7"><a href="ctype.html#cb159-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb159-8"><a href="ctype.html#cb159-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> iscntrl<span class="op">(</span><span class="ch">&#39;</span><span class="sc">\t</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes (tab)</span></span>
+<span id="cb159-9"><a href="ctype.html#cb159-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> iscntrl<span class="op">(</span><span class="ch">&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes (newline)</span></span>
+<span id="cb159-10"><a href="ctype.html#cb159-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> iscntrl<span class="op">(</span><span class="ch">&#39;</span><span class="sc">\r</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes (return)</span></span>
+<span id="cb159-11"><a href="ctype.html#cb159-11"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> iscntrl<span class="op">(</span><span class="ch">&#39;</span><span class="sc">\a</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes (bell)</span></span>
+<span id="cb159-12"><a href="ctype.html#cb159-12"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> iscntrl<span class="op">(</span><span class="ch">&#39; &#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb159-13"><a href="ctype.html#cb159-13"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> iscntrl<span class="op">(</span><span class="ch">&#39;a&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb159-14"><a href="ctype.html#cb159-14"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> iscntrl<span class="op">(</span><span class="ch">&#39;?&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb159-15"><a href="ctype.html#cb159-15"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-25">See Also</h3>
+<p><a href="ctype.html#man-isgraph"><code>isgraph()</code></a>, <a href="ctype.html#man-isprint"><code>isprint()</code></a></p>
+<hr />
+<h2 data-number="5.5" id="man-isdigit"><span class="header-section-number">5.5</span> <code>isdigit()</code></h2>
+<p></p>
+<p>Tests if a character is a digit</p>
+<h3 class="unnumbered unlisted" id="synopsis-29">Synopsis</h3>
+<div class="sourceCode" id="cb160"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb160-1"><a href="ctype.html#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb160-2"><a href="ctype.html#cb160-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb160-3"><a href="ctype.html#cb160-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> isdigit<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-29">Description</h3>
+<p>Tests if <code>c</code> is a digit in the range <code>0</code>-<code>9</code>.</p>
+<h3 class="unnumbered unlisted" id="return-value-29">Return Value</h3>
+<p>Returns true if the character is a digit, unsurprisingly.</p>
+<h3 class="unnumbered unlisted" id="example-29">Example</h3>
+<div class="sourceCode" id="cb161"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb161-1"><a href="ctype.html#cb161-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb161-2"><a href="ctype.html#cb161-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb161-3"><a href="ctype.html#cb161-3"></a></span>
+<span id="cb161-4"><a href="ctype.html#cb161-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb161-5"><a href="ctype.html#cb161-5"></a><span class="op">{</span></span>
+<span id="cb161-6"><a href="ctype.html#cb161-6"></a>    <span class="co">//             testing this char</span></span>
+<span id="cb161-7"><a href="ctype.html#cb161-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb161-8"><a href="ctype.html#cb161-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isdigit<span class="op">(</span><span class="ch">&#39;0&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb161-9"><a href="ctype.html#cb161-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isdigit<span class="op">(</span><span class="ch">&#39;5&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb161-10"><a href="ctype.html#cb161-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isdigit<span class="op">(</span><span class="ch">&#39;a&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb161-11"><a href="ctype.html#cb161-11"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isdigit<span class="op">(</span><span class="ch">&#39;B&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb161-12"><a href="ctype.html#cb161-12"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isdigit<span class="op">(</span><span class="ch">&#39;?&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb161-13"><a href="ctype.html#cb161-13"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-26">See Also</h3>
+<p><a href="ctype.html#man-isalnum"><code>isalnum()</code></a>, <a href="ctype.html#man-isxdigit"><code>isxdigit()</code></a></p>
+<hr />
+<h2 data-number="5.6" id="man-isgraph"><span class="header-section-number">5.6</span> <code>isgraph()</code></h2>
+<p></p>
+<p>Tests if the character is printable and not a space</p>
+<h3 class="unnumbered unlisted" id="synopsis-30">Synopsis</h3>
+<div class="sourceCode" id="cb162"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb162-1"><a href="ctype.html#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb162-2"><a href="ctype.html#cb162-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb162-3"><a href="ctype.html#cb162-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> isgraph<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-30">Description</h3>
+<p>Tests if <code>c</code> is any printable character that isn’t a space (<code>' '</code>).</p>
+<h3 class="unnumbered unlisted" id="return-value-30">Return Value</h3>
+<p>Returns true if <code>c</code> is any printable character that isn’t a space (<code>' '</code>).</p>
+<h3 class="unnumbered unlisted" id="example-30">Example</h3>
+<div class="sourceCode" id="cb163"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb163-1"><a href="ctype.html#cb163-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb163-2"><a href="ctype.html#cb163-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb163-3"><a href="ctype.html#cb163-3"></a></span>
+<span id="cb163-4"><a href="ctype.html#cb163-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb163-5"><a href="ctype.html#cb163-5"></a><span class="op">{</span></span>
+<span id="cb163-6"><a href="ctype.html#cb163-6"></a>    <span class="co">//             testing this char</span></span>
+<span id="cb163-7"><a href="ctype.html#cb163-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb163-8"><a href="ctype.html#cb163-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isgraph<span class="op">(</span><span class="ch">&#39;0&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb163-9"><a href="ctype.html#cb163-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isgraph<span class="op">(</span><span class="ch">&#39;a&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb163-10"><a href="ctype.html#cb163-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isgraph<span class="op">(</span><span class="ch">&#39;B&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb163-11"><a href="ctype.html#cb163-11"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isgraph<span class="op">(</span><span class="ch">&#39;?&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb163-12"><a href="ctype.html#cb163-12"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isgraph<span class="op">(</span><span class="ch">&#39; &#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb163-13"><a href="ctype.html#cb163-13"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isgraph<span class="op">(</span><span class="ch">&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb163-14"><a href="ctype.html#cb163-14"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-27">See Also</h3>
+<p><a href="ctype.html#man-iscntrl"><code>iscntrl()</code></a>, <a href="ctype.html#man-isprint"><code>isprint()</code></a></p>
+<hr />
+<h2 data-number="5.7" id="man-islower"><span class="header-section-number">5.7</span> <code>islower()</code></h2>
+<p></p>
+<p>Tests if a character is lowercase</p>
+<h3 class="unnumbered unlisted" id="synopsis-31">Synopsis</h3>
+<div class="sourceCode" id="cb164"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb164-1"><a href="ctype.html#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb164-2"><a href="ctype.html#cb164-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb164-3"><a href="ctype.html#cb164-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> islower<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-31">Description</h3>
+<p>Tests if a character is lowercase, in the range <code>a</code>-<code>z</code>.</p>
+<p>In other locales, there could be other lowercase characters. In all cases, to be lowercase, the following must be true:</p>
+<div class="sourceCode" id="cb165"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb165-1"><a href="ctype.html#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>iscntrl<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>isdigit<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>ispunct<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>isspace<span class="op">(</span>c<span class="op">)</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="return-value-31">Return Value</h3>
+<p>Returns true if the character is lowercase.</p>
+<h3 class="unnumbered unlisted" id="example-31">Example</h3>
+<div class="sourceCode" id="cb166"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb166-1"><a href="ctype.html#cb166-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb166-2"><a href="ctype.html#cb166-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb166-3"><a href="ctype.html#cb166-3"></a></span>
+<span id="cb166-4"><a href="ctype.html#cb166-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb166-5"><a href="ctype.html#cb166-5"></a><span class="op">{</span></span>
+<span id="cb166-6"><a href="ctype.html#cb166-6"></a>    <span class="co">//             testing this char</span></span>
+<span id="cb166-7"><a href="ctype.html#cb166-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb166-8"><a href="ctype.html#cb166-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> islower<span class="op">(</span><span class="ch">&#39;c&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb166-9"><a href="ctype.html#cb166-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> islower<span class="op">(</span><span class="ch">&#39;0&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb166-10"><a href="ctype.html#cb166-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> islower<span class="op">(</span><span class="ch">&#39;B&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb166-11"><a href="ctype.html#cb166-11"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> islower<span class="op">(</span><span class="ch">&#39;?&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb166-12"><a href="ctype.html#cb166-12"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> islower<span class="op">(</span><span class="ch">&#39; &#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb166-13"><a href="ctype.html#cb166-13"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-28">See Also</h3>
+<p><a href="ctype.html#man-isupper"><code>isupper()</code></a>, <a href="ctype.html#man-isalpha"><code>isalpha()</code></a>, <a href="ctype.html#man-toupper"><code>toupper()</code></a>, <a href="ctype.html#man-tolower"><code>tolower()</code></a></p>
+<hr />
+<h2 data-number="5.8" id="man-isprint"><span class="header-section-number">5.8</span> <code>isprint()</code></h2>
+<p></p>
+<p>Tests if a character is printable</p>
+<h3 class="unnumbered unlisted" id="synopsis-32">Synopsis</h3>
+<div class="sourceCode" id="cb167"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb167-1"><a href="ctype.html#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb167-2"><a href="ctype.html#cb167-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb167-3"><a href="ctype.html#cb167-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> isprint<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-32">Description</h3>
+<p>Tests if a character is printable, including space (<code>' '</code>). So like <code>isgraph()</code>, except space isn’t left out in the cold.</p>
+<h3 class="unnumbered unlisted" id="return-value-32">Return Value</h3>
+<p>Returns true if the character is printable, including space (<code>' '</code>).</p>
+<h3 class="unnumbered unlisted" id="example-32">Example</h3>
+<div class="sourceCode" id="cb168"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb168-1"><a href="ctype.html#cb168-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb168-2"><a href="ctype.html#cb168-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb168-3"><a href="ctype.html#cb168-3"></a></span>
+<span id="cb168-4"><a href="ctype.html#cb168-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb168-5"><a href="ctype.html#cb168-5"></a><span class="op">{</span></span>
+<span id="cb168-6"><a href="ctype.html#cb168-6"></a>    <span class="co">//             testing this char</span></span>
+<span id="cb168-7"><a href="ctype.html#cb168-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb168-8"><a href="ctype.html#cb168-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isprint<span class="op">(</span><span class="ch">&#39;c&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb168-9"><a href="ctype.html#cb168-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isprint<span class="op">(</span><span class="ch">&#39;0&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb168-10"><a href="ctype.html#cb168-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isprint<span class="op">(</span><span class="ch">&#39; &#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb168-11"><a href="ctype.html#cb168-11"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isprint<span class="op">(</span><span class="ch">&#39;</span><span class="sc">\r</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb168-12"><a href="ctype.html#cb168-12"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-29">See Also</h3>
+<p><a href="ctype.html#man-isgraph"><code>isgraph()</code></a>, <a href="ctype.html#man-iscntrl"><code>iscntrl()</code></a></p>
+<hr />
+<h2 data-number="5.9" id="man-ispunct"><span class="header-section-number">5.9</span> <code>ispunct()</code></h2>
+<p></p>
+<p>Test if a character is punctuation</p>
+<h3 class="unnumbered unlisted" id="synopsis-33">Synopsis</h3>
+<div class="sourceCode" id="cb169"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb169-1"><a href="ctype.html#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb169-2"><a href="ctype.html#cb169-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb169-3"><a href="ctype.html#cb169-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ispunct<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-33">Description</h3>
+<p>Tests if a character is punctuation.</p>
+<p>In the “C” locale, this means:</p>
+<div class="sourceCode" id="cb170"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb170-1"><a href="ctype.html#cb170-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>isspace<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>isalnum<span class="op">(</span>c<span class="op">)</span></span></code></pre></div>
+<p>In other locales, there could be other punctuation characters (but they also can’t be space or alphanumeric).</p>
+<h3 class="unnumbered unlisted" id="return-value-33">Return Value</h3>
+<p>True if the character is punctuation.</p>
+<h3 class="unnumbered unlisted" id="example-33">Example</h3>
+<div class="sourceCode" id="cb171"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb171-1"><a href="ctype.html#cb171-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb171-2"><a href="ctype.html#cb171-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb171-3"><a href="ctype.html#cb171-3"></a></span>
+<span id="cb171-4"><a href="ctype.html#cb171-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb171-5"><a href="ctype.html#cb171-5"></a><span class="op">{</span></span>
+<span id="cb171-6"><a href="ctype.html#cb171-6"></a>    <span class="co">//             testing this char</span></span>
+<span id="cb171-7"><a href="ctype.html#cb171-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb171-8"><a href="ctype.html#cb171-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> ispunct<span class="op">(</span><span class="ch">&#39;,&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb171-9"><a href="ctype.html#cb171-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> ispunct<span class="op">(</span><span class="ch">&#39;!&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb171-10"><a href="ctype.html#cb171-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> ispunct<span class="op">(</span><span class="ch">&#39;c&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb171-11"><a href="ctype.html#cb171-11"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> ispunct<span class="op">(</span><span class="ch">&#39;0&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb171-12"><a href="ctype.html#cb171-12"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> ispunct<span class="op">(</span><span class="ch">&#39; &#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb171-13"><a href="ctype.html#cb171-13"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> ispunct<span class="op">(</span><span class="ch">&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// no</span></span>
+<span id="cb171-14"><a href="ctype.html#cb171-14"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-30">See Also</h3>
+<p><a href="ctype.html#man-isspace"><code>isspace()</code></a>, <a href="ctype.html#man-isalnum"><code>isalnum()</code></a></p>
+<hr />
+<h2 data-number="5.10" id="man-isspace"><span class="header-section-number">5.10</span> <code>isspace()</code></h2>
+<p></p>
+<p>Test if a character is whitespace</p>
+<h3 class="unnumbered unlisted" id="synopsis-34">Synopsis</h3>
+<div class="sourceCode" id="cb172"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb172-1"><a href="ctype.html#cb172-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb172-2"><a href="ctype.html#cb172-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb172-3"><a href="ctype.html#cb172-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> isspace<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-34">Description</h3>
+<p>Tests if <code>c</code> is a whitespace character. These are:</p>
+<ul>
+<li>Space (<code>' '</code>)</li>
+<li>Formfeed (<code>'\f'</code>)</li>
+<li>Newline (<code>'\n'</code>)</li>
+<li>Carriage Return (<code>'\r'</code>)</li>
+<li>Horizontal Tab (<code>'\t'</code>)</li>
+<li>Vertical Tab (<code>'\v'</code>)</li>
+</ul>
+<p>Other locales might specify other whitespace characters. <code>isalnum()</code> is false for all whitespace characters.</p>
+<h3 class="unnumbered unlisted" id="return-value-34">Return Value</h3>
+<p>True if the character is whitespace.</p>
+<h3 class="unnumbered unlisted" id="example-34">Example</h3>
+<div class="sourceCode" id="cb173"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb173-1"><a href="ctype.html#cb173-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb173-2"><a href="ctype.html#cb173-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb173-3"><a href="ctype.html#cb173-3"></a></span>
+<span id="cb173-4"><a href="ctype.html#cb173-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb173-5"><a href="ctype.html#cb173-5"></a><span class="op">{</span></span>
+<span id="cb173-6"><a href="ctype.html#cb173-6"></a>    <span class="co">//             testing this char</span></span>
+<span id="cb173-7"><a href="ctype.html#cb173-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb173-8"><a href="ctype.html#cb173-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isspace<span class="op">(</span><span class="ch">&#39; &#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb173-9"><a href="ctype.html#cb173-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isspace<span class="op">(</span><span class="ch">&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb173-10"><a href="ctype.html#cb173-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isspace<span class="op">(</span><span class="ch">&#39;</span><span class="sc">\t</span><span class="ch">&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>  <span class="co">// yes</span></span>
+<span id="cb173-11"><a href="ctype.html#cb173-11"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isspace<span class="op">(</span><span class="ch">&#39;,&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb173-12"><a href="ctype.html#cb173-12"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isspace<span class="op">(</span><span class="ch">&#39;!&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb173-13"><a href="ctype.html#cb173-13"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isspace<span class="op">(</span><span class="ch">&#39;c&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb173-14"><a href="ctype.html#cb173-14"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-31">See Also</h3>
+<p><a href="ctype.html#man-isblank"><code>isblank()</code></a></p>
+<hr />
+<h2 data-number="5.11" id="man-isupper"><span class="header-section-number">5.11</span> <code>isupper()</code></h2>
+<p></p>
+<p>Tests if a character is uppercase</p>
+<h3 class="unnumbered unlisted" id="synopsis-35">Synopsis</h3>
+<div class="sourceCode" id="cb174"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb174-1"><a href="ctype.html#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb174-2"><a href="ctype.html#cb174-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb174-3"><a href="ctype.html#cb174-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> isupper<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-35">Description</h3>
+<p>Tests if a character is uppercase, in the range <code>A</code>-<code>Z</code>.</p>
+<p>In other locales, there could be other uppercase characters. In all cases, to be uppercase, the following must be true:</p>
+<div class="sourceCode" id="cb175"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb175-1"><a href="ctype.html#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>iscntrl<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>isdigit<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>ispunct<span class="op">(</span>c<span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>isspace<span class="op">(</span>c<span class="op">)</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="return-value-35">Return Value</h3>
+<p>Returns true if the character is uppercase.</p>
+<h3 class="unnumbered unlisted" id="example-35">Example</h3>
+<div class="sourceCode" id="cb176"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb176-1"><a href="ctype.html#cb176-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb176-2"><a href="ctype.html#cb176-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb176-3"><a href="ctype.html#cb176-3"></a></span>
+<span id="cb176-4"><a href="ctype.html#cb176-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb176-5"><a href="ctype.html#cb176-5"></a><span class="op">{</span></span>
+<span id="cb176-6"><a href="ctype.html#cb176-6"></a>    <span class="co">//             testing this char</span></span>
+<span id="cb176-7"><a href="ctype.html#cb176-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb176-8"><a href="ctype.html#cb176-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isupper<span class="op">(</span><span class="ch">&#39;B&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb176-9"><a href="ctype.html#cb176-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isupper<span class="op">(</span><span class="ch">&#39;c&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb176-10"><a href="ctype.html#cb176-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isupper<span class="op">(</span><span class="ch">&#39;0&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb176-11"><a href="ctype.html#cb176-11"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isupper<span class="op">(</span><span class="ch">&#39;?&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb176-12"><a href="ctype.html#cb176-12"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isupper<span class="op">(</span><span class="ch">&#39; &#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb176-13"><a href="ctype.html#cb176-13"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-32">See Also</h3>
+<p><a href="ctype.html#man-islower"><code>islower()</code></a>, <a href="ctype.html#man-isalpha"><code>isalpha()</code></a>, <a href="ctype.html#man-toupper"><code>toupper()</code></a>, <a href="ctype.html#man-tolower"><code>tolower()</code></a></p>
+<hr />
+<h2 data-number="5.12" id="man-isxdigit"><span class="header-section-number">5.12</span> <code>isxdigit()</code></h2>
+<p></p>
+<p>Tests if a character is a hexadecimal digit</p>
+<h3 class="unnumbered unlisted" id="synopsis-36">Synopsis</h3>
+<div class="sourceCode" id="cb177"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb177-1"><a href="ctype.html#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb177-2"><a href="ctype.html#cb177-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb177-3"><a href="ctype.html#cb177-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> isxdigit<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-36">Description</h3>
+<p>Returns true if the character is a hexadecimal digit. Namely if it’s <code>0</code>-<code>9</code>, <code>a</code>-<code>f</code>, or <code>A</code>-<code>F</code>.</p>
+<h3 class="unnumbered unlisted" id="return-value-36">Return Value</h3>
+<p>True if the character is a hexadecimal digit.</p>
+<h3 class="unnumbered unlisted" id="example-36">Example</h3>
+<div class="sourceCode" id="cb178"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb178-1"><a href="ctype.html#cb178-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb178-2"><a href="ctype.html#cb178-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb178-3"><a href="ctype.html#cb178-3"></a></span>
+<span id="cb178-4"><a href="ctype.html#cb178-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb178-5"><a href="ctype.html#cb178-5"></a><span class="op">{</span></span>
+<span id="cb178-6"><a href="ctype.html#cb178-6"></a>    <span class="co">//             testing this char</span></span>
+<span id="cb178-7"><a href="ctype.html#cb178-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb178-8"><a href="ctype.html#cb178-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isxdigit<span class="op">(</span><span class="ch">&#39;B&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb178-9"><a href="ctype.html#cb178-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isxdigit<span class="op">(</span><span class="ch">&#39;c&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb178-10"><a href="ctype.html#cb178-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isxdigit<span class="op">(</span><span class="ch">&#39;2&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// yes</span></span>
+<span id="cb178-11"><a href="ctype.html#cb178-11"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isxdigit<span class="op">(</span><span class="ch">&#39;G&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb178-12"><a href="ctype.html#cb178-12"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> isxdigit<span class="op">(</span><span class="ch">&#39;?&#39;</span><span class="op">)?</span> <span class="st">&quot;yes&quot;</span><span class="op">:</span> <span class="st">&quot;no&quot;</span><span class="op">);</span>   <span class="co">// no</span></span>
+<span id="cb178-13"><a href="ctype.html#cb178-13"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-33">See Also</h3>
+<p><a href="ctype.html#man-isdigit"><code>isdigit()</code></a></p>
+<hr />
+<h2 data-number="5.13" id="man-tolower"><span class="header-section-number">5.13</span> <code>tolower()</code></h2>
+<p></p>
+<p>Convert a letter to lowercase</p>
+<h3 class="unnumbered unlisted" id="synopsis-37">Synopsis</h3>
+<div class="sourceCode" id="cb179"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb179-1"><a href="ctype.html#cb179-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb179-2"><a href="ctype.html#cb179-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb179-3"><a href="ctype.html#cb179-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> tolower<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-37">Description</h3>
+<p>If the character is uppercase (i.e. <code>isupper(c)</code> is true), this function returns the corresponding lowercase letter.</p>
+<p>Different locales might have different upper- and lowercase letters.</p>
+<h3 class="unnumbered unlisted" id="return-value-37">Return Value</h3>
+<p>Returns the lowercase value for an uppercase letter. If the letter isn’t uppercase, returns it unchanged.</p>
+<h3 class="unnumbered unlisted" id="example-37">Example</h3>
+<div class="sourceCode" id="cb180"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb180-1"><a href="ctype.html#cb180-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb180-2"><a href="ctype.html#cb180-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb180-3"><a href="ctype.html#cb180-3"></a></span>
+<span id="cb180-4"><a href="ctype.html#cb180-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb180-5"><a href="ctype.html#cb180-5"></a><span class="op">{</span></span>
+<span id="cb180-6"><a href="ctype.html#cb180-6"></a>    <span class="co">//             changing this char</span></span>
+<span id="cb180-7"><a href="ctype.html#cb180-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb180-8"><a href="ctype.html#cb180-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> tolower<span class="op">(</span><span class="ch">&#39;B&#39;</span><span class="op">));</span>  <span class="co">// b (made lowercase!)</span></span>
+<span id="cb180-9"><a href="ctype.html#cb180-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> tolower<span class="op">(</span><span class="ch">&#39;e&#39;</span><span class="op">));</span>  <span class="co">// e (unchanged)</span></span>
+<span id="cb180-10"><a href="ctype.html#cb180-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> tolower<span class="op">(</span><span class="ch">&#39;!&#39;</span><span class="op">));</span>  <span class="co">// ! (unchanged)</span></span>
+<span id="cb180-11"><a href="ctype.html#cb180-11"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-34">See Also</h3>
+<p><a href="ctype.html#man-toupper"><code>toupper()</code></a>, <a href="ctype.html#man-islower"><code>islower()</code></a>, <a href="ctype.html#man-isupper"><code>isupper()</code></a></p>
+<hr />
+<h2 data-number="5.14" id="man-toupper"><span class="header-section-number">5.14</span> <code>toupper()</code></h2>
+<p></p>
+<p>Convert a letter to uppercase</p>
+<h3 class="unnumbered unlisted" id="synopsis-38">Synopsis</h3>
+<div class="sourceCode" id="cb181"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb181-1"><a href="ctype.html#cb181-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb181-2"><a href="ctype.html#cb181-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb181-3"><a href="ctype.html#cb181-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> toupper<span class="op">(</span><span class="dt">int</span> c<span class="op">);</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="description-38">Description</h3>
+<p>If the character is lower (i.e. <code>islower(c)</code> is true), this function returns the corresponding uppercase letter.</p>
+<p>Different locales might have different upper- and lowercase letters.</p>
+<h3 class="unnumbered unlisted" id="return-value-38">Return Value</h3>
+<p>Returns the uppercase value for a lowercase letter. If the letter isn’t lowercase, returns it unchanged.</p>
+<h3 class="unnumbered unlisted" id="example-38">Example</h3>
+<div class="sourceCode" id="cb182"><pre class="sourceCode numberSource c numberLines"><code class="sourceCode c"><span id="cb182-1"><a href="ctype.html#cb182-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb182-2"><a href="ctype.html#cb182-2"></a><span class="pp">#include </span><span class="im">&lt;ctype.h&gt;</span></span>
+<span id="cb182-3"><a href="ctype.html#cb182-3"></a></span>
+<span id="cb182-4"><a href="ctype.html#cb182-4"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb182-5"><a href="ctype.html#cb182-5"></a><span class="op">{</span></span>
+<span id="cb182-6"><a href="ctype.html#cb182-6"></a>    <span class="co">//             changing this char</span></span>
+<span id="cb182-7"><a href="ctype.html#cb182-7"></a>    <span class="co">//                      v</span></span>
+<span id="cb182-8"><a href="ctype.html#cb182-8"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> toupper<span class="op">(</span><span class="ch">&#39;B&#39;</span><span class="op">));</span>  <span class="co">// B (unchanged)</span></span>
+<span id="cb182-9"><a href="ctype.html#cb182-9"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> toupper<span class="op">(</span><span class="ch">&#39;e&#39;</span><span class="op">));</span>  <span class="co">// E (made uppercase!)</span></span>
+<span id="cb182-10"><a href="ctype.html#cb182-10"></a>    printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%c\n</span><span class="st">&quot;</span><span class="op">,</span> toupper<span class="op">(</span><span class="ch">&#39;!&#39;</span><span class="op">));</span>  <span class="co">// ! (unchanged)</span></span>
+<span id="cb182-11"><a href="ctype.html#cb182-11"></a><span class="op">}</span></span></code></pre></div>
+<h3 class="unnumbered unlisted" id="see-also-35">See Also</h3>
+<p><a href="ctype.html#man-tolower"><code>tolower()</code></a>, <a href="ctype.html#man-islower"><code>islower()</code></a>, <a href="ctype.html#man-isupper"><code>isupper()</code></a></p>
+<!--
+***
+## `example()` {#man-example}
+
+### Synopsis {.unnumbered .unlisted}
+
+``` {.c}
+```
+
+### Description {.unnumbered .unlisted}
+
+### Return Value {.unnumbered .unlisted}
+
+### Example {.unnumbered .unlisted}
+
+``` {.c .numberLines}
+```
+
+### See Also {.unnumbered .unlisted}
+
+[`example()`](#man-example),
+-->
+<!-- BG_NEW_CHAPTER -->
+<!-- Beej's guide to C
+
+# vim: ts=4:sw=4:nosi:et:tw=72
+-->
+<hr><div style="text-align:center"><span><a href="complex.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="errno.html" rel="next">Next</a></span></div></body>
+</html>
