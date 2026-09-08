@@ -1,0 +1,51 @@
+:host {
+  all: initial;
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 1000;
+  width: 200px;
+  font: 16px/1.5 system-ui, sans-serif;
+  color: #222;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+form { margin: 0; }
+input {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 7px 10px;
+  box-shadow: 0 1px 4px #0001;
+}
+input::placeholder { color: #666; }
+:focus-visible { outline: 2px solid #365aa0; outline-offset: 2px; }
+section {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  width: min(380px, calc(100vw - 24px));
+  background: #fff;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  box-shadow: 0 4px 15px #0002;
+}
+.panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; font-size: 14px; }
+button { border: 0; background: transparent; color: #444; font: inherit; font-size: 24px; line-height: 1; padding: 4px 6px; cursor: pointer; }
+nav { max-height: min(55vh, 460px); overflow-y: auto; overscroll-behavior: contain; }
+nav a { display: block; padding: 10px 12px; border-top: 1px solid #eee; color: #234f8c; text-decoration: none; overflow-wrap: anywhere; }
+nav a:hover, nav a:focus { background: #f3f5f8; }
+strong { display: block; font-size: 15px; font-weight: 600; }
+nav span { display: block; color: #555; font-size: 14px; margin-top: 4px; }
+footer { padding: 6px 12px; border-top: 1px solid #eee; text-align: right; font-size: 12px; }
+footer a { color: #666; text-decoration: none; }
+@media (max-width: 600px) {
+  :host { top: auto; bottom: max(12px, env(safe-area-inset-bottom)); width: 180px; }
+  section { top: auto; bottom: calc(100% + 6px); }
+  nav { max-height: 45dvh; }
+}
+@media print { :host { display: none; } }
