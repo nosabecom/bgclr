@@ -12,7 +12,7 @@
   root.innerHTML = `
     <link rel="stylesheet" href="/search.css?v=2">
     <form role="search" autocomplete="off">
-      <input type="search" aria-label="Search the guide" placeholder="Search…" maxlength="256" spellcheck="false" aria-controls="search-panel" aria-expanded="false">
+      <input type="search" aria-label="Search the guide" aria-keyshortcuts="Control+k Meta+k" title="Search (Ctrl+K or ⌘K)" placeholder="Search…" maxlength="256" spellcheck="false" aria-controls="search-panel" aria-expanded="false">
     </form>
     <section id="search-panel" aria-label="Search results" hidden>
       <div class="panel-heading"><span role="status" aria-live="polite"></span><button type="button" aria-label="Close search results">×</button></div>
@@ -132,6 +132,12 @@
     if (event.key === 'ArrowDown') links[Math.min(position + 1, links.length - 1)].focus();
     else if (position <= 0) input.focus();
     else links[position - 1].focus();
+  });
+  document.addEventListener('keydown', event => {
+    if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey || event.isComposing || event.key.toLowerCase() !== 'k') return;
+    event.preventDefault();
+    input.focus();
+    input.select();
   });
   document.addEventListener('pointerdown', event => { if (!event.composedPath().includes(host)) close(); });
 })();
