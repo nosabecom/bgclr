@@ -10,7 +10,7 @@
   // Isolate the widget's styles from the original book in both directions.
   const root = host.attachShadow({ mode: 'open' });
   root.innerHTML = `
-    <link rel="stylesheet" href="/search.css?v=1">
+    <link rel="stylesheet" href="/search.css?v=2">
     <form role="search" autocomplete="off">
       <input type="search" aria-label="Search the guide" placeholder="Search…" maxlength="256" spellcheck="false" aria-controls="search-panel" aria-expanded="false">
     </form>
